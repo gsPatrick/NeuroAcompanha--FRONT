@@ -1,4 +1,6 @@
 .back {
+  align-self: flex-start;
+  margin-top: env(safe-area-inset-top);
   display: inline-flex;
   align-items: center;
   gap: var(--space-xs);

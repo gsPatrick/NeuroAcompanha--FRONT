@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import AppLayout from '@/components/layout/AppLayout/AppLayout';
+import AppButton from '@/components/ui/atoms/AppButton/AppButton';
 import AppIcon from '@/components/ui/atoms/AppIcon/AppIcon';
 import AppSkeleton from '@/components/ui/atoms/AppSkeleton/AppSkeleton';
 import DayReportRow from '@/components/ui/molecules/DayReportRow/DayReportRow';
@@ -11,6 +12,9 @@ import StatTile from '@/components/ui/molecules/StatTile/StatTile';
 import { useChild } from '@/features/children/hooks/useChild';
 import { useDayEntries } from '@/features/reports/hooks/useDayEntries';
 import { addDays, formatRange, formatWeekdayShort, parseDateKey, startOfWeek, toDateKey, weekDates } from '@/features/reports/utils/dates';
+import { buildWeekReportText } from '@/features/reports/utils/reportText';
+import { useUser } from '@/features/user/hooks/useUser';
+import { useToast } from '@/hooks/useToast';
 import { STATUS_LABELS, summarizeEntries, summarizeRecord } from '@/features/reports/utils/reportView';
 import styles from './WeekReportTemplate.module.css';
 
@@ -24,15 +28,13 @@ export default function WeekReportTemplate() {
   const { childId, monday } = useParams();
   const { status, child } = useChild(childId);
 
-  const backButton = (
-    <button type="button" className={styles.back} onClick={() => router.back()}>
-      <AppIcon name="arrowLeft" size={20} />
-      Voltar
-    </button>
-  );
-
   return (
-    <AppLayout title="Relatório" navLeft={backButton}>
+    <AppLayout tone="muted">
+      <button type="button" className={styles.back} onClick={() => router.back()}>
+        <AppIcon name="arrowLeft" size={20} />
+        Voltar
+      </button>
+
       {status === 'loading' ? <AppSkeleton shape="title" /> : null}
       {status === 'missing' || status === 'error' ? (
         <EmptyState icon="alert" title="Criança não encontrada" description="Volte e escolha uma criança na lista." />
@@ -49,7 +51,26 @@ function WeekContent({ child, firstMonday }) {
   const dates = useMemo(() => weekDates(monday, child.routine), [toDateKey(monday), child.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const { status, entries } = useDayEntries(child, dates);
   const totals = summarizeEntries(entries);
+  const showToast = useToast();
+  const { user } = useUser();
   const isCurrentWeek = toDateKey(monday) === toDateKey(startOfWeek(new Date()));
+
+  // Monta o texto da semana e abre o compartilhar do celular (WhatsApp, Arquivos...); sem ele, copia para colar onde quiser.
+  const generate = async () => {
+    const text = buildWeekReportText({ child, entries, monday, last: dates[dates.length - 1], author: user?.firstName });
+    const title = `Relatório semanal — ${child.name}`;
+    try {
+      if (typeof navigator.share === 'function') {
+        await navigator.share({ title, text });
+        return;
+      }
+      await navigator.clipboard.writeText(text);
+      showToast('Relatório copiado. Cole onde quiser.');
+    } catch (error) {
+      // Fechar a folha de compartilhar não é erro.
+      if (error?.name !== 'AbortError') showToast('Não foi possível gerar o relatório.');
+    }
+  };
 
   return (
     <>
@@ -66,6 +87,10 @@ function WeekContent({ child, firstMonday }) {
           <AppIcon name="chevronRight" size={22} />
         </button>
       </div>
+
+      <AppButton icon="chart" fullWidth disabled={status !== 'ready'} onClick={generate}>
+        Gerar relatório
+      </AppButton>
 
       {status === 'loading' ? <AppSkeleton shape="title" /> : null}
 

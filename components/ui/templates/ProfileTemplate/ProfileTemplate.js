@@ -9,6 +9,7 @@ import InfoRow from '@/components/ui/molecules/InfoRow/InfoRow';
 import MenuRow from '@/components/ui/molecules/MenuRow/MenuRow';
 import StatTile from '@/components/ui/molecules/StatTile/StatTile';
 import ProfileBanner from '@/components/ui/organisms/ProfileBanner/ProfileBanner';
+import AppVersionSetting from '@/features/app-update/components/AppVersionSetting/AppVersionSetting';
 import { endSession } from '@/features/auth/services/sessionService';
 import { useChildren } from '@/features/children/hooks/useChildren';
 import { describeAttendanceDays } from '@/features/routine/utils/routine';
@@ -94,9 +95,16 @@ export default function ProfileTemplate() {
           <section className={styles.section}>
             <h2 className={styles.title}>Mais</h2>
             <AppCard divided large>
-              <MenuRow icon="settings" label="Ajustes" onClick={() => router.push('/settings')} />
+              <MenuRow icon="users" label="Refazer cadastro dos alunos" onClick={() => router.push('/onboarding')} />
               <MenuRow icon="smartphone" label="Instalar o app" onClick={() => router.push('/instalar')} />
               <MenuRow icon="logout" label="Sair da conta" destructive onClick={logout} />
+            </AppCard>
+          </section>
+
+          <section className={styles.section}>
+            <h2 className={styles.title}>Aplicativo</h2>
+            <AppCard padded large>
+              <AppVersionSetting />
             </AppCard>
           </section>
         </>
