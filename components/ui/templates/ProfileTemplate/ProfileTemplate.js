@@ -1,5 +1,6 @@
 'use client';
 
+import { endSession } from '@/features/auth/services/sessionService';
 import { useRouter } from 'next/navigation';
 import AppLayout from '@/components/layout/AppLayout/AppLayout';
 import AppAvatar from '@/components/ui/atoms/AppAvatar/AppAvatar';
@@ -13,6 +14,11 @@ import styles from './ProfileTemplate.module.css';
 // Página do perfil da AT: foto, nome, função e atalhos (Ajustes e Sair).
 export default function ProfileTemplate() {
   const router = useRouter();
+
+  const logout = () => {
+    endSession();
+    router.replace('/login');
+  };
   const { status, user } = useUser();
 
   const backButton = (
@@ -43,7 +49,7 @@ export default function ProfileTemplate() {
 
           <AppCard divided large>
             <MenuRow icon="settings" label="Ajustes" onClick={() => router.push('/settings')} />
-            <MenuRow icon="logout" label="Sair da conta" destructive onClick={() => router.replace('/login')} />
+            <MenuRow icon="logout" label="Sair da conta" destructive onClick={logout} />
           </AppCard>
         </>
       ) : null}

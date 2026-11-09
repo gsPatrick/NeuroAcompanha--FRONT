@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { login } from '../services/authService';
+import { startSession } from '../services/sessionService';
 import { loadPreferences } from '@/features/settings/services/preferencesService';
 import { useHistoryStep } from '@/hooks/useHistoryStep';
 import { validateLogin } from '../utils/validateLogin';
@@ -36,7 +37,10 @@ export function useLogin() {
   const backToGate = goBack;
 
   // Substituir (e não empilhar) ao sair do login: o gesto de voltar nunca devolve à tela de login.
-  const skip = () => router.replace(HOME_ROUTE);
+  const skip = () => {
+    startSession();
+    router.replace(HOME_ROUTE);
+  };
 
   const changeField = (name) => (value) => {
     setValues((current) => ({ ...current, [name]: value }));
@@ -55,6 +59,7 @@ export function useLogin() {
     setSubmitError('');
     try {
       await login(values);
+      startSession();
       // Primeiro acesso: passa pela configuração inicial antes da tela inicial.
       router.replace(loadPreferences().onboarded ? HOME_ROUTE : ONBOARDING_ROUTE);
     } catch {

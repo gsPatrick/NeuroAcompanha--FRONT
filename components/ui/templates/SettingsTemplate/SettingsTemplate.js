@@ -1,5 +1,6 @@
 'use client';
 
+import { endSession } from '@/features/auth/services/sessionService';
 import { useRouter } from 'next/navigation';
 import AppLayout from '@/components/layout/AppLayout/AppLayout';
 import AppButton from '@/components/ui/atoms/AppButton/AppButton';
@@ -16,6 +17,11 @@ import styles from './SettingsTemplate.module.css';
 // As mudanças são salvas na hora. Os alunos e a quantidade são definidos no cadastro inicial (onboarding).
 export default function SettingsTemplate() {
   const router = useRouter();
+
+  const logout = () => {
+    endSession();
+    router.replace('/login');
+  };
   const { preferences, setReportDay } = usePreferences();
   const { children, status } = useChildren();
 
@@ -51,7 +57,7 @@ export default function SettingsTemplate() {
         <AppButton variant="secondary" fullWidth onClick={() => router.push('/onboarding')}>
           Refazer cadastro dos alunos
         </AppButton>
-        <AppButton variant="tertiary" fullWidth onClick={() => router.replace('/login')}>
+        <AppButton variant="tertiary" fullWidth onClick={logout}>
           Sair da conta
         </AppButton>
       </div>
