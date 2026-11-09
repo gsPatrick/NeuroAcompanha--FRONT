@@ -108,6 +108,12 @@ img {
   --f7-tabbar-link-inactive-color: var(--color-text-tertiary);
 }
 
+/* Barra de abas colada embaixo, como nos apps nativos: o Framework7 deixa o conteúdo das abas acima de TODA a área
+   do indicador do iPhone; aqui ele desce, sobrando só um respiro (o fundo da barra continua até a borda). */
+.ios .toolbar.toolbar-bottom .toolbar-inner {
+  bottom: max(0px, calc(var(--f7-safe-area-bottom) - 30px));
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
