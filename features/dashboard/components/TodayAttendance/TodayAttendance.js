@@ -5,7 +5,7 @@ import styles from './TodayAttendance.module.css';
 
 // Atendimento de hoje: um banner por aluno (foto, nome e diagnóstico), um embaixo do outro e todos iguais.
 // Cada banner abre com as ações do dia. `suspendedIds`: ids dos atendimentos marcados como suspensos.
-export default function TodayAttendance({ appointments, suspendedIds, onToggleSuspended, onStartRecord }) {
+export default function TodayAttendance({ appointments, suspendedIds, recordedIds, onToggleSuspended, onStartRecord }) {
   return (
     <section>
       <SectionHeader title="Atendimento de hoje" ruled />
@@ -17,6 +17,7 @@ export default function TodayAttendance({ appointments, suspendedIds, onToggleSu
               key={appointment.id}
               appointment={appointment}
               suspended={suspendedIds.has(appointment.id)}
+              recording={recordedIds?.has(appointment.childId)}
               onToggleSuspended={onToggleSuspended}
               onStartRecord={onStartRecord}
             />

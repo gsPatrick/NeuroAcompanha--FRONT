@@ -13,6 +13,7 @@ const newEventId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 7)
 //  - events:  cada toque nas marcações rápidas { id, blockId, key, at, text? }.
 //  - answers: prancheta { [blockId]: { [pergunta]: { answer: 'yes' | 'no' | null, obs } } }.
 //  - summary: Resumo do dia { easy, hard, worked, progress, family }.
+//  - cursor:  id do momento em que ela parou (reabre ali).
 // Salva a cada mudança; o `id` inclui a data, então no dia seguinte o registro começa vazio.
 export function useDayRecord(child) {
   const [state, setState] = useState({ status: 'loading', record: null });
@@ -77,6 +78,9 @@ export function useDayRecord(child) {
     [update],
   );
 
+  // Lembra em qual momento ela parou, para reabrir o registro exatamente ali.
+  const setCursor = useCallback((blockId) => update((record) => (record.cursor === blockId ? record : { ...record, cursor: blockId })), [update]);
+
   const setSummary = useCallback(
     (key, value) => update((record) => ({ ...record, summary: { ...record.summary, [key]: value } })),
     [update],
@@ -116,6 +120,7 @@ export function useDayRecord(child) {
     removeEvent,
     setAnswer,
     setSummary,
+    setCursor,
     addBlock,
     renameBlock,
     removeBlock,

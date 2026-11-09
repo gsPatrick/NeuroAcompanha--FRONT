@@ -10,7 +10,7 @@ import styles from './StudentDayCard.module.css';
 // Cartão do aluno quando a AT atende UM aluno: só o banner (degradê azul-claro com curvas ao fundo),
 // com foto, nome e diagnóstico. Ao tocar nele, abre embaixo uma sanfona com duas ações, uma sobre a outra:
 // "Iniciar registro" e "Atendimento suspenso" (liga/desliga).
-export default function StudentDayCard({ appointment, suspended = false, onToggleSuspended, onStartRecord }) {
+export default function StudentDayCard({ appointment, suspended = false, recording = false, onToggleSuspended, onStartRecord }) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
   // Dia em que a AT não atende este aluno (pela rotina): o banner só informa, não abre ações.
@@ -73,7 +73,7 @@ export default function StudentDayCard({ appointment, suspended = false, onToggl
         <div className={styles.panelInner}>
           <div className={styles.actions}>
             <AppButton icon="notes" fullWidth onClick={() => onStartRecord(appointment)}>
-              Iniciar registro
+              {recording ? 'Continuar registro' : 'Iniciar registro'}
             </AppButton>
             <AppButton
               variant="outline"

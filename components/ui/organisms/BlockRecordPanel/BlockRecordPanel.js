@@ -47,6 +47,8 @@ export default function BlockRecordPanel({ record, block, addMark, addNote, remo
           aria-label="Anotação"
           placeholder="Escreva com suas palavras"
           onChange={(event) => setNoteText(event.target.value)}
+          // Ao sair do campo a anotação já fica salva: nada se perde se ela trocar de momento no meio da frase.
+          onBlur={saveNote}
         />
         <div className={styles.noteAction}>
           <AppButton size="md" icon="notes" disabled={!noteText.trim()} onClick={saveNote}>

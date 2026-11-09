@@ -27,8 +27,9 @@ export default function RecordTemplate() {
   );
 }
 
-function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer, setSummary, addBlock, renameBlock, removeBlock }) {
-  const [chosenId, setChosenId] = useState(record.blocks[0]?.id ?? SUMMARY_ID);
+function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer, setSummary, setCursor, addBlock, renameBlock, removeBlock }) {
+  // Reabre no momento em que ela parou (ou no primeiro, se o registro de hoje é novo).
+  const [chosenId, setChosenId] = useState(record.cursor ?? record.blocks[0]?.id ?? SUMMARY_ID);
   // null | 'add' | 'edit': o painel de mudar a rotina do dia (um só, para não ter vários menus).
   const [editor, setEditor] = useState(null);
 
@@ -41,6 +42,7 @@ function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer
 
   const select = (id) => {
     setChosenId(id);
+    setCursor(id);
     setEditor(null);
     // A tela rola dentro do Framework7: volta ao topo para começar o novo momento do início.
     document.querySelector('.page-content')?.scrollTo({ top: 0 });

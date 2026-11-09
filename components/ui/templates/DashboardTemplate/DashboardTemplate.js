@@ -10,6 +10,7 @@ import MonthCalendar from '@/components/ui/organisms/MonthCalendar/MonthCalendar
 import DashboardSkeleton from '@/features/dashboard/components/DashboardSkeleton/DashboardSkeleton';
 import TodayAttendance from '@/features/dashboard/components/TodayAttendance/TodayAttendance';
 import { useDashboard } from '@/features/dashboard/hooks/useDashboard';
+import { useRecordedToday } from '@/features/records/hooks/useRecordedToday';
 import { selectTodayAppointments } from '@/features/dashboard/utils/dashboardView';
 import { formatLongDate, getGreeting } from '@/utils/formatDate';
 import styles from './DashboardTemplate.module.css';
@@ -50,6 +51,7 @@ function DashboardContent({ data, onStartRecord }) {
   const [suspendedIds, setSuspendedIds] = useState(() => new Set());
 
   const appointments = selectTodayAppointments(data.appointments);
+  const recordedIds = useRecordedToday(appointments.map((item) => item.childId));
   // O calendário marca o dia como suspenso só quando TODOS os atendimentos de hoje foram suspensos.
   const attending = appointments.filter((item) => item.attendsToday !== false);
   const allSuspended = attending.length > 0 && attending.every((item) => suspendedIds.has(item.id));
@@ -75,6 +77,7 @@ function DashboardContent({ data, onStartRecord }) {
         <TodayAttendance
           appointments={appointments}
           suspendedIds={suspendedIds}
+          recordedIds={recordedIds}
           onToggleSuspended={toggleSuspended}
           onStartRecord={onStartRecord}
         />

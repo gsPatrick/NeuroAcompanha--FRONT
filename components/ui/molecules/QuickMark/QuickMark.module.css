@@ -4,11 +4,11 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-sm);
-  width: auto;
-  min-height: 48px;
+  width: 100%;
+  min-height: 54px;
   padding: var(--space-xs) var(--space-md);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-lg);
   background: var(--color-surface);
   color: var(--color-text-primary);
   text-align: left;
