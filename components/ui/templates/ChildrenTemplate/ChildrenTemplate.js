@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import AppLayout from '@/components/layout/AppLayout/AppLayout';
+import MainHeader from '@/components/layout/MainHeader/MainHeader';
 import AppSkeleton from '@/components/ui/atoms/AppSkeleton/AppSkeleton';
 import ChildBannerCard from '@/components/ui/molecules/ChildBannerCard/ChildBannerCard';
 import EmptyState from '@/components/ui/molecules/EmptyState/EmptyState';
@@ -10,13 +11,15 @@ import { attendsOn, describeAttendanceDays } from '@/features/routine/utils/rout
 import styles from './ChildrenTemplate.module.css';
 
 // Aba "Crianças": um cartão no estilo do banner da tela inicial para cada criança que a AT acompanha, com um resumo
-// sem título nem data no topo. Tocar num cartão abre o perfil.
+// no meio do espaço abaixo do cabeçalho. Tocar num cartão abre o perfil.
 export default function ChildrenTemplate() {
   const router = useRouter();
   const { status, children } = useChildren();
 
   return (
-    <AppLayout tone="muted" centered>
+    <AppLayout tone="muted" fill>
+      <MainHeader />
+
       {status === 'loading' ? (
         <div className={styles.list}>
           <AppSkeleton shape="title" />
@@ -29,11 +32,11 @@ export default function ChildrenTemplate() {
       ) : null}
 
       {status === 'success' && !children.length ? (
-        <EmptyState icon="users" title="Nenhuma criança ainda" description="Cadastre os alunos em Ajustes." />
+        <EmptyState icon="users" title="Nenhuma criança ainda" description="Cadastre os alunos pelo seu perfil." />
       ) : null}
 
       {status === 'success' && children.length ? (
-        <>
+        <div className={styles.area}>
           <div className={styles.list}>
             {children.map((child) => {
               const attends = attendsOn(child.routine);
@@ -52,7 +55,7 @@ export default function ChildrenTemplate() {
               );
             })}
           </div>
-        </>
+        </div>
       ) : null}
     </AppLayout>
   );

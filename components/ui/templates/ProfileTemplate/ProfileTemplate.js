@@ -22,7 +22,7 @@ const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
 const monthYear = (iso) => capitalize(new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(new Date(`${iso}T12:00:00`)));
 
 // Perfil da AT: banner com foto, nome e tempo na plataforma; os números do mês; as crianças que ela acompanha;
-// sobre ela; e, no fim, Ajustes, instalar o app e sair.
+// sobre ela; e, no fim, refazer o cadastro, instalar o app, sair e a versão do app.
 export default function ProfileTemplate() {
   const router = useRouter();
   const { status, user } = useUser();

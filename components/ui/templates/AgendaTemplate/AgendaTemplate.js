@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AppLayout from '@/components/layout/AppLayout/AppLayout';
+import MainHeader from '@/components/layout/MainHeader/MainHeader';
 import AppButton from '@/components/ui/atoms/AppButton/AppButton';
 import AppSkeleton from '@/components/ui/atoms/AppSkeleton/AppSkeleton';
 import AgendaDay from '@/components/ui/molecules/AgendaDay/AgendaDay';
@@ -28,6 +29,8 @@ export default function AgendaTemplate() {
 
   return (
     <AppLayout tone="muted">
+      <MainHeader />
+
       {status === 'loading' ? <AppSkeleton shape="title" /> : null}
 
       {status === 'success' && !children.length ? (

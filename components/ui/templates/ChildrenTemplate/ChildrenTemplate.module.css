@@ -1,3 +1,11 @@
+/* Os cartões ficam no meio do espaço que sobra embaixo do cabeçalho. */
+.area {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .list {
   display: flex;
   flex-direction: column;

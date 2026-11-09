@@ -12,10 +12,7 @@
   animation: pageEnter var(--motion-base) var(--motion-ease) both;
 }
 
-/* Poucos itens: centraliza na vertical, com o mesmo respiro em cima (barra de status) e embaixo (barra de abas). */
-.centered {
-  justify-content: center;
+/* Ocupa a altura toda: um filho com flex: 1 passa a poder se centralizar no espaço que sobra. */
+.fill {
   min-height: 100%;
-  padding-top: calc(var(--space-xl) + env(safe-area-inset-top));
-  padding-bottom: var(--space-xl);
 }
