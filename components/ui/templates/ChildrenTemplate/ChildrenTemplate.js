@@ -16,7 +16,7 @@ export default function ChildrenTemplate() {
   const { status, children } = useChildren();
 
   return (
-    <AppLayout tone="muted">
+    <AppLayout tone="muted" centered>
       {status === 'loading' ? (
         <div className={styles.list}>
           <AppSkeleton shape="title" />

@@ -7,9 +7,10 @@ import styles from './AppLayout.module.css';
 // Moldura padrão das telas: conteúdo + navegação inferior.
 // Com `title`, mostra a barra superior com título grande (iOS). Sem `title`, a tela
 // traz o próprio cabeçalho (ver AppHeader).
+// `centered`: o conteúdo fica centralizado na vertical (poucas coisas na tela).
 // `tone="muted"`: fundo azul-acinzentado suave (os cartões brancos ganham destaque).
 // Navbar e Toolbar precisam ser filhos diretos do Page para o Framework7 posicioná-los.
-export default function AppLayout({ title, navLeft, navRight, tone = 'plain', children }) {
+export default function AppLayout({ title, navLeft, navRight, tone = 'plain', centered = false, children }) {
   return (
     <Page className={tone === 'muted' ? styles.muted : undefined}>
       {title ? (
@@ -21,7 +22,7 @@ export default function AppLayout({ title, navLeft, navRight, tone = 'plain', ch
       <Toolbar tabbar icons bottom>
         <BottomNavigation />
       </Toolbar>
-      <div className={styles.content}>{children}</div>
+      <div className={`${styles.content} ${centered ? styles.centered : ''}`}>{children}</div>
     </Page>
   );
 }

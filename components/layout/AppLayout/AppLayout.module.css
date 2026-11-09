@@ -11,3 +11,11 @@
   /* Entrada da tela: desliza da direita (keyframes em globals.css). */
   animation: pageEnter var(--motion-base) var(--motion-ease) both;
 }
+
+/* Poucos itens: centraliza na vertical, com o mesmo respiro em cima (barra de status) e embaixo (barra de abas). */
+.centered {
+  justify-content: center;
+  min-height: 100%;
+  padding-top: calc(var(--space-xl) + env(safe-area-inset-top));
+  padding-bottom: var(--space-xl);
+}
