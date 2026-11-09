@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import AppAvatar from '@/components/ui/atoms/AppAvatar/AppAvatar';
 import AppButton from '@/components/ui/atoms/AppButton/AppButton';
-import BlockTabs from '@/components/ui/molecules/BlockTabs/BlockTabs';
+import BlockStepper from '@/components/ui/molecules/BlockStepper/BlockStepper';
 import BlockEditor from '@/components/ui/organisms/BlockEditor/BlockEditor';
 import BlockRecordPanel from '@/components/ui/organisms/BlockRecordPanel/BlockRecordPanel';
 import SummaryPanel from '@/components/ui/organisms/SummaryPanel/SummaryPanel';
@@ -15,8 +15,8 @@ import styles from './RecordTemplate.module.css';
 
 const SUMMARY_ID = 'summary';
 
-// Registro do dia numa tela só. Em cima, a rotina de hoje em abas (Acolhimento, Aulas, Lanche, Brincadeiras, Resumo);
-// tocar numa aba troca o conteúdo logo abaixo, sem abrir outra página. Tudo salva na hora.
+// Registro do dia numa tela só. Em cima, o momento atual da rotina (Acolhimento, Aulas, Lanche, Brincadeiras, Resumo)
+// com setas para o anterior e o próximo; trocar muda o conteúdo logo abaixo, sem abrir outra página. Tudo salva na hora.
 export default function RecordTemplate() {
   const { childId } = useParams();
 
@@ -42,6 +42,8 @@ function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer
   const select = (id) => {
     setChosenId(id);
     setEditor(null);
+    // A tela rola dentro do Framework7: volta ao topo para começar o novo momento do início.
+    document.querySelector('.page-content')?.scrollTo({ top: 0 });
   };
 
   const tabs = [
@@ -53,6 +55,8 @@ function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer
     { id: SUMMARY_ID, label: 'Resumo do dia', count: Object.values(record.summary).filter((text) => text?.trim()).length },
   ];
 
+  const nextTab = tabs[tabs.findIndex((tab) => tab.id === selectedId) + 1];
+
   return (
     <>
       <section className={styles.identity}>
@@ -63,7 +67,7 @@ function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer
         </div>
       </section>
 
-      <BlockTabs items={tabs} selectedId={selectedId} onSelect={select} />
+      <BlockStepper items={tabs} selectedId={selectedId} onSelect={select} />
 
       <div className={styles.actions}>
         {!showingSummary ? (
@@ -105,6 +109,12 @@ function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer
           setAnswer={setAnswer}
         />
       )}
+
+      {nextTab ? (
+        <AppButton fullWidth icon="arrowRight" onClick={() => select(nextTab.id)}>
+          Próximo: {nextTab.label}
+        </AppButton>
+      ) : null}
     </>
   );
 }
