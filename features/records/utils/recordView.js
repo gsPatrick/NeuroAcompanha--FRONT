@@ -1,13 +1,8 @@
 import { getMark } from '../data/quickMarks';
 
-// Quantas vezes cada marcação foi feita num bloco: { crisis: 2, calm: 1 }.
-export function countByMark(events, blockId) {
-  return events
-    .filter((event) => event.blockId === blockId)
-    .reduce((counts, event) => {
-      counts[event.key] = (counts[event.key] ?? 0) + 1;
-      return counts;
-    }, {});
+// Quais marcações rápidas estão marcadas num momento (as anotações não contam).
+export function markedKeys(events, blockId) {
+  return new Set(events.filter((event) => event.blockId === blockId && event.key !== 'note').map((event) => event.key));
 }
 
 // Linha do tempo: a mais recente primeiro, já com rótulo e tom de cada marcação.

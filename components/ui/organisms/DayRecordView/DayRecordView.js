@@ -1,9 +1,7 @@
 import RecordTimeline from '../../molecules/RecordTimeline/RecordTimeline';
-import { SUMMARY_FIELDS, findQuestion } from '@/features/records/data/prancheta';
+import { SUMMARY_FIELDS, describeAnswer, findQuestion } from '@/features/records/data/prancheta';
 import { buildTimeline, formatTime } from '@/features/records/utils/recordView';
 import styles from './DayRecordView.module.css';
-
-const ANSWER_LABELS = { yes: 'Sim', no: 'Não' };
 
 // O registro de um dia, só para ler: cada momento com as marcações (e horários), as respostas da prancheta
 // e as anotações, e no fim o Resumo do dia. Tudo aberto, sem menus.
@@ -34,7 +32,7 @@ export default function DayRecordView({ record }) {
                       <span className={styles.question}>{question.label}</span>
                       <span className={styles.value}>
                         {item.answer ? (
-                          <span className={`${styles.badge} ${item.answer === 'yes' ? styles.yes : styles.no}`}>{ANSWER_LABELS[item.answer]}</span>
+                          <span className={`${styles.badge} ${item.answer === 'yes' ? styles.yes : styles.no}`}>{describeAnswer(question, item)}</span>
                         ) : null}
                         {item.obs?.trim() ? <span className={styles.obs}>{item.obs}</span> : null}
                       </span>

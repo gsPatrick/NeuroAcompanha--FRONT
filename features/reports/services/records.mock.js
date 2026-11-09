@@ -49,15 +49,15 @@ export function buildMockRecord(child, date) {
   blocks.forEach((block, index) => {
     // Horário de cada momento: começa às 8h e avança ~50 min por momento.
     const base = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 8, 0).getTime() + index * 50 * 60000;
+    // Cada marcação vale uma vez por momento.
+    const used = new Set();
     const count = 2 + Math.floor(random() * 4);
     for (let item = 0; item < count; item += 1) {
       const group = pick(random() < 0.88 ? MARK_GROUPS.filter((g) => g.key !== 'occurrence') : MARK_GROUPS);
-      events.push({
-        id: `${block.id}-e${item}`,
-        blockId: block.id,
-        key: pick(group.marks).key,
-        at: base + item * 9 * 60000 + Math.floor(random() * 4) * 60000,
-      });
+      const mark = pick(group.marks);
+      if (used.has(mark.key)) continue;
+      used.add(mark.key);
+      events.push({ id: `${block.id}-e${item}`, blockId: block.id, key: mark.key, at: base + item * 9 * 60000 + Math.floor(random() * 4) * 60000 });
     }
     if (random() < 0.4) events.push({ id: `${block.id}-n`, blockId: block.id, key: 'note', at: base + 40 * 60000, text: pick(NOTES) });
 
@@ -67,9 +67,10 @@ export function buildMockRecord(child, date) {
       .forEach((category) => {
         category.questions.forEach((question) => {
           if (random() < 0.45) return;
-          blockAnswers[question.key] = question.obsOnly
-            ? { answer: null, obs: pick(HELP_TEXTS) }
-            : { answer: random() < 0.6 ? 'yes' : 'no', obs: '' };
+          if (question.type === 'text') blockAnswers[question.key] = { answer: null, obs: pick(HELP_TEXTS) };
+          else if (question.type === 'choice') blockAnswers[question.key] = { answer: pick(question.options), obs: '' };
+          else if (question.type === 'check') blockAnswers[question.key] = { answer: 'yes', obs: '' };
+          else blockAnswers[question.key] = { answer: random() < 0.6 ? 'yes' : 'no', obs: '' };
         });
       });
     answers[block.id] = blockAnswers;

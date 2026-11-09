@@ -1,4 +1,4 @@
-import YesNoQuestion from '../../molecules/YesNoQuestion/YesNoQuestion';
+import PranchetaQuestion from '../../molecules/PranchetaQuestion/PranchetaQuestion';
 import styles from './PranchetaSection.module.css';
 
 // Uma categoria da prancheta (ex.: Atenção), sempre aberta: título e as perguntas com Sim / Não.
@@ -9,10 +9,9 @@ export default function PranchetaSection({ category, answers, onAnswer }) {
       <h3 className={styles.title}>{category.title}</h3>
       <div className={styles.questions}>
         {category.questions.map((question) => (
-          <YesNoQuestion
+          <PranchetaQuestion
             key={question.key}
-            label={question.label}
-            obsOnly={question.obsOnly}
+            question={question}
             value={answers?.[question.key]}
             onChange={(patch) => onAnswer(question.key, patch)}
           />

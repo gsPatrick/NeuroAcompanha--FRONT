@@ -18,7 +18,7 @@ export default function MarksPreview() {
       <div className={styles.group}>
         <h3 className={styles.title}>Como está agora</h3>
         <div className={styles.grid}>
-          <QuickMark label="Calmo(a)" count={2} />
+          <QuickMark label="Calmo(a)" selected />
           <QuickMark label="Animado(a)" />
           <QuickMark label="Ansioso(a)" />
           <QuickMark label="Cansado(a)" />
@@ -27,14 +27,14 @@ export default function MarksPreview() {
       <div className={styles.group}>
         <h3 className={styles.title}>Ocorrências</h3>
         <div className={styles.grid}>
-          <QuickMark label="Recusa / birra" tone="alert" count={1} />
+          <QuickMark label="Recusa / birra" tone="alert" selected />
           <QuickMark label="Sobrecarga sensorial" tone="alert" />
         </div>
       </div>
       <div className={styles.group}>
         <h3 className={styles.title}>Conquistas</h3>
         <div className={styles.grid}>
-          <QuickMark label="Pediu ajuda" tone="good" count={1} />
+          <QuickMark label="Pediu ajuda" tone="good" selected />
           <QuickMark label="Concluiu a atividade" tone="good" />
         </div>
       </div>

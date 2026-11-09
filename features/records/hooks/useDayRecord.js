@@ -10,7 +10,7 @@ const newEventId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 7)
 // Registro de HOJE de um aluno. status: loading | ready.
 //  - blocks:  os momentos do dia (Acolhimento, Aulas, Lanche, Brincadeiras...), montados a partir da rotina na primeira
 //             abertura do dia e depois só dela (mudar a rotina não altera um dia já aberto). Renomear, remover e adicionar são feitos pelas telas próprias (ver recordsStore).
-//  - events:  cada toque nas marcações rápidas { id, blockId, key, at, text? }.
+//  - events:  marcações rápidas { id, blockId, key, at } (uma por marcação em cada momento) e anotações { key: 'note', text }.
 //  - answers: prancheta { [blockId]: { [pergunta]: { answer: 'yes' | 'no' | null, obs } } }.
 //  - summary: Resumo do dia { easy, hard, worked, progress, family }.
 //  - cursor:  id do momento em que ela parou (reabre ali).
@@ -52,8 +52,16 @@ export function useDayRecord(child) {
     });
   }, []);
 
-  const addMark = useCallback(
-    (blockId, key) => update((record) => ({ ...record, events: [...record.events, { id: newEventId(), blockId, key, at: Date.now() }] })),
+  // Cada marcação vale uma vez por momento: tocar marca (com o horário) e tocar de novo desmarca.
+  const toggleMark = useCallback(
+    (blockId, key) =>
+      update((record) => {
+        const marked = record.events.some((event) => event.blockId === blockId && event.key === key);
+        const events = marked
+          ? record.events.filter((event) => !(event.blockId === blockId && event.key === key))
+          : [...record.events, { id: newEventId(), blockId, key, at: Date.now() }];
+        return { ...record, events };
+      }),
     [update],
   );
 
@@ -89,7 +97,7 @@ export function useDayRecord(child) {
   return {
     status: state.status,
     record: state.record,
-    addMark,
+    toggleMark,
     addNote,
     removeEvent,
     setAnswer,

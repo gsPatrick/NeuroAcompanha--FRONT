@@ -1,19 +1,16 @@
 import { getMark } from '@/features/records/data/quickMarks';
-import { SUMMARY_FIELDS, findQuestion } from '@/features/records/data/prancheta';
+import { SUMMARY_FIELDS, describeAnswer, findQuestion } from '@/features/records/data/prancheta';
 import { formatTime } from '@/features/records/utils/recordView';
 import { formatDayLong, formatRange } from './dates';
 import { STATUS_LABELS, summarizeEntries } from './reportView';
 
-const ANSWERS = { yes: 'Sim', no: 'Não' };
-
-// Marcações de um momento juntas ("Crise ×2, Calmo(a)"), na ordem em que aconteceram pela primeira vez.
+// Marcações de um momento juntas ("Crise, Calmo(a)"), na ordem em que aconteceram.
 function describeMarks(events) {
-  const counts = new Map();
-  events
+  return events
     .filter((event) => event.key !== 'note')
     .sort((a, b) => a.at - b.at)
-    .forEach((event) => counts.set(event.key, (counts.get(event.key) ?? 0) + 1));
-  return [...counts.entries()].map(([key, count]) => (count > 1 ? `${getMark(key).label} ×${count}` : getMark(key).label)).join(', ');
+    .map((event) => getMark(event.key).label)
+    .join(', ');
 }
 
 function describeDay(entry) {
@@ -32,8 +29,9 @@ function describeDay(entry) {
       .filter((event) => event.key === 'note')
       .forEach((event) => lines.push(`    Anotação (${formatTime(event.at)}): ${event.text}`));
     answers.forEach(([key, item]) => {
-      const answer = [item.answer ? ANSWERS[item.answer] : null, item.obs?.trim()].filter(Boolean).join(' — ');
-      lines.push(`    ${findQuestion(key).label} ${answer}`);
+      const question = findQuestion(key);
+      const answer = [describeAnswer(question, item), item.obs?.trim()].filter(Boolean).join(' — ');
+      lines.push(`    ${question.label} ${answer}`);
     });
   });
 

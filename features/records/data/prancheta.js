@@ -1,11 +1,15 @@
 // Prancheta de observação diária (a mesma que a AT usa no papel), agora dentro de cada bloco da rotina.
-// Cada pergunta tem Sim / Não / Obs. `obsOnly`: perguntas que pedem só texto (sem Sim/Não).
+// Cada pergunta tem um `type`, conforme o que ela pede:
+//   yesno   Sim / Não (o padrão)
+//   choice  escolher UMA entre as `options` (ex.: como chegou)
+//   check   uma caixinha: marcar ou deixar em branco (ex.: o que eu fiz para ajudar)
+//   text    só texto
 export const PRANCHETA = [
   {
     key: 'arrival',
     title: 'Chegada',
     questions: [
-      { key: 'arrivedHow', label: 'Como chegou? (feliz, triste, agitado(a), sonolento(a))' },
+      { key: 'arrivedHow', label: 'Como chegou?', type: 'choice', options: ['Feliz', 'Triste', 'Agitado(a)', 'Sonolento(a)'] },
       { key: 'enteredCalmly', label: 'Entrou na sala tranquilamente?' },
       { key: 'helpFarewell', label: 'Precisou de ajuda para se despedir da família?' },
     ],
@@ -15,7 +19,7 @@ export const PRANCHETA = [
     title: 'Atividades',
     questions: [
       { key: 'didAlone', label: 'Fez sozinho(a)?' },
-      { key: 'helpType', label: 'Que tipo de ajuda?', obsOnly: true },
+      { key: 'helpType', label: 'Que tipo de ajuda?', type: 'text' },
       { key: 'finished', label: 'Terminou as atividades?' },
       { key: 'gaveUp', label: 'Desistiu no meio?' },
     ],
@@ -27,7 +31,7 @@ export const PRANCHETA = [
       { key: 'focused', label: 'Manteve a concentração?' },
       { key: 'distracted', label: 'Distraiu-se?' },
       { key: 'redirect', label: 'Precisou de redirecionamento?' },
-      { key: 'timeOnTask', label: 'Quanto tempo permaneceu na tarefa?', obsOnly: true },
+      { key: 'timeOnTask', label: 'Quanto tempo permaneceu na tarefa?', type: 'text' },
     ],
   },
   {
@@ -58,7 +62,7 @@ export const PRANCHETA = [
       { key: 'crying', label: 'Choro?' },
       { key: 'joy', label: 'Alegria?' },
       { key: 'anxiety', label: 'Ansiedade?' },
-      { key: 'regulated', label: 'Como se regulou?', obsOnly: true },
+      { key: 'regulated', label: 'Como se regulou?', type: 'text' },
     ],
   },
   {
@@ -85,12 +89,12 @@ export const PRANCHETA = [
     key: 'mywork',
     title: 'Meu trabalho',
     questions: [
-      { key: 'whatIDid', label: 'O que fiz para ajudar?', obsOnly: true },
-      { key: 'verbalCues', label: 'Pistas verbais' },
-      { key: 'redirected', label: 'Redirecionei a atenção' },
-      { key: 'autonomy', label: 'Incentivei a autonomia' },
-      { key: 'socialMediation', label: 'Mediação social' },
-      { key: 'otherHelp', label: 'Outro' },
+      { key: 'whatIDid', label: 'O que fiz para ajudar?', type: 'text' },
+      { key: 'verbalCues', label: 'Pistas verbais', type: 'check' },
+      { key: 'redirected', label: 'Redirecionei a atenção', type: 'check' },
+      { key: 'autonomy', label: 'Incentivei a autonomia', type: 'check' },
+      { key: 'socialMediation', label: 'Mediação social', type: 'check' },
+      { key: 'otherHelp', label: 'Outro', type: 'text' },
     ],
   },
   {
@@ -101,7 +105,7 @@ export const PRANCHETA = [
       { key: 'tripExam', label: 'Passeio ou prova?' },
       { key: 'teacherAbsent', label: 'Professor(a) faltou?' },
       { key: 'sick', label: 'Gripado(a) ou sonolento(a)?' },
-      { key: 'otherFact', label: 'Outro fato relevante?' },
+      { key: 'otherFact', label: 'Outro fato relevante?', type: 'text' },
     ],
   },
 ];
@@ -133,3 +137,11 @@ const QUESTIONS_BY_KEY = new Map(PRANCHETA.flatMap((category) => category.questi
 
 // Pergunta da prancheta pelo `key` (rótulo, categoria e se é só texto).
 export const findQuestion = (key) => QUESTIONS_BY_KEY.get(key) ?? { key, label: key, category: '' };
+
+// Resposta pronta para ler (relatório e tela do dia): "Sim", "Não", a opção escolhida ou "Marcado". Sem resposta, "".
+export function describeAnswer(question, item) {
+  if (!item?.answer) return '';
+  if (item.answer === 'yes') return question.type === 'check' ? 'Marcado' : 'Sim';
+  if (item.answer === 'no') return 'Não';
+  return item.answer;
+}

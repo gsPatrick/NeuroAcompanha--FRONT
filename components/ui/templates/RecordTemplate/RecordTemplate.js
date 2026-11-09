@@ -26,7 +26,7 @@ export default function RecordTemplate() {
   );
 }
 
-function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer, setSummary, setCursor }) {
+function RecordContent({ child, record, toggleMark, addNote, removeEvent, setAnswer, setSummary, setCursor }) {
   const router = useRouter();
   // Reabre no momento em que ela parou (ou no primeiro, se o registro de hoje é novo).
   const [chosenId, setChosenId] = useState(record.cursor ?? record.blocks[0]?.id ?? SUMMARY_ID);
@@ -84,7 +84,7 @@ function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer
           key={selected.id}
           record={record}
           block={selected}
-          addMark={addMark}
+          toggleMark={toggleMark}
           addNote={addNote}
           removeEvent={removeEvent}
           setAnswer={setAnswer}

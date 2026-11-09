@@ -1,6 +1,6 @@
 'use client';
 
-import YesNoQuestion from '@/components/ui/molecules/YesNoQuestion/YesNoQuestion';
+import PranchetaQuestion from '@/components/ui/molecules/PranchetaQuestion/PranchetaQuestion';
 import AppPreview from '@/components/ui/molecules/AppPreview/AppPreview';
 import styles from './PranchetaPreview.module.css';
 
@@ -20,7 +20,7 @@ export default function PranchetaPreview() {
       <h3 className={styles.title}>Atividades e atenção</h3>
       <div className={styles.box}>
         {QUESTIONS.map((question) => (
-          <YesNoQuestion key={question.label} label={question.label} value={{ answer: question.answer, obs: '' }} onChange={() => {}} />
+          <PranchetaQuestion key={question.label} question={{ label: question.label }} value={{ answer: question.answer, obs: '' }} onChange={() => {}} />
         ))}
       </div>
     </AppPreview>
