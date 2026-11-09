@@ -1,45 +1,38 @@
-import InfinityMark from '@/components/ui/atoms/InfinityMark/InfinityMark';
-import LandingButton from '@/components/ui/atoms/LandingButton/LandingButton';
-import PhoneFrame from '@/components/ui/molecules/PhoneFrame/PhoneFrame';
-import RecordDemo from '@/components/ui/molecules/DemoScreens/RecordDemo';
-import Reveal from '@/components/ui/molecules/Reveal/Reveal';
+import LandingLink from '@/components/ui/atoms/LandingLink/LandingLink';
+import LandingHeader from '@/components/ui/organisms/LandingHeader/LandingHeader';
+import MarksPreview from '@/features/landing/components/MarksPreview/MarksPreview';
 import styles from './LandingHero.module.css';
 
-// Abertura: a promessa em uma frase, dois caminhos e, ao lado, o registro de um momento numa tela de celular (desenhada em CSS).
+// Abertura no estilo do banner do app: degradê azul-claro com curvas ao fundo, a promessa e uma tela do registro ao lado.
 export default function LandingHero() {
   return (
-    <header id="topo" className={styles.hero}>
-      <div className={styles.glow} aria-hidden="true" />
-      <InfinityMark className={styles.backdrop} />
+    <div id="topo" className={styles.hero}>
+      <svg className={styles.swirl} viewBox="0 0 220 180" fill="none" aria-hidden="true" focusable="false">
+        <path d="M170 -20C120 20 215 55 160 105S125 175 160 205" stroke="currentColor" strokeWidth="30" strokeLinecap="round" />
+        <path d="M215 10C185 45 230 80 200 125" stroke="currentColor" strokeWidth="16" strokeLinecap="round" />
+      </svg>
+
+      <LandingHeader />
 
       <div className={styles.inner}>
         <div className={styles.copy}>
-          <Reveal>
-            <span className={styles.kicker}>Para acompanhantes terapêuticas</span>
-          </Reveal>
-          <Reveal delay={1}>
-            <h1 className={styles.title}>Registre o dia da criança sem perder o ritmo do atendimento.</h1>
-          </Reveal>
-          <Reveal delay={2}>
-            <p className={styles.lead}>
-              O Neuro Acompanha monta o dia a partir da rotina, deixa você marcar o que acontece com um toque e, no fim da semana,
-              transforma tudo em relatório.
-            </p>
-          </Reveal>
-          <Reveal delay={3} className={styles.actions}>
-            <LandingButton href="/">Abrir o app</LandingButton>
-            <LandingButton href="#recursos" variant="ghost">
+          <span className={styles.kicker}>Para acompanhantes terapêuticas</span>
+          <h1 className={styles.title}>Registre o dia da criança sem perder o ritmo do atendimento.</h1>
+          <p className={styles.lead}>
+            O Neuro Acompanha monta o dia a partir da rotina, deixa você marcar o que acontece com um toque e, no fim da semana, transforma tudo em relatório.
+          </p>
+          <div className={styles.actions}>
+            <LandingLink href="/">Abrir o app</LandingLink>
+            <LandingLink href="#recursos" variant="outline">
               Ver o que faz
-            </LandingButton>
-          </Reveal>
+            </LandingLink>
+          </div>
         </div>
 
-        <Reveal delay={2} className={styles.visual}>
-          <PhoneFrame tilt>
-            <RecordDemo />
-          </PhoneFrame>
-        </Reveal>
+        <div className={styles.visual}>
+          <MarksPreview />
+        </div>
       </div>
-    </header>
+    </div>
   );
 }

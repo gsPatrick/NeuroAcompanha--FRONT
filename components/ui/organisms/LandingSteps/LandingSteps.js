@@ -1,4 +1,3 @@
-import Reveal from '@/components/ui/molecules/Reveal/Reveal';
 import styles from './LandingSteps.module.css';
 
 const STEPS = [
@@ -8,30 +7,24 @@ const STEPS = [
   { title: 'Feche a semana', text: 'Veja cada dia, confira a agenda e gere o relatório para compartilhar.' },
 ];
 
-// Como funciona, em quatro passos numerados, ligados por uma linha.
+// Como funciona, em quatro passos numerados (cartões iguais aos do app).
 export default function LandingSteps() {
   return (
     <section id="como-funciona" className={styles.section} aria-labelledby="como-titulo">
-      <div className={styles.inner}>
-        <Reveal>
-          <span className={styles.kicker}>Como funciona</span>
-          <h2 id="como-titulo" className={styles.title}>
-            Quatro passos, do cadastro ao relatório.
-          </h2>
-        </Reveal>
-
-        <ol className={styles.steps}>
-          {STEPS.map((step, index) => (
-            <li key={step.title} className={styles.step}>
-              <Reveal delay={Math.min(index, 4)}>
-                <span className={styles.index}>{index + 1}</span>
-                <h3 className={styles.stepTitle}>{step.title}</h3>
-                <p className={styles.stepText}>{step.text}</p>
-              </Reveal>
-            </li>
-          ))}
-        </ol>
-      </div>
+      <h2 id="como-titulo" className={styles.heading}>
+        Como funciona
+      </h2>
+      <ol className={styles.steps}>
+        {STEPS.map((step, index) => (
+          <li key={step.title} className={styles.step}>
+            <span className={styles.index}>{index + 1}</span>
+            <div className={styles.texts}>
+              <h3 className={styles.title}>{step.title}</h3>
+              <p className={styles.text}>{step.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }

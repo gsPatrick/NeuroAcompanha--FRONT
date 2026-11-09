@@ -1,0 +1,31 @@
+.header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: calc(var(--space-lg) + env(safe-area-inset-top)) var(--size-gutter) 0;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.mark {
+  width: 64px;
+  height: auto;
+}
+
+.name {
+  font-size: var(--font-size-subhead);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.015em;
+}

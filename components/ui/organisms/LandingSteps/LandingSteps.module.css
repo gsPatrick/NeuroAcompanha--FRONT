@@ -1,84 +1,81 @@
 .section {
-  padding: var(--l-section) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
 }
 
-.inner {
-  max-width: var(--l-max);
-  margin: 0 auto;
-  padding: 0 var(--l-gutter);
-}
-
-.kicker {
-  display: inline-flex;
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: rgba(32, 61, 112, 0.07);
-  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-  font-size: 12px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: var(--l-primary);
-}
-
-.title {
-  max-width: 20ch;
-  margin: 20px 0 0;
-  font-family: var(--l-display);
-  font-size: clamp(2rem, 5vw, 4rem);
-  font-weight: 500;
-  line-height: 1.08;
+.heading {
+  margin: 0;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: var(--font-weight-bold);
   letter-spacing: -0.025em;
-  text-wrap: balance;
+  color: var(--color-text-primary);
 }
 
 .steps {
   display: grid;
-  gap: 40px;
-  margin: clamp(48px, 7vw, 88px) 0 0;
+  gap: var(--space-md);
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .step {
-  position: relative;
-  padding-top: 28px;
-  border-top: 1px solid var(--l-ink);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .index {
-  display: block;
-  margin-bottom: 18px;
-  font-family: var(--l-display);
-  font-size: 2.75rem;
-  line-height: 1;
-  color: var(--l-accent);
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-on-primary);
 }
 
-.stepTitle {
-  margin: 0 0 10px;
-  font-size: 1.25rem;
-  font-weight: 600;
-  letter-spacing: -0.015em;
+.texts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
 }
 
-.stepText {
+.title {
   margin: 0;
-  max-width: 34ch;
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--l-muted);
+  font-size: var(--font-size-title3);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.text {
+  margin: 0;
+  font-size: var(--font-size-subhead);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
 }
 
 @media (min-width: 760px) {
   .steps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 40px;
-    row-gap: 56px;
   }
 }
 
 @media (min-width: 1080px) {
   .steps {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .step {
+    flex-direction: column;
   }
 }

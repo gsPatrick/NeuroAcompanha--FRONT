@@ -1,0 +1,21 @@
+.frame {
+  width: 100%;
+  max-width: 360px;
+  padding: var(--space-sm);
+  border-radius: 40px;
+  background: var(--color-text-primary);
+  box-shadow: var(--shadow-lg);
+  pointer-events: none;
+  user-select: none;
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  min-height: 420px;
+  padding: var(--space-xl) var(--size-gutter);
+  overflow: hidden;
+  border-radius: 32px;
+  background: var(--color-surface);
+}

@@ -1,0 +1,97 @@
+.feature {
+  display: grid;
+  gap: var(--space-xl);
+  align-items: center;
+  padding: clamp(24px, 4vw, 56px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.number {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-light);
+  font-size: var(--font-size-subhead);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.title {
+  max-width: 18ch;
+  margin: 0;
+  font-size: clamp(1.625rem, 3.4vw, 2.5rem);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.025em;
+  color: var(--color-primary);
+  text-wrap: balance;
+}
+
+.text {
+  max-width: 50ch;
+  margin: 0;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+}
+
+.points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: var(--space-xs) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.points li {
+  position: relative;
+  padding-left: var(--space-xl);
+  font-size: var(--font-size-subhead);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-snug);
+  color: var(--color-text-primary);
+}
+
+.points li::before {
+  content: '';
+  position: absolute;
+  top: 0.4em;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light);
+  box-shadow: inset 0 0 0 4px var(--color-primary);
+}
+
+.visual {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-lg) 0;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-muted);
+}
+
+@media (min-width: 900px) {
+  .feature {
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(32px, 5vw, 80px);
+  }
+
+  .reverse .copy {
+    order: 2;
+  }
+}
