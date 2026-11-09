@@ -21,7 +21,7 @@ export default function ChildProfileTemplate() {
   const { status, child } = useChild(childId);
 
   return (
-    <AppLayout>
+    <AppLayout tone="muted">
       {status === 'loading' ? (
         <div className={styles.loading}>
           <AppSkeleton shape="title" />

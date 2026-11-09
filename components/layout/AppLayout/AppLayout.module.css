@@ -1,3 +1,8 @@
+.muted {
+  --f7-page-bg-color: var(--color-surface-muted);
+  background: var(--color-surface-muted);
+}
+
 .content {
   display: flex;
   flex-direction: column;

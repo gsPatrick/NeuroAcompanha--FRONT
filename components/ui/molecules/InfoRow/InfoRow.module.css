@@ -1,0 +1,19 @@
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-md) var(--space-lg);
+}
+
+.label {
+  font-size: var(--font-size-footnote);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.value {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-snug);
+  color: var(--color-text-primary);
+}

@@ -7,10 +7,11 @@ import styles from './AppLayout.module.css';
 // Moldura padrão das telas: conteúdo + navegação inferior.
 // Com `title`, mostra a barra superior com título grande (iOS). Sem `title`, a tela
 // traz o próprio cabeçalho (ver AppHeader).
+// `tone="muted"`: fundo azul-acinzentado suave (os cartões brancos ganham destaque).
 // Navbar e Toolbar precisam ser filhos diretos do Page para o Framework7 posicioná-los.
-export default function AppLayout({ title, navLeft, navRight, children }) {
+export default function AppLayout({ title, navLeft, navRight, tone = 'plain', children }) {
   return (
-    <Page>
+    <Page className={tone === 'muted' ? styles.muted : undefined}>
       {title ? (
         <Navbar title={title} large largeTransparent>
           {navLeft ? <NavLeft>{navLeft}</NavLeft> : null}

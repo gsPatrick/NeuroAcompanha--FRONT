@@ -4,16 +4,27 @@
   gap: var(--space-lg);
 }
 
-.more {
+.section {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
-  margin-top: var(--space-md);
 }
 
-.moreTitle {
+.title {
   margin: 0;
   font-size: var(--font-size-title3);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+.children {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
 }
