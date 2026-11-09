@@ -1,0 +1,37 @@
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  background: var(--color-primary-light);
+}
+
+.value {
+  font-size: var(--font-size-title1);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--color-primary);
+}
+
+.label {
+  font-size: var(--font-size-footnote);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.good {
+  background: var(--color-success-light);
+}
+
+.good .value {
+  color: var(--color-success);
+}
+
+.alert {
+  background: var(--color-danger-light);
+}
+
+.alert .value {
+  color: var(--color-danger);
+}

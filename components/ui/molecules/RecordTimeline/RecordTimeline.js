@@ -16,9 +16,11 @@ export default function RecordTimeline({ items, formatTime, onRemove, showBlock 
             {showBlock && item.blockTitle ? <span className={styles.block}>{item.blockTitle}</span> : null}
             {item.text ? <span className={styles.note}>{item.text}</span> : null}
           </div>
-          <button type="button" className={styles.remove} aria-label={`Desfazer ${item.label}`} onClick={() => onRemove(item.id)}>
-            <AppIcon name="close" size={18} />
-          </button>
+          {onRemove ? (
+            <button type="button" className={styles.remove} aria-label={`Desfazer ${item.label}`} onClick={() => onRemove(item.id)}>
+              <AppIcon name="close" size={18} />
+            </button>
+          ) : null}
         </li>
       ))}
     </ol>

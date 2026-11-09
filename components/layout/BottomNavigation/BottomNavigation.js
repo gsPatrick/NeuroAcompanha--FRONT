@@ -27,7 +27,8 @@ export default function BottomNavigation() {
   // href={false}: sem href="#" o Framework7 não tenta tratar a aba como uma "aba interna" dele
   // (isso gerava um erro de seletor). A navegação é feita só pelo Next.js, no onClick.
   return NAV_ITEMS.map((item) => {
-    const active = item.href === pathname;
+    // Telas dentro de uma aba (ex.: o perfil de uma criança) mantêm a aba acesa.
+    const active = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
     return (
       <Link
         key={item.key}

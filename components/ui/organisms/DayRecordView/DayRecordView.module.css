@@ -1,0 +1,110 @@
+.view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.title {
+  margin: 0;
+  padding-bottom: var(--space-xs);
+  border-bottom: 2px solid var(--color-primary);
+  font-size: var(--font-size-title3);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.empty {
+  margin: 0;
+  font-size: var(--font-size-subhead);
+  color: var(--color-text-tertiary);
+}
+
+.answers {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0 var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  list-style: none;
+}
+
+.answer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.answer:last-child {
+  border-bottom: 0;
+}
+
+.question {
+  flex: 1;
+  font-size: var(--font-size-subhead);
+  line-height: var(--line-height-snug);
+  color: var(--color-text-primary);
+}
+
+.value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  max-width: 50%;
+}
+
+.badge {
+  padding: 2px 12px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-footnote);
+  font-weight: var(--font-weight-bold);
+}
+
+.yes {
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.no {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.obs {
+  font-size: var(--font-size-footnote);
+  text-align: right;
+  color: var(--color-text-secondary);
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.summaryItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.summaryLabel {
+  font-size: var(--font-size-footnote);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+}
+
+.summaryText {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  -webkit-user-select: text;
+  user-select: text;
+}

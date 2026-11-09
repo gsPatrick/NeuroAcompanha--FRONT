@@ -69,3 +69,9 @@ export function describeDay(day) {
   parts.push(classes === 1 ? '1 aula' : `${classes} aulas`);
   return parts.join(' · ');
 }
+
+// "Atende: Seg · Qua · Sex" (ou "Sem dias de atendimento").
+export function describeAttendanceDays(routine) {
+  const days = ROUTINE_DAYS.filter(({ value }) => routine?.[value]?.attends).map(({ short }) => short);
+  return days.length ? `Atende: ${days.join(' · ')}` : 'Sem dias de atendimento';
+}

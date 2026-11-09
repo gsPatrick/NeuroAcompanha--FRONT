@@ -128,3 +128,8 @@ export const SUMMARY_FIELDS = [
   { key: 'progress', label: 'Evolução percebida' },
   { key: 'family', label: 'Se a família perguntasse como foi o dia, eu diria:' },
 ];
+
+const QUESTIONS_BY_KEY = new Map(PRANCHETA.flatMap((category) => category.questions.map((question) => [question.key, { ...question, category: category.title }])));
+
+// Pergunta da prancheta pelo `key` (rótulo, categoria e se é só texto).
+export const findQuestion = (key) => QUESTIONS_BY_KEY.get(key) ?? { key, label: key, category: '' };

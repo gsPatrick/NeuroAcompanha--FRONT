@@ -1,0 +1,140 @@
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: var(--size-control);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: var(--font-size-body);
+  color: var(--color-primary);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding-top: var(--space-md);
+  text-align: center;
+}
+
+.frame {
+  display: inline-flex;
+  padding: 4px;
+  border: 3px solid var(--color-primary);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+}
+
+.name {
+  margin: var(--space-sm) 0 0;
+  font-size: var(--font-size-title1);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+
+.tag {
+  padding: 3px 12px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light);
+  font-size: var(--font-size-subhead);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+
+.tagMain {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.muted {
+  margin: 0;
+  font-size: var(--font-size-subhead);
+  color: var(--color-text-tertiary);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.sectionTitle {
+  margin: 0;
+  padding-bottom: var(--space-xs);
+  border-bottom: 2px solid var(--color-primary);
+  font-size: var(--font-size-title3);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.routine {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0 var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  list-style: none;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.day:last-child {
+  border-bottom: 0;
+}
+
+.dayName {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.dayToday {
+  color: var(--color-today);
+}
+
+.dayInfo {
+  font-size: var(--font-size-subhead);
+  color: var(--color-text-secondary);
+}
+
+.classes {
+  font-size: var(--font-size-footnote);
+  color: var(--color-text-tertiary);
+}
+
+.off .dayName,
+.off .dayInfo {
+  color: var(--color-text-tertiary);
+}
