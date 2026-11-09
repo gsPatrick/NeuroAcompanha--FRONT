@@ -1,26 +1,27 @@
 .question {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-sm);
-  padding: var(--space-md) 0;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.question:last-child {
-  border-bottom: 0;
-}
-
-.row {
-  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-md);
-  width: 100%;
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.textQuestion {
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.question:last-child,
+.textQuestion:last-child {
+  border-bottom: 0;
 }
 
 .label {
+  display: flex;
   flex: 1;
+  flex-direction: column;
+  gap: var(--space-xs);
   font-size: var(--font-size-subhead);
   line-height: var(--line-height-snug);
   color: var(--color-text-primary);
@@ -33,8 +34,8 @@
 }
 
 .choice {
-  width: 54px;
-  min-height: 40px;
+  width: 56px;
+  min-height: 44px;
   padding: 0;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
@@ -56,17 +57,6 @@
   border-color: transparent;
   background: var(--color-primary);
   color: var(--color-on-primary);
-}
-
-.addObs {
-  width: auto;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  font-size: var(--font-size-footnote);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-primary);
-  cursor: pointer;
 }
 
 /* Fonte >= 16px: o iOS não dá zoom ao focar o campo. */

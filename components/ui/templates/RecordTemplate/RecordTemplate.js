@@ -1,23 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import AppAvatar from '@/components/ui/atoms/AppAvatar/AppAvatar';
 import AppButton from '@/components/ui/atoms/AppButton/AppButton';
-import AppInput from '@/components/ui/atoms/AppInput/AppInput';
-import BlockCard from '@/components/ui/molecules/BlockCard/BlockCard';
-import RecordTimeline from '@/components/ui/molecules/RecordTimeline/RecordTimeline';
-import SectionHeader from '@/components/ui/molecules/SectionHeader/SectionHeader';
-import { BLOCK_KINDS } from '@/features/records/data/prancheta';
-import { buildTimeline, describeBlockProgress, formatTime } from '@/features/records/utils/recordView';
+import BlockTabs from '@/components/ui/molecules/BlockTabs/BlockTabs';
+import BlockEditor from '@/components/ui/organisms/BlockEditor/BlockEditor';
+import BlockRecordPanel from '@/components/ui/organisms/BlockRecordPanel/BlockRecordPanel';
+import SummaryPanel from '@/components/ui/organisms/SummaryPanel/SummaryPanel';
+import { countAnswered } from '@/features/records/utils/recordView';
 import { formatLongDate } from '@/utils/formatDate';
 import RecordScreen from '../RecordScreen/RecordScreen';
 import styles from './RecordTemplate.module.css';
 
-const KIND_LABELS = { welcome: 'Acolhimento', class: 'Aula', snack: 'Lanche', play: 'Brincadeira', other: 'Momento' };
+const SUMMARY_ID = 'summary';
 
-// Registro do dia de um aluno: a rotina do dia em blocos (Acolhimento, Aulas, Lanche, Brincadeiras...).
-// Toque num bloco para registrar o que acontece nele. Dá para acrescentar blocos e, no fim, escrever o resumo do dia.
+// Registro do dia numa tela só. Em cima, a rotina de hoje em abas (Acolhimento, Aulas, Lanche, Brincadeiras, Resumo);
+// tocar numa aba troca o conteúdo logo abaixo, sem abrir outra página. Tudo salva na hora.
 export default function RecordTemplate() {
   const { childId } = useParams();
 
@@ -28,10 +27,31 @@ export default function RecordTemplate() {
   );
 }
 
-function RecordContent({ child, record, addBlock, removeEvent }) {
-  const router = useRouter();
-  const timeline = buildTimeline(record.events, record.blocks);
-  const summaryFilled = Object.values(record.summary).some((text) => text?.trim());
+function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer, setSummary, addBlock, renameBlock, removeBlock }) {
+  const [chosenId, setChosenId] = useState(record.blocks[0]?.id ?? SUMMARY_ID);
+  // null | 'add' | 'edit': o painel de mudar a rotina do dia (um só, para não ter vários menus).
+  const [editor, setEditor] = useState(null);
+
+  // Se o momento escolhido deixou de existir (foi removido), volta para o primeiro.
+  const block = record.blocks.find((item) => item.id === chosenId);
+  const summaryChosen = chosenId === SUMMARY_ID;
+  const selected = summaryChosen ? null : (block ?? record.blocks[0] ?? null);
+  const showingSummary = !selected;
+  const selectedId = selected ? selected.id : SUMMARY_ID;
+
+  const select = (id) => {
+    setChosenId(id);
+    setEditor(null);
+  };
+
+  const tabs = [
+    ...record.blocks.map((item) => ({
+      id: item.id,
+      label: item.title,
+      count: record.events.filter((event) => event.blockId === item.id).length + countAnswered(record.answers, item.id),
+    })),
+    { id: SUMMARY_ID, label: 'Resumo do dia', count: Object.values(record.summary).filter((text) => text?.trim()).length },
+  ];
 
   return (
     <>
@@ -43,103 +63,48 @@ function RecordContent({ child, record, addBlock, removeEvent }) {
         </div>
       </section>
 
-      <section className={styles.group}>
-        <SectionHeader title="Rotina de hoje" ruled />
-        {record.blocks.length ? (
-          <div className={styles.blocks}>
-            {record.blocks.map((block) => (
-              <BlockCard
-                key={block.id}
-                kicker={block.kind === 'class' ? 'Aula' : undefined}
-                title={block.title}
-                progress={describeBlockProgress(record, block.id)}
-                onOpen={() => router.push(`/registro/${child.id}/${block.id}`)}
-              />
-            ))}
-          </div>
+      <BlockTabs items={tabs} selectedId={selectedId} onSelect={select} />
+
+      <div className={styles.actions}>
+        {!showingSummary ? (
+          <AppButton variant="tertiary" size="md" onClick={() => setEditor(editor === 'edit' ? null : 'edit')}>
+            Trocar ou remover
+          </AppButton>
         ) : (
-          <p className={styles.empty}>Este dia não tem rotina cadastrada. Adicione um momento abaixo.</p>
+          <span />
         )}
-        <AddBlock onAdd={addBlock} />
-      </section>
-
-      <section className={styles.group}>
-        <SectionHeader title="Resumo do dia" ruled />
-        <BlockCard
-          title="Como foi o dia"
-          progress={summaryFilled ? 'Preenchido' : ''}
-          onOpen={() => router.push(`/registro/${child.id}/resumo`)}
-        />
-      </section>
-
-      <section className={styles.group}>
-        <SectionHeader title="Hoje até agora" ruled />
-        {timeline.length ? (
-          <RecordTimeline items={timeline} formatTime={formatTime} onRemove={removeEvent} showBlock />
-        ) : (
-          <p className={styles.empty}>Nada marcado ainda. Abra um momento da rotina e toque nas opções.</p>
-        )}
-      </section>
-    </>
-  );
-}
-
-// Acrescentar um momento ao dia (outra aula, uma brincadeira a mais...).
-function AddBlock({ onAdd }) {
-  const [open, setOpen] = useState(false);
-  const [kind, setKind] = useState(BLOCK_KINDS[0]);
-  const [name, setName] = useState('');
-
-  const close = () => {
-    setOpen(false);
-    setName('');
-    setKind(BLOCK_KINDS[0]);
-  };
-
-  const submit = () => {
-    const title = kind.askName ? name.trim() : kind.defaultTitle;
-    if (!title) return;
-    onAdd(kind.kind, title);
-    close();
-  };
-
-  if (!open) {
-    return (
-      <AppButton variant="outline" icon="plus" fullWidth onClick={() => setOpen(true)}>
-        Adicionar momento
-      </AppButton>
-    );
-  }
-
-  return (
-    <div className={styles.add}>
-      <div className={styles.kinds} role="radiogroup" aria-label="Tipo de momento">
-        {BLOCK_KINDS.map((option) => (
-          <button
-            key={option.kind}
-            type="button"
-            role="radio"
-            aria-checked={option.kind === kind.kind}
-            className={`${styles.kind} ${option.kind === kind.kind ? styles.kindSelected : ''}`}
-            onClick={() => setKind(option)}
-          >
-            {option.label}
-          </button>
-        ))}
+        <AppButton variant="tertiary" size="md" icon="plus" onClick={() => setEditor(editor === 'add' ? null : 'add')}>
+          Novo momento
+        </AppButton>
       </div>
 
-      {kind.askName ? (
-        <AppInput label={kind.placeholder} name="blockName" autoCapitalize="sentences" autoComplete="off" value={name} onChange={setName} />
+      {editor ? (
+        <BlockEditor
+          key={`${editor}-${selectedId}`}
+          block={editor === 'edit' ? selected : null}
+          onAdd={(kind, title) => addBlock(kind, title)}
+          onRename={renameBlock}
+          onRemove={(id) => {
+            removeBlock(id);
+            setEditor(null);
+          }}
+          onClose={() => setEditor(null)}
+        />
       ) : null}
 
-      <div className={styles.addActions}>
-        <AppButton variant="outline" size="md" onClick={close}>
-          Cancelar
-        </AppButton>
-        <AppButton size="md" disabled={kind.askName && !name.trim()} onClick={submit}>
-          Adicionar
-        </AppButton>
-      </div>
-    </div>
+      {showingSummary ? (
+        <SummaryPanel summary={record.summary} onChange={setSummary} />
+      ) : (
+        <BlockRecordPanel
+          key={selected.id}
+          record={record}
+          block={selected}
+          addMark={addMark}
+          addNote={addNote}
+          removeEvent={removeEvent}
+          setAnswer={setAnswer}
+        />
+      )}
+    </>
   );
 }
