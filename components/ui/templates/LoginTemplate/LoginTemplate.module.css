@@ -1,7 +1,10 @@
 .screen {
   display: flex;
   flex-direction: column;
-  min-height: 100%;
+  /* O Framework7 reserva a área do indicador do iPhone como padding da página; estender a tela por cima dela
+     deixa o painel azul chegar até a borda de baixo, sem faixa branca. */
+  min-height: calc(100% + env(safe-area-inset-bottom));
+  margin-bottom: calc(-1 * env(safe-area-inset-bottom));
   background: var(--color-surface);
   /* Entrada da tela: desliza da direita (keyframes em globals.css). */
   animation: pageEnter var(--motion-base) var(--motion-ease) both;
