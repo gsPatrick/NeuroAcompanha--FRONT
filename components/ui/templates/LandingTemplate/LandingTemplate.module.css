@@ -14,13 +14,13 @@
   -webkit-touch-callout: default;
 }
 
-.main {
+.bands {
   display: flex;
   flex-direction: column;
-  gap: clamp(48px, 7vw, 96px);
-  max-width: 1120px;
+  gap: var(--space-md);
+  max-width: 1280px;
   margin: 0 auto;
-  padding: clamp(40px, 6vw, 80px) var(--size-gutter) 0;
+  padding: var(--space-md) var(--space-sm) calc(var(--space-md) + env(safe-area-inset-bottom));
 }
 
 .features {
