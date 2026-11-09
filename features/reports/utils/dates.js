@@ -59,7 +59,7 @@ export function mondaysOfMonth(date) {
 }
 
 // Histórico por ano -> mês -> semanas, do mais novo para o mais antigo. Cada semana traz só os dias DAQUELE mês em que o
-// aluno é atendido (e que já passaram): { monday, first, last }. Meses e semanas sem dia nenhum não entram.
+// aluno é atendido: { monday, first, last }. Meses e semanas sem dia nenhum não entram.
 // [{ year, months: [{ month, date, weeks }] }]
 export function buildHistory(routine, from, to = new Date()) {
   const start = new Date(from.getFullYear(), from.getMonth(), from.getDate());
@@ -68,8 +68,10 @@ export function buildHistory(routine, from, to = new Date()) {
   for (let cursor = new Date(to.getFullYear(), to.getMonth(), 1); cursor >= new Date(start.getFullYear(), start.getMonth(), 1); cursor = new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1)) {
     const weeks = mondaysOfMonth(cursor)
       .map((monday) => {
-        const days = weekDates(monday, routine).filter((date) => date.getMonth() === cursor.getMonth() && date >= start && date <= to);
-        return days.length ? { monday, first: days[0], last: days[days.length - 1] } : null;
+        // A semana vai até o último dia de atendimento dela (ex.: sexta, 13), mesmo que hoje seja segunda: o que importa é
+        // a semana inteira. Só entra se já começou (algum dia até hoje).
+        const days = weekDates(monday, routine).filter((date) => date.getMonth() === cursor.getMonth() && date >= start);
+        return days.length && days[0] <= to ? { monday, first: days[0], last: days[days.length - 1] } : null;
       })
       .filter(Boolean)
       .reverse();
