@@ -26,7 +26,8 @@ function EditBlockFlow({ child, record }) {
   // Momento que estava aberto (o cursor); sem cursor, o registro abriu no primeiro.
   const block = record.blocks.find((item) => item.id === record.cursor) ?? record.blocks[0];
   const [mode, setMode] = useState('choose'); // choose | rename | remove
-  const [name, setName] = useState('');
+  // Já vem com o nome atual: dá para mexer só numa parte (corrigir ou acrescentar), sem digitar tudo de novo.
+  const [name, setName] = useState(block?.title ?? '');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const title = name.trim();
@@ -67,7 +68,7 @@ function EditBlockFlow({ child, record }) {
         <h1 className={styles.title}>{block.title}</h1>
         <p className={styles.description}>
           {mode === 'choose' ? 'O que você quer fazer com este momento? Vale só para hoje.' : null}
-          {mode === 'rename' ? 'Escreva o nome que vai substituir este.' : null}
+          {mode === 'rename' ? 'Mude o nome do jeito que precisar: corrigir ou acrescentar algo.' : null}
           {mode === 'remove' ? 'Remover este momento e tudo o que foi marcado nele hoje?' : null}
         </p>
       </div>
@@ -88,7 +89,7 @@ function EditBlockFlow({ child, record }) {
 
       {mode === 'rename' ? (
         <form className={styles.choices} onSubmit={rename} noValidate>
-          <AppInput label="Nome novo" name="blockName" placeholder={block.title} autoCapitalize="sentences" autoComplete="off" autoFocus value={name} onChange={setName} />
+          <AppInput label="Nome do momento" name="blockName" autoCapitalize="sentences" autoComplete="off" autoFocus value={name} onChange={setName} />
           <AppButton type="submit" fullWidth loading={busy} disabled={!title}>
             Trocar
           </AppButton>
