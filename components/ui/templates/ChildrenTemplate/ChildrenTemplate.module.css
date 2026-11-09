@@ -1,23 +1,7 @@
-.summary {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-}
-
-.date {
-  margin: 0;
-  font-size: var(--font-size-subhead);
-  color: var(--color-text-secondary);
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-sm);
-}
-
 .list {
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+  /* Sem título no topo: deixa o respiro da barra de status do iPhone. */
+  padding-top: calc(var(--space-md) + env(safe-area-inset-top));
 }
