@@ -18,6 +18,7 @@ export default function AppInput({
   inputMode,
   autoCapitalize = 'none',
   disabled = false,
+  autoFocus = false,
 }) {
   const id = useId();
   const errorId = `${id}-error`;
@@ -42,6 +43,7 @@ export default function AppInput({
           autoComplete={autoComplete}
           inputMode={inputMode}
           disabled={disabled}
+          autoFocus={autoFocus}
           autoCapitalize={autoCapitalize}
           autoCorrect="off"
           spellCheck={false}

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toDateKey } from '@/utils/calendar';
-import { buildDayBlocks, newBlock } from '@/features/routine/utils/routine';
+import { buildDayBlocks } from '@/features/routine/utils/routine';
 import { loadRecord, recordId, saveRecord } from '../services/recordsStore';
 
 const newEventId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -86,11 +86,6 @@ export function useDayRecord(child) {
     [update],
   );
 
-  const addBlock = useCallback(
-    (kind, title) => update((record) => ({ ...record, blocks: [...record.blocks, newBlock(kind, title)] })),
-    [update],
-  );
-
   const renameBlock = useCallback(
     (blockId, title) =>
       update((record) => ({ ...record, blocks: record.blocks.map((block) => (block.id === blockId ? { ...block, title } : block)) })),
@@ -121,7 +116,6 @@ export function useDayRecord(child) {
     setAnswer,
     setSummary,
     setCursor,
-    addBlock,
     renameBlock,
     removeBlock,
   };

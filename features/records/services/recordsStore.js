@@ -41,3 +41,11 @@ export async function saveRecord(record) {
   await promisify(database.transaction(STORE, 'readwrite').objectStore(STORE).put(record));
   database.close();
 }
+
+// Acrescenta um momento ao registro do dia e deixa o cursor nele (o registro reabre no momento novo).
+// Faz tudo de uma vez (ler, mudar, gravar) para a tela anterior já encontrar o momento ao voltar.
+export async function appendBlock(id, block) {
+  const record = await loadRecord(id);
+  if (!record) throw new Error('Registro do dia não encontrado.');
+  await saveRecord({ ...record, blocks: [...record.blocks, block], cursor: block.id });
+}

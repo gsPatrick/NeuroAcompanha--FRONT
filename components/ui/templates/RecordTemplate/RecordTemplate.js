@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import AppAvatar from '@/components/ui/atoms/AppAvatar/AppAvatar';
 import AppButton from '@/components/ui/atoms/AppButton/AppButton';
 import BlockStepper from '@/components/ui/molecules/BlockStepper/BlockStepper';
@@ -27,10 +27,11 @@ export default function RecordTemplate() {
   );
 }
 
-function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer, setSummary, setCursor, addBlock, renameBlock, removeBlock }) {
+function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer, setSummary, setCursor, renameBlock, removeBlock }) {
+  const router = useRouter();
   // Reabre no momento em que ela parou (ou no primeiro, se o registro de hoje é novo).
   const [chosenId, setChosenId] = useState(record.cursor ?? record.blocks[0]?.id ?? SUMMARY_ID);
-  // null | 'add' | 'edit': o painel de mudar a rotina do dia (um só, para não ter vários menus).
+  // null | 'edit': painel de trocar o nome ou remover o momento aberto.
   const [editor, setEditor] = useState(null);
 
   // Se o momento escolhido deixou de existir (foi removido), volta para o primeiro.
@@ -74,7 +75,7 @@ function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer
       {/* Trocar a matéria do dia ou remover o momento (só nos momentos, não no resumo). */}
       {!showingSummary ? (
         <div className={styles.actions}>
-          <AppButton variant="outline" size="md" onClick={() => setEditor(editor === 'edit' ? null : 'edit')}>
+          <AppButton variant="outline" fullWidth onClick={() => setEditor(editor === 'edit' ? null : 'edit')}>
             Trocar ou remover
           </AppButton>
         </div>
@@ -113,13 +114,9 @@ function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer
         </AppButton>
       ) : null}
 
-      <AppButton variant="outline" fullWidth icon="plus" onClick={() => setEditor(editor === 'add' ? null : 'add')}>
+      <AppButton variant="outline" fullWidth icon="plus" onClick={() => router.push(`/registro/${child.id}/novo`)}>
         Novo momento
       </AppButton>
-
-      {editor === 'add' ? (
-        <BlockEditor key="add" block={null} onAdd={(kind, title) => addBlock(kind, title)} onClose={() => setEditor(null)} />
-      ) : null}
     </>
   );
 }

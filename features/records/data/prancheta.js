@@ -128,11 +128,3 @@ export const SUMMARY_FIELDS = [
   { key: 'progress', label: 'Evolução percebida' },
   { key: 'family', label: 'Se a família perguntasse como foi o dia, eu diria:' },
 ];
-
-export const BLOCK_KINDS = [
-  { kind: 'class', label: 'Aula', askName: true, placeholder: 'Nome da matéria' },
-  { kind: 'play', label: 'Brincadeira', askName: false, defaultTitle: 'Brincadeiras' },
-  { kind: 'snack', label: 'Lanche', askName: false, defaultTitle: 'Lanche' },
-  { kind: 'welcome', label: 'Acolhimento', askName: false, defaultTitle: 'Acolhimento' },
-  { kind: 'other', label: 'Outro', askName: true, placeholder: 'Nome do momento' },
-];
