@@ -42,10 +42,13 @@ export async function saveRecord(record) {
   database.close();
 }
 
-// Acrescenta um momento ao registro do dia e deixa o cursor nele (o registro reabre no momento novo).
-// Faz tudo de uma vez (ler, mudar, gravar) para a tela anterior já encontrar o momento ao voltar.
-export async function appendBlock(id, block) {
+// Coloca um momento novo logo DEPOIS de `afterBlockId` (se não existir, vai para o fim do dia) e deixa o cursor nele:
+// o registro reabre no momento novo. Faz tudo de uma vez (ler, mudar, gravar) para a tela anterior já encontrar o momento ao voltar.
+export async function insertBlock(id, block, afterBlockId) {
   const record = await loadRecord(id);
   if (!record) throw new Error('Registro do dia não encontrado.');
-  await saveRecord({ ...record, blocks: [...record.blocks, block], cursor: block.id });
+  const position = record.blocks.findIndex((item) => item.id === afterBlockId);
+  const at = position === -1 ? record.blocks.length : position + 1;
+  const blocks = [...record.blocks.slice(0, at), block, ...record.blocks.slice(at)];
+  await saveRecord({ ...record, blocks, cursor: block.id });
 }

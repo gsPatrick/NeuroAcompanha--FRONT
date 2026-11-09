@@ -37,3 +37,49 @@
   font-size: var(--font-size-subhead);
   color: var(--color-danger);
 }
+
+/* Onde o momento novo entra: os vizinhos apagados e o novo em destaque no meio. */
+.place {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+}
+
+.placeTitle {
+  margin: 0;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-snug);
+  color: var(--color-primary);
+}
+
+.order {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.neighbor,
+.fresh {
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+}
+
+.neighbor {
+  border: 1px dashed var(--color-border);
+  color: var(--color-text-tertiary);
+}
+
+.fresh {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  overflow-wrap: anywhere;
+}
