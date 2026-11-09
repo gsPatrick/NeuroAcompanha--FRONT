@@ -18,7 +18,11 @@ html {
 
 /* O Framework7 precisa de uma raiz com altura total para posicionar navbar/tabbar e rolar só o conteúdo. */
 .framework7-root {
-  height: 100%;
+  /* Fixo nas quatro bordas: no iPhone instalado ocupa a tela inteira, inclusive a área da barrinha de baixo
+     (com height: 100% o app podia terminar acima dela e sobrar uma faixa vazia). */
+  position: fixed;
+  inset: 0;
+  height: auto;
 }
 
 body {
