@@ -1,3 +1,4 @@
+import { haptic } from '@/utils/haptics';
 import styles from './AppButton.module.css';
 import AppIcon from '../AppIcon/AppIcon';
 
@@ -19,6 +20,12 @@ export default function AppButton({
   onClick,
 }) {
   const isIcon = variant === 'icon' || variant === 'accentIcon';
+
+  // Todo botão dá uma vibração curta no iPhone.
+  const handleClick = (event) => {
+    haptic();
+    onClick?.(event);
+  };
   const classes = [
     styles.button,
     styles[variant],
@@ -34,7 +41,7 @@ export default function AppButton({
     <button
       type={type}
       className={classes}
-      onClick={onClick}
+      onClick={handleClick}
       disabled={disabled || loading}
       aria-label={isIcon ? ariaLabel : undefined}
       aria-busy={loading || undefined}

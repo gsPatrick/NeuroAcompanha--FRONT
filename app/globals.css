@@ -41,6 +41,51 @@ select {
   color: inherit;
 }
 
+/* Sensação de app: a interface não seleciona texto nem abre o menu de "segurar" do Safari.
+   Campos de digitação continuam selecionáveis. */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+input,
+textarea,
+[contenteditable='true'] {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+/* Interruptor invisível usado para dar a vibração curta no iPhone (ver utils/haptics.js). */
+.haptic-switch {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Entrada das telas: deslizam levemente da direita, como a troca de tela de um app. */
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* Ponte com o Framework7: seletor com mais peso para vencer o tema escuro automático dele. */
 :root:root {
   --f7-font-family: var(--font-family);

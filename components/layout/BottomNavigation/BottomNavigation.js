@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import AppIcon from '@/components/ui/atoms/AppIcon/AppIcon';
 import { NAV_ITEMS, COMING_SOON_MESSAGE } from '@/constants/navigation';
 import { useToast } from '@/hooks/useToast';
+import { haptic } from '@/utils/haptics';
 
 // Itens da tab bar. Devem ser renderizados dentro de um <Toolbar tabbar> que seja
 // filho direto do <Page> (o Framework7 só posiciona a barra assim): ver AppLayout.
@@ -15,6 +16,7 @@ export default function BottomNavigation() {
   const showToast = useToast();
 
   const handleSelect = (item) => {
+    haptic();
     if (!item.available) {
       showToast(COMING_SOON_MESSAGE);
       return;

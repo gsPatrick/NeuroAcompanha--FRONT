@@ -3,4 +3,6 @@
   flex-direction: column;
   gap: var(--space-xl);
   padding: var(--space-xs) var(--size-gutter) var(--space-2xl);
+  /* Entrada da tela: desliza da direita (keyframes em globals.css). */
+  animation: pageEnter var(--motion-base) var(--motion-ease) both;
 }

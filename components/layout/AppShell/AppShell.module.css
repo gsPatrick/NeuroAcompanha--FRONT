@@ -1,5 +1,18 @@
 .splash {
   position: fixed;
   inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
   background: var(--color-background);
+}
+
+.name {
+  margin: 0;
+  font-size: var(--font-size-title2);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+  color: var(--color-primary);
 }

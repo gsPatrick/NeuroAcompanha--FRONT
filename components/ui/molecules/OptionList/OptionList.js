@@ -1,3 +1,4 @@
+import { haptic } from '@/utils/haptics';
 import styles from './OptionList.module.css';
 
 // Escolha de uma opção entre várias, uma por linha, com título e descrição curta (grupo de opções acessível).
@@ -14,7 +15,10 @@ export default function OptionList({ options, value, onChange, label }) {
             role="radio"
             aria-checked={selected}
             className={`${styles.option} ${selected ? styles.selected : ''}`}
-            onClick={() => onChange(option.id)}
+            onClick={() => {
+              haptic();
+              onChange(option.id);
+            }}
           >
             <span className={styles.radio} aria-hidden="true" />
             <span className={styles.texts}>

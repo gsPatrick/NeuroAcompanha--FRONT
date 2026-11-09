@@ -5,6 +5,7 @@ import AppAvatar from '../../atoms/AppAvatar/AppAvatar';
 import AppButton from '../../atoms/AppButton/AppButton';
 import AppIcon from '../../atoms/AppIcon/AppIcon';
 import PuzzleMark from '../../atoms/PuzzleMark/PuzzleMark';
+import { haptic } from '@/utils/haptics';
 import styles from './StudentDayCard.module.css';
 
 // Cartão do aluno quando a AT atende UM aluno: só o banner (degradê azul-claro com curvas ao fundo),
@@ -21,7 +22,10 @@ export default function StudentDayCard({ appointment, suspended = false, onToggl
         className={styles.banner}
         aria-expanded={open}
         aria-controls={panelId}
-        onClick={() => setOpen((current) => !current)}
+        onClick={() => {
+          haptic();
+          setOpen((current) => !current);
+        }}
       >
         <span className={styles.top}>
           {/* Curvas translúcidas ao fundo, como na referência. */}

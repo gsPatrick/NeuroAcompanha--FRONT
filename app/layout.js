@@ -3,6 +3,7 @@ import './globals.css';
 import { buildCssVariables } from '@/core/design-system/tokens';
 import AppShell from '@/components/layout/AppShell/AppShell';
 import { APP_DESCRIPTION, APP_NAME } from '@/constants/brand';
+import { SPLASH_SIZES, splashMedia, splashPath } from '@/constants/splash';
 
 export const metadata = {
   title: APP_NAME,
@@ -11,7 +12,11 @@ export const metadata = {
   appleWebApp: {
     capable: true,
     title: APP_NAME,
+    // 'default': relógio e bateria em preto sobre fundo claro, como o resto do app. ('black-translucent'
+    // deixaria o relógio branco sobre a tela branca, e ele sumiria.)
     statusBarStyle: 'default',
+    // Telas de abertura do iOS, uma por tamanho de iPhone (ver constants/splash.js).
+    startupImage: SPLASH_SIZES.map((size) => ({ url: splashPath(size), media: splashMedia(size) })),
   },
   formatDetection: { telephone: false },
   other: { 'apple-mobile-web-app-capable': 'yes' },
