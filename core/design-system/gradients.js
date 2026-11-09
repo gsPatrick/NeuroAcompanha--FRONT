@@ -1,4 +1,4 @@
-// Cores do símbolo da neurodiversidade (infinito multicolorido). Fixas nos temas claro e escuro.
+// Cores do símbolo da neurodiversidade (infinito multicolorido).
 // Uso: faixa de marca, infinito em SVG e blocos de estado (atrasado / hoje / em dia).
 
 // Do amarelo-limão ao azul-claro, na ordem em que aparecem no símbolo.

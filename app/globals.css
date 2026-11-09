@@ -86,7 +86,7 @@ img {
   }
 }
 
-/* Ponte com o Framework7: seletor com mais peso para vencer o tema escuro automático dele. */
+/* Ponte com o Framework7: seletor com mais peso para vencer os valores padrão dele. */
 :root:root {
   --f7-font-family: var(--font-family);
   --f7-theme-color: var(--color-primary);

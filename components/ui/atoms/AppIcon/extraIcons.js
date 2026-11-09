@@ -10,6 +10,39 @@ export const extraIcons = {
   ),
   chevronRight: <path d="m9 18 6-6-6-6" />,
   minus: <path d="M5 12h14" />,
+  share: (
+    <>
+      <path d="M12 3v12" />
+      <path d="m8 7 4-4 4 4" />
+      <path d="M6 11H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-1" />
+    </>
+  ),
+  addSquare: (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="4" />
+      <path d="M12 8v8" />
+      <path d="M8 12h8" />
+    </>
+  ),
+  copy: (
+    <>
+      <rect x="9" y="9" width="12" height="12" rx="3" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </>
+  ),
+  smartphone: (
+    <>
+      <rect x="6" y="2" width="12" height="20" rx="3" />
+      <path d="M11 18h2" />
+    </>
+  ),
+  download: (
+    <>
+      <path d="M12 3v12" />
+      <path d="m7 11 5 5 5-5" />
+      <path d="M5 21h14" />
+    </>
+  ),
   arrowRight: (
     <>
       <path d="M5 12h14" />

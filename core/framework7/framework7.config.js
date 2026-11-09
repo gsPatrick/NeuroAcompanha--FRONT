@@ -5,5 +5,6 @@ import { APP_NAME } from '@/constants/brand';
 export const framework7Params = {
   name: APP_NAME,
   theme: 'ios',
-  darkMode: 'auto',
+  // Sem modo escuro: o app é sempre claro, mesmo que o aparelho esteja no modo escuro.
+  darkMode: false,
 };

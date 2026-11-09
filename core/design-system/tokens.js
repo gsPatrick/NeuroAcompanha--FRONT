@@ -1,8 +1,8 @@
-import { lightColors, darkColors } from './colors';
+import { colors } from './colors';
 import { fontFamily, fontSize, fontWeight, lineHeight } from './typography';
 import { spacing } from './spacing';
 import { radius } from './radius';
-import { lightShadows, darkShadows } from './shadows';
+import { shadows } from './shadows';
 import { gradients, onGradient } from './gradients';
 
 export const motion = {
@@ -25,7 +25,8 @@ const declare = (prefix, values) =>
     .map(([key, value]) => `--${prefix}-${toKebab(key)}:${value};`)
     .join('');
 
-// Gera as variáveis CSS (claro + escuro) a partir dos tokens JS.
+// Gera as variáveis CSS a partir dos tokens JS (tema único: claro).
+// `color-scheme: light` impede o navegador de escurecer sozinho barras de rolagem e campos de formulário.
 // Fonte única da verdade: nenhum componente deve usar valores soltos.
 export function buildCssVariables() {
   const shared =
@@ -40,8 +41,7 @@ export function buildCssVariables() {
     declare('gradient', gradients) +
     declare('on-gradient', onGradient);
 
-  const light = declare('color', lightColors) + declare('shadow', lightShadows);
-  const dark = declare('color', darkColors) + declare('shadow', darkShadows);
+  const theme = declare('color', colors) + declare('shadow', shadows);
 
-  return `:root{color-scheme:light dark;${shared}${light}}@media (prefers-color-scheme: dark){:root{${dark}}}`;
+  return `:root{color-scheme:light;${shared}${theme}}`;
 }

@@ -26,10 +26,9 @@ export const viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#FFFFFF' },
-    { media: '(prefers-color-scheme: dark)', color: '#0D1322' },
-  ],
+  themeColor: '#FFFFFF',
+  // Tema único (claro): o navegador não escurece o app, mesmo com o aparelho em modo escuro.
+  colorScheme: 'light',
 };
 
 export default function RootLayout({ children }) {
@@ -37,7 +36,7 @@ export default function RootLayout({ children }) {
     // suppressHydrationWarning: o Framework7 e extensões do navegador adicionam classes ao <html>.
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
-        {/* Tokens do Design System (JS -> variáveis CSS), claro e escuro. */}
+        {/* Tokens do Design System (JS -> variáveis CSS). */}
         <style id="design-tokens" dangerouslySetInnerHTML={{ __html: buildCssVariables() }} />
       </head>
       <body>

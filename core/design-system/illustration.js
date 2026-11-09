@@ -1,4 +1,4 @@
-// Cores das ilustrações (arte fixa, igual nos temas claro e escuro).
+// Cores das ilustrações (arte fixa).
 // Centralizadas aqui para o conjunto de personagens ficar coeso.
 
 export const skinTones = {
