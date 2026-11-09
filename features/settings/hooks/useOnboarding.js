@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useHistoryStep } from '@/hooks/useHistoryStep';
 import { saveStudents } from '@/features/students/services/studentsStore';
+import { createDefaultRoutine, DEFAULT_CLASSES } from '@/features/routine/utils/routine';
 import { pickDefaultAvatar } from '@/features/students/utils/defaultAvatar';
 import { usePreferences } from './usePreferences';
 
@@ -13,7 +14,7 @@ const MIN_NAME_LENGTH = 2;
 const newId = () => globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 function createStudent(index) {
-  return { id: newId(), order: index, name: '', photo: null, avatar: pickDefaultAvatar(index), conditions: [] };
+  return { id: newId(), order: index, name: '', photo: null, avatar: pickDefaultAvatar(index), conditions: [], routine: createDefaultRoutine() };
 }
 
 // Mantém os rascunhos já preenchidos e acrescenta/remove os que faltam para chegar em `count`.
@@ -21,11 +22,16 @@ function resize(students, count) {
   return Array.from({ length: count }, (_, index) => students[index] ?? createStudent(index));
 }
 
-// Etapas: quantidade -> (nome, foto, neurodivergências) de cada aluno -> resumo.
+// Etapas: quantidade -> (nome, foto, neurodivergências, rotina) de cada aluno -> resumo.
 function buildSteps(count) {
   const steps = [{ type: 'quantity' }];
   for (let index = 0; index < count; index += 1) {
-    steps.push({ type: 'name', student: index }, { type: 'photo', student: index }, { type: 'neuro', student: index });
+    steps.push(
+      { type: 'name', student: index },
+      { type: 'photo', student: index },
+      { type: 'neuro', student: index },
+      { type: 'routine', student: index },
+    );
   }
   steps.push({ type: 'done' });
   return steps;
@@ -91,6 +97,33 @@ export function useOnboarding() {
       }),
     );
 
+  const setRoutineDay = (index, dayValue, patch) =>
+    setStudents((current) =>
+      current.map((item, position) => {
+        if (position !== index) return item;
+        const day = { ...item.routine[dayValue], ...patch };
+        // Voltar a atender num dia sem aulas traz as aulas padrão de volta, para não começar vazio.
+        if (patch.attends && day.classes.length === 0) day.classes = [...DEFAULT_CLASSES];
+        return { ...item, routine: { ...item.routine, [dayValue]: day } };
+      }),
+    );
+
+  // Repete o acolhimento e as aulas de um dia nos outros dias em que o aluno é atendido.
+  const copyRoutineDay = (index, dayValue) =>
+    setStudents((current) =>
+      current.map((item, position) => {
+        if (position !== index) return item;
+        const source = item.routine[dayValue];
+        const routine = Object.fromEntries(
+          Object.entries(item.routine).map(([key, day]) => [
+            key,
+            day.attends ? { ...day, welcome: source.welcome, classes: [...source.classes] } : day,
+          ]),
+        );
+        return { ...item, routine };
+      }),
+    );
+
   const next = () => {
     if (step.type === 'name' && student.name.trim().length < MIN_NAME_LENGTH) {
       setNameError('Informe o nome do aluno.');
@@ -137,6 +170,8 @@ export function useOnboarding() {
     setPhoto,
     toggleCondition,
     setLevel,
+    setRoutineDay,
+    copyRoutineDay,
     next,
     back,
     skip,

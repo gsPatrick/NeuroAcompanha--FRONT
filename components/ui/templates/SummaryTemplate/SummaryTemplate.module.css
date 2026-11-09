@@ -1,0 +1,49 @@
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.student {
+  margin: 0;
+  font-size: var(--font-size-subhead);
+  color: var(--color-text-secondary);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-title1);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.label {
+  font-size: var(--font-size-subhead);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+/* Fonte >= 16px: o iOS não dá zoom ao focar o campo. */
+.textarea {
+  width: 100%;
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-normal);
+  resize: none;
+  outline: none;
+}
+
+.textarea:focus {
+  border-color: var(--color-primary);
+}

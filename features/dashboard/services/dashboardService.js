@@ -1,4 +1,5 @@
 import { buildAttendanceMock } from '@/features/attendance/services/attendance.mock';
+import { attendsOn } from '@/features/routine/utils/routine';
 import { getChildren } from '@/features/children/services/childrenService';
 import { getUser } from '@/features/user/services/userService';
 import { dashboardMock } from './dashboard.mock';
@@ -12,6 +13,8 @@ const isRegistered = (child) => Array.isArray(child.conditions);
 const toAppointment = (id, status, child) => ({
   id,
   childId: child.id,
+  // Dia da semana em que a AT atende este aluno (vem da rotina cadastrada).
+  attendsToday: attendsOn(child.routine),
   status,
   child: child.name,
   avatar: child.avatar,

@@ -60,6 +60,11 @@
   color: var(--color-text-primary);
 }
 
+.block {
+  font-size: var(--font-size-footnote);
+  color: var(--color-text-tertiary);
+}
+
 .note {
   font-size: var(--font-size-subhead);
   line-height: var(--line-height-normal);

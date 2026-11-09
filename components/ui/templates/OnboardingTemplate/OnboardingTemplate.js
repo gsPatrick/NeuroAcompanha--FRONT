@@ -7,6 +7,7 @@ import BrandLockup from '@/components/ui/molecules/BrandLockup/BrandLockup';
 import ProgressBar from '@/components/ui/molecules/ProgressBar/ProgressBar';
 import DailyChildrenSetting from '@/features/settings/components/DailyChildrenSetting/DailyChildrenSetting';
 import { useOnboarding } from '@/features/settings/hooks/useOnboarding';
+import RoutineStep from '@/features/routine/components/RoutineStep/RoutineStep';
 import NeurodivergenceStep from '@/features/students/components/NeurodivergenceStep/NeurodivergenceStep';
 import StudentNameStep from '@/features/students/components/StudentNameStep/StudentNameStep';
 import StudentPhotoStep from '@/features/students/components/StudentPhotoStep/StudentPhotoStep';
@@ -23,7 +24,7 @@ function getCopy(step, student, count) {
     case 'quantity':
       return {
         title: 'Quantos alunos você atende?',
-        description: 'Em seguida você cadastra cada um: nome, foto e neurodivergências.',
+        description: 'Em seguida você cadastra cada um: nome, foto, neurodivergências e rotina.',
       };
     case 'name':
       return {
@@ -39,6 +40,12 @@ function getCopy(step, student, count) {
       return {
         title: firstName ? `Neurodivergências de ${firstName}` : 'Neurodivergências',
         description: 'Marque uma ou mais e informe o nível que consta no laudo. O nível é opcional.',
+      };
+    case 'routine':
+      return {
+        title: firstName ? `Rotina de ${firstName}` : 'Rotina do aluno',
+        description:
+          'Ligue os dias em que você atende. Em cada dia, diga se tem acolhimento e quais são as aulas. Lanche e brincadeiras entram sozinhos.',
       };
     default:
       return {
@@ -100,6 +107,14 @@ export default function OnboardingTemplate() {
               onChangeLevel={(conditionId, groupId, optionId) =>
                 onboarding.setLevel(step.student, conditionId, groupId, optionId)
               }
+            />
+          ) : null}
+
+          {step.type === 'routine' ? (
+            <RoutineStep
+              routine={student.routine}
+              onChangeDay={(dayValue, patch) => onboarding.setRoutineDay(step.student, dayValue, patch)}
+              onCopyDay={(dayValue) => onboarding.copyRoutineDay(step.student, dayValue)}
             />
           ) : null}
 

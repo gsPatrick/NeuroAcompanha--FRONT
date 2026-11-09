@@ -91,7 +91,8 @@
 
 /* Etiquetas compactas, uma por parte: a neurodivergência (mais forte) e cada nível. "Suspenso hoje" em vermelho. */
 .diagnosis,
-.suspended {
+.suspended,
+.off {
   padding: 3px 10px;
   border-radius: var(--radius-full);
   font-size: var(--font-size-footnote);
@@ -112,6 +113,12 @@
 .suspended {
   background: var(--color-danger-light);
   color: var(--color-danger);
+}
+
+/* Dia em que não atende: etiqueta neutra. */
+.off {
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
 }
 
 /* Seta que indica que o banner abre (gira para cima quando aberto). */

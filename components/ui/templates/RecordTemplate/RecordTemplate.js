@@ -1,77 +1,37 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { Page } from 'framework7-react';
+import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import AppAvatar from '@/components/ui/atoms/AppAvatar/AppAvatar';
 import AppButton from '@/components/ui/atoms/AppButton/AppButton';
-import AppIcon from '@/components/ui/atoms/AppIcon/AppIcon';
-import AppSkeleton from '@/components/ui/atoms/AppSkeleton/AppSkeleton';
-import EmptyState from '@/components/ui/molecules/EmptyState/EmptyState';
-import QuickMark from '@/components/ui/molecules/QuickMark/QuickMark';
+import AppInput from '@/components/ui/atoms/AppInput/AppInput';
+import BlockCard from '@/components/ui/molecules/BlockCard/BlockCard';
 import RecordTimeline from '@/components/ui/molecules/RecordTimeline/RecordTimeline';
 import SectionHeader from '@/components/ui/molecules/SectionHeader/SectionHeader';
-import { useChildren } from '@/features/children/hooks/useChildren';
-import { MARK_GROUPS } from '@/features/records/data/quickMarks';
-import { useDayRecord } from '@/features/records/hooks/useDayRecord';
-import { buildTimeline, countByMark, formatTime } from '@/features/records/utils/recordView';
+import { BLOCK_KINDS } from '@/features/records/data/prancheta';
+import { buildTimeline, describeBlockProgress, formatTime } from '@/features/records/utils/recordView';
 import { formatLongDate } from '@/utils/formatDate';
+import RecordScreen from '../RecordScreen/RecordScreen';
 import styles from './RecordTemplate.module.css';
 
-// Registro do dia, pensado para ser usado NO MEIO do atendimento: botões grandes, um toque por marcação,
-// o horário é anotado sozinho, e tudo fica salvo na hora. Cada dia começa com um registro novo.
+const KIND_LABELS = { welcome: 'Acolhimento', class: 'Aula', snack: 'Lanche', play: 'Brincadeira', other: 'Momento' };
+
+// Registro do dia de um aluno: a rotina do dia em blocos (Acolhimento, Aulas, Lanche, Brincadeiras...).
+// Toque num bloco para registrar o que acontece nele. Dá para acrescentar blocos e, no fim, escrever o resumo do dia.
 export default function RecordTemplate() {
-  const router = useRouter();
   const { childId } = useParams();
-  const { status: childrenStatus, children } = useChildren();
-  const child = children.find((item) => item.id === childId);
 
   return (
-    <Page noNavbar noToolbar>
-      <main className={styles.screen}>
-        <header className={styles.header}>
-          <button type="button" className={styles.back} onClick={() => router.back()}>
-            <AppIcon name="arrowLeft" size={20} />
-            Voltar
-          </button>
-        </header>
-
-        {childrenStatus === 'loading' ? <Loading /> : null}
-
-        {childrenStatus === 'success' && !child ? (
-          <EmptyState icon="alert" title="Aluno não encontrado" description="Volte e escolha o aluno na tela inicial." />
-        ) : null}
-
-        {childrenStatus === 'success' && child ? <RecordContent child={child} /> : null}
-      </main>
-    </Page>
+    <RecordScreen childId={childId}>
+      {(day) => <RecordContent {...day} />}
+    </RecordScreen>
   );
 }
 
-function Loading() {
-  return (
-    <div className={styles.loading}>
-      <AppSkeleton shape="title" />
-      <AppSkeleton shape="title" short />
-    </div>
-  );
-}
-
-function RecordContent({ child }) {
-  const { status, events, addMark, addNote, removeEvent } = useDayRecord(child.id);
-  const [noteOpen, setNoteOpen] = useState(false);
-  const [noteText, setNoteText] = useState('');
-
-  const counts = useMemo(() => countByMark(events), [events]);
-  const timeline = useMemo(() => buildTimeline(events), [events]);
-
-  const saveNote = () => {
-    const text = noteText.trim();
-    if (!text) return;
-    addNote(text);
-    setNoteText('');
-    setNoteOpen(false);
-  };
+function RecordContent({ child, record, addBlock, removeEvent }) {
+  const router = useRouter();
+  const timeline = buildTimeline(record.events, record.blocks);
+  const summaryFilled = Object.values(record.summary).some((text) => text?.trim());
 
   return (
     <>
@@ -83,65 +43,103 @@ function RecordContent({ child }) {
         </div>
       </section>
 
-      <p className={styles.hint}>Toque para marcar. O horário é anotado sozinho e o registro recomeça a cada dia.</p>
-
-      {MARK_GROUPS.map((group) => (
-        <section key={group.key} className={styles.group}>
-          <h2 className={styles.groupTitle}>{group.title}</h2>
-          <div className={styles.grid}>
-            {group.marks.map((mark) => (
-              <QuickMark
-                key={mark.key}
-                label={mark.label}
-                tone={group.tone}
-                count={counts[mark.key]}
-                onMark={() => addMark(mark.key)}
+      <section className={styles.group}>
+        <SectionHeader title="Rotina de hoje" ruled />
+        {record.blocks.length ? (
+          <div className={styles.blocks}>
+            {record.blocks.map((block) => (
+              <BlockCard
+                key={block.id}
+                kicker={block.kind === 'class' ? 'Aula' : undefined}
+                title={block.title}
+                progress={describeBlockProgress(record, block.id)}
+                onOpen={() => router.push(`/registro/${child.id}/${block.id}`)}
               />
             ))}
           </div>
-        </section>
-      ))}
+        ) : (
+          <p className={styles.empty}>Este dia não tem rotina cadastrada. Adicione um momento abaixo.</p>
+        )}
+        <AddBlock onAdd={addBlock} />
+      </section>
 
       <section className={styles.group}>
-        <h2 className={styles.groupTitle}>Anotação</h2>
-        {noteOpen ? (
-          <div className={styles.note}>
-            <label className={styles.noteLabel} htmlFor="record-note">
-              O que aconteceu?
-            </label>
-            <textarea
-              id="record-note"
-              className={styles.textarea}
-              rows={4}
-              value={noteText}
-              onChange={(event) => setNoteText(event.target.value)}
-              placeholder="Escreva com suas palavras"
-            />
-            <div className={styles.noteActions}>
-              <AppButton variant="outline" size="md" onClick={() => setNoteOpen(false)}>
-                Cancelar
-              </AppButton>
-              <AppButton size="md" disabled={!noteText.trim()} onClick={saveNote}>
-                Salvar
-              </AppButton>
-            </div>
-          </div>
-        ) : (
-          <AppButton variant="outline" icon="notes" fullWidth onClick={() => setNoteOpen(true)}>
-            Escrever uma anotação
-          </AppButton>
-        )}
+        <SectionHeader title="Resumo do dia" ruled />
+        <BlockCard
+          title="Como foi o dia"
+          progress={summaryFilled ? 'Preenchido' : ''}
+          onOpen={() => router.push(`/registro/${child.id}/resumo`)}
+        />
       </section>
 
       <section className={styles.group}>
         <SectionHeader title="Hoje até agora" ruled />
-        {status === 'ready' && timeline.length ? (
-          <RecordTimeline items={timeline} formatTime={formatTime} onRemove={removeEvent} />
-        ) : null}
-        {status === 'ready' && !timeline.length ? (
-          <p className={styles.empty}>Nada marcado ainda. Quando você tocar em uma opção, ela aparece aqui.</p>
-        ) : null}
+        {timeline.length ? (
+          <RecordTimeline items={timeline} formatTime={formatTime} onRemove={removeEvent} showBlock />
+        ) : (
+          <p className={styles.empty}>Nada marcado ainda. Abra um momento da rotina e toque nas opções.</p>
+        )}
       </section>
     </>
+  );
+}
+
+// Acrescentar um momento ao dia (outra aula, uma brincadeira a mais...).
+function AddBlock({ onAdd }) {
+  const [open, setOpen] = useState(false);
+  const [kind, setKind] = useState(BLOCK_KINDS[0]);
+  const [name, setName] = useState('');
+
+  const close = () => {
+    setOpen(false);
+    setName('');
+    setKind(BLOCK_KINDS[0]);
+  };
+
+  const submit = () => {
+    const title = kind.askName ? name.trim() : kind.defaultTitle;
+    if (!title) return;
+    onAdd(kind.kind, title);
+    close();
+  };
+
+  if (!open) {
+    return (
+      <AppButton variant="outline" icon="plus" fullWidth onClick={() => setOpen(true)}>
+        Adicionar momento
+      </AppButton>
+    );
+  }
+
+  return (
+    <div className={styles.add}>
+      <div className={styles.kinds} role="radiogroup" aria-label="Tipo de momento">
+        {BLOCK_KINDS.map((option) => (
+          <button
+            key={option.kind}
+            type="button"
+            role="radio"
+            aria-checked={option.kind === kind.kind}
+            className={`${styles.kind} ${option.kind === kind.kind ? styles.kindSelected : ''}`}
+            onClick={() => setKind(option)}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+
+      {kind.askName ? (
+        <AppInput label={kind.placeholder} name="blockName" autoCapitalize="sentences" autoComplete="off" value={name} onChange={setName} />
+      ) : null}
+
+      <div className={styles.addActions}>
+        <AppButton variant="outline" size="md" onClick={close}>
+          Cancelar
+        </AppButton>
+        <AppButton size="md" disabled={kind.askName && !name.trim()} onClick={submit}>
+          Adicionar
+        </AppButton>
+      </div>
+    </div>
   );
 }

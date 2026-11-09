@@ -13,13 +13,16 @@ import styles from './StudentDayCard.module.css';
 export default function StudentDayCard({ appointment, suspended = false, onToggleSuspended, onStartRecord }) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
+  // Dia em que a AT não atende este aluno (pela rotina): o banner só informa, não abre ações.
+  const attends = appointment.attendsToday !== false;
 
   return (
     <article className={styles.card}>
       <button
         type="button"
         className={styles.banner}
-        aria-expanded={open}
+        aria-expanded={attends ? open : undefined}
+        disabled={!attends}
         aria-controls={panelId}
         onClick={() => setOpen((current) => !current)}
       >
@@ -52,18 +55,21 @@ export default function StudentDayCard({ appointment, suspended = false, onToggl
                   )),
                 )}
                 {suspended ? <span className={styles.suspended}>Suspenso hoje</span> : null}
+                {attends ? null : <span className={styles.off}>Não atende hoje</span>}
               </span>
             </span>
           </span>
 
-          <span className={`${styles.chevron} ${open ? styles.chevronOpen : ''}`} aria-hidden="true">
-            <AppIcon name="chevronRight" size={20} />
-          </span>
+          {attends ? (
+            <span className={`${styles.chevron} ${open ? styles.chevronOpen : ''}`} aria-hidden="true">
+              <AppIcon name="chevronRight" size={20} />
+            </span>
+          ) : null}
         </span>
       </button>
 
       {/* Sanfona: abre e fecha animando a altura. `inert` tira os botões do foco enquanto fechada. */}
-      <div id={panelId} className={`${styles.panel} ${open ? styles.panelOpen : ''}`} inert={!open}>
+      <div id={panelId} className={`${styles.panel} ${open ? styles.panelOpen : ''}`} inert={!open || !attends}>
         <div className={styles.panelInner}>
           <div className={styles.actions}>
             <AppButton icon="notes" fullWidth onClick={() => onStartRecord(appointment)}>

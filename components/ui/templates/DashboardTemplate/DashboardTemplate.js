@@ -51,7 +51,8 @@ function DashboardContent({ data, onStartRecord }) {
 
   const appointments = selectTodayAppointments(data.appointments);
   // O calendário marca o dia como suspenso só quando TODOS os atendimentos de hoje foram suspensos.
-  const allSuspended = appointments.length > 0 && appointments.every((item) => suspendedIds.has(item.id));
+  const attending = appointments.filter((item) => item.attendsToday !== false);
+  const allSuspended = attending.length > 0 && attending.every((item) => suspendedIds.has(item.id));
 
   const toggleSuspended = (appointment) =>
     setSuspendedIds((current) => {
