@@ -1,0 +1,79 @@
+.history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.year {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.yearTitle {
+  margin: 0;
+  padding-bottom: var(--space-xs);
+  border-bottom: 2px solid var(--color-primary);
+  font-size: var(--font-size-title1);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.month {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.monthTitle {
+  margin: 0;
+  font-size: var(--font-size-footnote);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.weeks {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0 var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  list-style: none;
+}
+
+.weeks li {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.weeks li:last-child {
+  border-bottom: 0;
+}
+
+.week {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 56px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.weekLabel {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+}
+
+.chevron {
+  display: inline-flex;
+  color: var(--color-text-tertiary);
+}

@@ -58,4 +58,39 @@ export function mondaysOfMonth(date) {
   return mondays;
 }
 
+// Histórico por ano -> mês -> semanas, do mais novo para o mais antigo. Cada semana traz só os dias DAQUELE mês em que o
+// aluno é atendido (e que já passaram): { monday, first, last }. Meses e semanas sem dia nenhum não entram.
+// [{ year, months: [{ month, date, weeks }] }]
+export function buildHistory(routine, from, to = new Date()) {
+  const start = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+  const years = new Map();
+
+  for (let cursor = new Date(to.getFullYear(), to.getMonth(), 1); cursor >= new Date(start.getFullYear(), start.getMonth(), 1); cursor = new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1)) {
+    const weeks = mondaysOfMonth(cursor)
+      .map((monday) => {
+        const days = weekDates(monday, routine).filter((date) => date.getMonth() === cursor.getMonth() && date >= start && date <= to);
+        return days.length ? { monday, first: days[0], last: days[days.length - 1] } : null;
+      })
+      .filter(Boolean)
+      .reverse();
+    if (!weeks.length) continue;
+    const entry = years.get(cursor.getFullYear()) ?? [];
+    entry.push({ month: cursor.getMonth(), date: new Date(cursor), weeks });
+    years.set(cursor.getFullYear(), entry);
+  }
+
+  return [...years.entries()].map(([year, months]) => ({ year, months }));
+}
+
+// "09 a 13" (ou "Dia 30" quando a semana tem um dia só naquele mês).
+export function formatWeekDays(first, last) {
+  const pad = (value) => String(value).padStart(2, '0');
+  return first.getDate() === last.getDate() ? `Dia ${pad(first.getDate())}` : `${pad(first.getDate())} a ${pad(last.getDate())}`;
+}
+
+// "Novembro"
+export function formatMonthName(date) {
+  return capitalize(new Intl.DateTimeFormat(LOCALE, { month: 'long' }).format(date));
+}
+
 export { toDateKey };

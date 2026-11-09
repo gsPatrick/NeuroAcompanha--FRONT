@@ -27,6 +27,8 @@ export const childrenMock = [
       4: { welcome: true, classes: ['Português', 'Matemática', 'Inglês', 'Ciências'] },
       5: { welcome: true, classes: ['Português', 'Matemática', 'Educação Física'] },
     }),
+    // Desde quando a AT acompanha (ISO): o histórico do perfil começa nessa data.
+    startedAt: '2025-08-04',
     lastActivityAt: daysAgo(0),
     lastReportAt: daysAgo(12),
   },
@@ -42,6 +44,7 @@ export const childrenMock = [
       3: { welcome: false, classes: ['Matemática', 'Educação Física'] },
       5: { welcome: true, classes: ['Português', 'Ciências'] },
     }),
+    startedAt: '2026-02-02',
     lastActivityAt: daysAgo(0),
     lastReportAt: daysAgo(3),
   },

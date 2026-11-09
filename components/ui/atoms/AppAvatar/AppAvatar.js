@@ -4,7 +4,7 @@ import styles from './AppAvatar.module.css';
 
 // Avatar com foto (`photo`), ilustração (`person`: ver PersonIllustration) ou, sem nenhum dos dois, iniciais.
 // A foto só é usada quando existe (e quando há autorização do responsável); a ilustração é o padrão.
-// size: sm | md | lg | xl | xxl     shape: rounded | circle
+// size: sm | md | lg | xl | xxl | hero     shape: rounded | circle
 export default function AppAvatar({ photo, person, initials, size = 'md', shape = 'rounded' }) {
   const classes = [
     styles.avatar,

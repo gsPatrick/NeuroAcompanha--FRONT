@@ -39,12 +39,19 @@
   font-size: var(--font-size-title1);
 }
 
+.hero {
+  width: 144px;
+  height: 144px;
+  font-size: var(--font-size-largeTitle);
+}
+
 .rounded {
   border-radius: var(--radius-md);
 }
 
 .xl.rounded,
-.xxl.rounded {
+.xxl.rounded,
+.hero.rounded {
   border-radius: var(--radius-lg);
 }
 
