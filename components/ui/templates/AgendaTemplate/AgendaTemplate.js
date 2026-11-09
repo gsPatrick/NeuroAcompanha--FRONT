@@ -27,7 +27,7 @@ export default function AgendaTemplate() {
   const thisMonday = useMemo(() => startOfWeek(new Date()), []);
 
   return (
-    <AppLayout title="Agenda" tone="muted">
+    <AppLayout tone="muted">
       {status === 'loading' ? <AppSkeleton shape="title" /> : null}
 
       {status === 'success' && !children.length ? (
@@ -35,7 +35,7 @@ export default function AgendaTemplate() {
       ) : null}
 
       {status === 'success' && children.length ? (
-        <>
+        <div className={styles.list}>
           {Array.from({ length: weeks }, (_, index) => (
             <WeekSection key={index} students={children} monday={addDays(thisMonday, -7 * index)} />
           ))}
@@ -43,7 +43,7 @@ export default function AgendaTemplate() {
           <AppButton variant="outline" fullWidth onClick={() => setWeeks((current) => current + MORE_WEEKS)}>
             Ver semanas anteriores
           </AppButton>
-        </>
+        </div>
       ) : null}
     </AppLayout>
   );

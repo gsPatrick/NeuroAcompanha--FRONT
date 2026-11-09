@@ -1,3 +1,11 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  /* Sem título no topo: deixa o respiro da barra de status do iPhone. */
+  padding-top: calc(var(--space-md) + env(safe-area-inset-top));
+}
+
 .week {
   display: flex;
   flex-direction: column;
