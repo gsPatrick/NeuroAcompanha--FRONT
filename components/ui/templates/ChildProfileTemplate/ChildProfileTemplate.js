@@ -2,14 +2,13 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import AppLayout from '@/components/layout/AppLayout/AppLayout';
-import AppAvatar from '@/components/ui/atoms/AppAvatar/AppAvatar';
 import AppButton from '@/components/ui/atoms/AppButton/AppButton';
-import AppIcon from '@/components/ui/atoms/AppIcon/AppIcon';
 import AppSkeleton from '@/components/ui/atoms/AppSkeleton/AppSkeleton';
 import EmptyState from '@/components/ui/molecules/EmptyState/EmptyState';
+import ProfileBanner from '@/components/ui/organisms/ProfileBanner/ProfileBanner';
 import { useChild } from '@/features/children/hooks/useChild';
 import { ROUTINE_DAYS } from '@/features/routine/data/days';
-import { attendsOn, describeDay } from '@/features/routine/utils/routine';
+import { attendsOn, describeAttendanceDays, describeDay } from '@/features/routine/utils/routine';
 import styles from './ChildProfileTemplate.module.css';
 
 // Perfil da criança: quem é (foto, nome, diagnósticos), a rotina da semana e o caminho para o relatório.
@@ -18,15 +17,8 @@ export default function ChildProfileTemplate() {
   const { childId } = useParams();
   const { status, child } = useChild(childId);
 
-  const backButton = (
-    <button type="button" className={styles.back} onClick={() => router.back()}>
-      <AppIcon name="arrowLeft" size={20} />
-      Voltar
-    </button>
-  );
-
   return (
-    <AppLayout title="Perfil" navLeft={backButton}>
+    <AppLayout>
       {status === 'loading' ? (
         <div className={styles.loading}>
           <AppSkeleton shape="circle" />
@@ -38,36 +30,26 @@ export default function ChildProfileTemplate() {
         <EmptyState icon="alert" title="Criança não encontrada" description="Volte e escolha uma criança na lista." />
       ) : null}
 
-      {status === 'success' ? <Profile child={child} onOpen={(path) => router.push(path)} /> : null}
+      {status === 'success' ? <Profile child={child} onOpen={(path) => router.push(path)} onBack={() => router.back()} /> : null}
     </AppLayout>
   );
 }
 
-function Profile({ child, onOpen }) {
+function Profile({ child, onOpen, onBack }) {
   const attendsToday = attendsOn(child.routine);
   const todayValue = new Date().getDay();
 
   return (
     <>
-      <section className={styles.identity}>
-        <span className={styles.frame}>
-          <AppAvatar photo={child.photo} person={child.avatar} initials={child.name.slice(0, 1)} size="xxl" />
-        </span>
-        <h2 className={styles.name}>{child.name}</h2>
-        {child.diagnoses?.length ? (
-          <div className={styles.tags}>
-            {child.diagnoses.flatMap((parts) =>
-              parts.map((label, index) => (
-                <span key={`${parts[0]}-${label}`} className={`${styles.tag} ${index === 0 ? styles.tagMain : ''}`}>
-                  {label}
-                </span>
-              )),
-            )}
-          </div>
-        ) : (
-          <p className={styles.muted}>Sem neurodivergência informada</p>
-        )}
-      </section>
+      <ProfileBanner
+        photo={child.photo}
+        person={child.avatar}
+        initials={child.name.slice(0, 1)}
+        name={child.name}
+        tags={child.diagnoses ?? []}
+        caption={describeAttendanceDays(child.routine)}
+        onBack={onBack}
+      />
 
       <div className={styles.actions}>
         <AppButton icon="chart" fullWidth onClick={() => onOpen(`/criancas/${child.id}/relatorio`)}>

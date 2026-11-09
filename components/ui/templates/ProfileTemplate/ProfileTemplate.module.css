@@ -1,52 +1,19 @@
-.back {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-xs);
-  min-height: var(--size-control);
-  padding: 0;
-  border: 0;
-  background: transparent;
-  font-size: var(--font-size-body);
-  color: var(--color-primary);
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
 .loading {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: var(--space-lg);
 }
 
-.identity {
+.more {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: var(--space-sm);
-  padding-top: var(--space-md);
-  text-align: center;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
 }
 
-/* Mesma borda do botão do topo, em tamanho grande. */
-.frame {
-  display: inline-flex;
-  padding: 4px;
-  border: 3px solid var(--color-primary);
-  border-radius: var(--radius-full);
-  background: var(--color-surface);
-}
-
-.name {
-  margin: var(--space-sm) 0 0;
-  font-size: var(--font-size-title1);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: -0.02em;
-  color: var(--color-text-primary);
-}
-
-.role {
+.moreTitle {
   margin: 0;
-  font-size: var(--font-size-subhead);
-  color: var(--color-text-secondary);
+  font-size: var(--font-size-title3);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
 }

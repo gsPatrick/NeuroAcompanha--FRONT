@@ -1,0 +1,115 @@
+/* Ocupa a largura toda da tela (anula a margem lateral do conteúdo) e começa colado no topo. */
+.banner {
+  position: relative;
+  height: 380px;
+  margin: calc(-1 * var(--space-xs)) calc(-1 * var(--size-gutter)) 0;
+  overflow: hidden;
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  background: var(--color-primary);
+}
+
+.photo {
+  object-fit: cover;
+  object-position: 50% 20%;
+}
+
+.illustration {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--color-primary-light);
+}
+
+.illustration > * {
+  width: 70%;
+  height: auto;
+  max-height: 100%;
+}
+
+.initials {
+  align-self: center;
+  font-size: 96px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+/* Escurece a parte de baixo para o texto branco ler bem sobre qualquer foto. */
+.shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(18, 32, 64, 0.88) 0%, rgba(18, 32, 64, 0.35) 45%, rgba(18, 32, 64, 0) 70%);
+}
+
+.back {
+  position: absolute;
+  top: calc(var(--space-md) + env(safe-area-inset-top));
+  left: var(--size-gutter);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 8px rgba(18, 32, 64, 0.35);
+  color: var(--color-primary);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.texts {
+  position: absolute;
+  right: var(--size-gutter);
+  bottom: var(--space-xl);
+  left: var(--size-gutter);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: var(--font-size-subhead);
+  font-weight: var(--font-weight-semibold);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.name {
+  margin: 0;
+  font-size: var(--font-size-largeTitle, 34px);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tag {
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.9);
+  font-size: var(--font-size-subhead);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+
+.tagMain {
+  background: #ffffff;
+}
+
+.caption {
+  margin: 0;
+  font-size: var(--font-size-subhead);
+  font-weight: var(--font-weight-semibold);
+  color: rgba(255, 255, 255, 0.9);
+}

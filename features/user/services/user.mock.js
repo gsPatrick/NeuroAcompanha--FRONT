@@ -5,5 +5,7 @@ export const userMock = {
   role: 'Acompanhante terapêutica (AT)',
   // Foto quadrada, já recortada no rosto. Sem ela, vale a ilustração em `avatar`.
   photo: '/images/amanda.jpg',
+  // Quando a AT entrou na plataforma (ISO). Usado para mostrar o tempo de casa.
+  joinedAt: '2025-03-10',
   avatar: { hair: 'long', hairColor: 'brown', skin: 'tan', clothing: 'peach', tile: 'peach' },
 };
