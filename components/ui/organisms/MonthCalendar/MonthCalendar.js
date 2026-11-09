@@ -10,7 +10,6 @@ import {
   isSameDay,
   toDateKey,
 } from '@/utils/calendar';
-import { haptic } from '@/utils/haptics';
 import styles from './MonthCalendar.module.css';
 
 const STATUS_LABEL = { done: 'atendimento realizado', suspended: 'atendimento suspenso' };
@@ -27,12 +26,8 @@ export default function MonthCalendar({ attendance = {}, todaySuspended = false 
   const title = formatMonthTitle(visible);
   const isCurrentMonth = visible.getFullYear() === today.getFullYear() && visible.getMonth() === today.getMonth();
 
-  const changeMonth = (offset) => {
-    haptic();
-    setVisible((current) => new Date(current.getFullYear(), current.getMonth() + offset, 1));
-  };
+  const changeMonth = (offset) => setVisible((current) => new Date(current.getFullYear(), current.getMonth() + offset, 1));
   const goToToday = () => {
-    haptic();
     setVisible(new Date(today.getFullYear(), today.getMonth(), 1));
     setSelected(today);
   };
@@ -94,10 +89,7 @@ export default function MonthCalendar({ attendance = {}, todaySuspended = false 
               aria-label={statusText ? `${formatAccessibleDate(date)}, ${statusText}` : formatAccessibleDate(date)}
               aria-current={isToday ? 'date' : undefined}
               aria-pressed={isSelected}
-              onClick={() => {
-                haptic();
-                setSelected(date);
-              }}
+              onClick={() => setSelected(date)}
             >
               {date.getDate()}
             </button>

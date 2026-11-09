@@ -1,32 +1,42 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { login } from '../services/authService';
 import { loadPreferences } from '@/features/settings/services/preferencesService';
+import { useHistoryStep } from '@/hooks/useHistoryStep';
 import { validateLogin } from '../utils/validateLogin';
 
 const HOME_ROUTE = '/';
 const ONBOARDING_ROUTE = '/onboarding';
+const GATE = 0;
+const FORM = 1;
 
-// step: gate (pergunta inicial) | form (e-mail e senha)
+// step: gate (pergunta inicial) | form (e-mail e senha).
+// As duas etapas ficam no histórico: o gesto de voltar do sistema leva do formulário de volta à pergunta.
 export function useLogin() {
   const router = useRouter();
-  const [step, setStep] = useState('gate');
+  const [stepIndex, goTo, goBack] = useHistoryStep(GATE);
   const [values, setValues] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const openForm = () => setStep('form');
+  const step = stepIndex === FORM ? 'form' : 'gate';
 
-  const backToGate = () => {
-    setStep('gate');
-    setErrors({});
-    setSubmitError('');
-  };
+  // Ao voltar para a pergunta, limpa os avisos de erro do formulário.
+  useEffect(() => {
+    if (stepIndex === GATE) {
+      setErrors({});
+      setSubmitError('');
+    }
+  }, [stepIndex]);
 
-  const skip = () => router.push(HOME_ROUTE);
+  const openForm = () => goTo(FORM);
+  const backToGate = goBack;
+
+  // Substituir (e não empilhar) ao sair do login: o gesto de voltar nunca devolve à tela de login.
+  const skip = () => router.replace(HOME_ROUTE);
 
   const changeField = (name) => (value) => {
     setValues((current) => ({ ...current, [name]: value }));
@@ -46,7 +56,7 @@ export function useLogin() {
     try {
       await login(values);
       // Primeiro acesso: passa pela configuração inicial antes da tela inicial.
-      router.push(loadPreferences().onboarded ? HOME_ROUTE : ONBOARDING_ROUTE);
+      router.replace(loadPreferences().onboarded ? HOME_ROUTE : ONBOARDING_ROUTE);
     } catch {
       setSubmitError('Não foi possível entrar. Verifique os dados e tente novamente.');
       setSubmitting(false);

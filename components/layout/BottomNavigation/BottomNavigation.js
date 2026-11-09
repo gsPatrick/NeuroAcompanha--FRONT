@@ -5,7 +5,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import AppIcon from '@/components/ui/atoms/AppIcon/AppIcon';
 import { NAV_ITEMS, COMING_SOON_MESSAGE } from '@/constants/navigation';
 import { useToast } from '@/hooks/useToast';
-import { haptic } from '@/utils/haptics';
 
 // Itens da tab bar. Devem ser renderizados dentro de um <Toolbar tabbar> que seja
 // filho direto do <Page> (o Framework7 só posiciona a barra assim): ver AppLayout.
@@ -16,12 +15,13 @@ export default function BottomNavigation() {
   const showToast = useToast();
 
   const handleSelect = (item) => {
-    haptic();
     if (!item.available) {
       showToast(COMING_SOON_MESSAGE);
       return;
     }
-    if (item.href !== pathname) router.push(item.href);
+    // As abas são "irmãs": trocar de aba substitui a tela em vez de empilhar histórico.
+    // Assim o gesto de voltar do sistema nunca passa por uma fila de abas já visitadas.
+    if (item.href !== pathname) router.replace(item.href);
   };
 
   // href={false}: sem href="#" o Framework7 não tenta tratar a aba como uma "aba interna" dele

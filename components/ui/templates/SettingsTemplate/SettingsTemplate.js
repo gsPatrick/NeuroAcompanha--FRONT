@@ -43,7 +43,7 @@ export default function SettingsTemplate() {
         <AppButton variant="secondary" fullWidth onClick={() => router.push('/onboarding')}>
           Refazer cadastro dos alunos
         </AppButton>
-        <AppButton variant="tertiary" fullWidth onClick={() => router.push('/login')}>
+        <AppButton variant="tertiary" fullWidth onClick={() => router.replace('/login')}>
           Sair da conta
         </AppButton>
       </div>

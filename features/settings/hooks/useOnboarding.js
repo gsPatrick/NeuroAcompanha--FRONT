@@ -1,7 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useHistoryStep } from '@/hooks/useHistoryStep';
 import { saveStudents } from '@/features/students/services/studentsStore';
 import { pickDefaultAvatar } from '@/features/students/utils/defaultAvatar';
 import { usePreferences } from './usePreferences';
@@ -36,14 +37,21 @@ export function useOnboarding() {
   const count = preferencesApi.preferences.dailyChildren;
 
   const [students, setStudents] = useState(() => resize([], count));
-  const [stepIndex, setStepIndex] = useState(0);
+  // As etapas ficam no histórico: o gesto/botão de voltar do sistema volta UMA etapa, em vez de sair do cadastro.
+  const [rawStepIndex, goToStep, goBack] = useHistoryStep(0);
   const [nameError, setNameError] = useState('');
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
 
   const steps = useMemo(() => buildSteps(count), [count]);
+  const stepIndex = Math.min(rawStepIndex, steps.length - 1);
   const step = steps[stepIndex];
   const student = step.student === undefined ? null : students[step.student];
+
+  // Ao mudar de etapa, o aviso de erro do nome some.
+  useEffect(() => {
+    setNameError('');
+  }, [stepIndex]);
 
   const changeCount = (nextCount) => {
     preferencesApi.setDailyChildren(nextCount);
@@ -88,13 +96,11 @@ export function useOnboarding() {
       setNameError('Informe o nome do aluno.');
       return;
     }
-    setStepIndex((index) => Math.min(index + 1, steps.length - 1));
+    goToStep(Math.min(stepIndex + 1, steps.length - 1));
   };
 
-  const back = () => {
-    setNameError('');
-    setStepIndex((index) => Math.max(index - 1, 0));
-  };
+  // Voltar uma etapa = voltar no histórico (igual ao gesto do sistema).
+  const back = goBack;
 
   // Pular o cadastro inteiro (só na primeira etapa): segue para a tela inicial com os dados de exemplo.
   const skip = () => {

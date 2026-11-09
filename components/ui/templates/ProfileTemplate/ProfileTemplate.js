@@ -43,7 +43,7 @@ export default function ProfileTemplate() {
 
           <AppCard divided large>
             <MenuRow icon="settings" label="Ajustes" onClick={() => router.push('/settings')} />
-            <MenuRow icon="logout" label="Sair da conta" destructive onClick={() => router.push('/login')} />
+            <MenuRow icon="logout" label="Sair da conta" destructive onClick={() => router.replace('/login')} />
           </AppCard>
         </>
       ) : null}
