@@ -1,0 +1,346 @@
+/* Telas de demonstração desenhadas só com HTML e CSS (sem imagens e sem nomes de pessoas). */
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 18px;
+  background: var(--l-primary-soft);
+}
+
+.arrow {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 30px;
+  height: 36px;
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--l-primary);
+  font-weight: 700;
+}
+
+.current {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.15;
+}
+
+.position {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--l-muted);
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--l-primary);
+}
+
+.groupTitle {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--l-primary);
+}
+
+.chips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.chip {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 38px;
+  padding: 0 22px;
+  border: 1px solid var(--l-line);
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.chipGood {
+  border-color: transparent;
+  background: var(--l-good-soft);
+}
+
+.chipBad {
+  border-color: transparent;
+  background: var(--l-bad-soft);
+}
+
+.count {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--l-primary);
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 700;
+  transform: translateY(-50%);
+}
+
+.chipGood .count {
+  background: var(--l-good);
+}
+
+.chipBad .count {
+  background: var(--l-bad);
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 4px;
+}
+
+.timeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--l-line);
+  font-size: 11px;
+}
+
+.time {
+  width: 34px;
+  font-weight: 700;
+  color: var(--l-muted);
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--l-primary);
+}
+
+.dotGood {
+  background: var(--l-good);
+}
+
+.dotBad {
+  background: var(--l-bad);
+}
+
+/* ---- lista de momentos ---- */
+.moment {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid var(--l-line);
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.momentOn {
+  border-color: transparent;
+  background: var(--l-primary-soft);
+}
+
+.number {
+  width: 18px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--l-muted);
+}
+
+.momentName {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.check {
+  color: var(--l-good);
+  font-weight: 700;
+}
+
+/* ---- prancheta ---- */
+.question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--l-line);
+  font-size: 11px;
+}
+
+.answers {
+  display: flex;
+  gap: 4px;
+}
+
+.answer {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 28px;
+  border: 1px solid var(--l-line);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--l-muted);
+}
+
+.yes {
+  border-color: transparent;
+  background: var(--l-good);
+  color: #ffffff;
+}
+
+.no {
+  border-color: transparent;
+  background: var(--l-primary);
+  color: #ffffff;
+}
+
+/* ---- semana / agenda ---- */
+.range {
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: var(--l-primary-soft);
+}
+
+.statGood {
+  background: var(--l-good-soft);
+}
+
+.statBad {
+  background: var(--l-bad-soft);
+}
+
+.statValue {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--l-primary);
+}
+
+.statGood .statValue {
+  color: var(--l-good);
+}
+
+.statBad .statValue {
+  color: var(--l-bad);
+}
+
+.statLabel {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--l-muted);
+}
+
+.day {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--l-line);
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.date {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--l-primary-soft);
+  color: var(--l-primary);
+  line-height: 1;
+}
+
+.dateToday {
+  background: #5b26a8;
+  color: #ffffff;
+}
+
+.dateWeek {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dateNumber {
+  margin-top: 2px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.dayTexts {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+}
+
+.statusGood {
+  font-weight: 700;
+  color: var(--l-good);
+}
+
+.statusBad {
+  font-weight: 700;
+  color: var(--l-bad);
+}
+
+.statusMuted {
+  font-weight: 700;
+  color: var(--l-muted);
+}
+
+.statusToday {
+  font-weight: 700;
+  color: #5b26a8;
+}
+
+.sub {
+  color: var(--l-muted);
+}
+
+.agendaLine {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}

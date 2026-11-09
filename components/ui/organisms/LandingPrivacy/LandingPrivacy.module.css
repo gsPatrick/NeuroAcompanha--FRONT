@@ -1,0 +1,73 @@
+.section {
+  padding: 0 0 var(--l-section);
+}
+
+.inner {
+  display: grid;
+  gap: clamp(36px, 5vw, 72px);
+  max-width: var(--l-max);
+  margin: 0 auto;
+  padding: 0 var(--l-gutter);
+}
+
+.kicker {
+  display: inline-flex;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(32, 61, 112, 0.07);
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--l-primary);
+}
+
+.title {
+  max-width: 14ch;
+  margin: 20px 0 0;
+  font-family: var(--l-display);
+  font-size: clamp(2rem, 4.6vw, 3.75rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.points {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.point {
+  padding: 28px 0;
+  border-top: 1px solid var(--l-line);
+}
+
+.point:last-child {
+  border-bottom: 1px solid var(--l-line);
+}
+
+.pointTitle {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.pointText {
+  max-width: 48ch;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--l-muted);
+}
+
+@media (min-width: 960px) {
+  .inner {
+    grid-template-columns: 0.9fr 1.1fr;
+    align-items: start;
+  }
+}
