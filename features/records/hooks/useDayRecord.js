@@ -9,7 +9,7 @@ const newEventId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 7)
 
 // Registro de HOJE de um aluno. status: loading | ready.
 //  - blocks:  os momentos do dia (Acolhimento, Aulas, Lanche, Brincadeiras...), montados a partir da rotina na primeira
-//             abertura do dia e depois só dela (mudar a rotina não altera um dia já aberto). Dá para renomear, remover e adicionar.
+//             abertura do dia e depois só dela (mudar a rotina não altera um dia já aberto). Renomear, remover e adicionar são feitos pelas telas próprias (ver recordsStore).
 //  - events:  cada toque nas marcações rápidas { id, blockId, key, at, text? }.
 //  - answers: prancheta { [blockId]: { [pergunta]: { answer: 'yes' | 'no' | null, obs } } }.
 //  - summary: Resumo do dia { easy, hard, worked, progress, family }.
@@ -86,27 +86,6 @@ export function useDayRecord(child) {
     [update],
   );
 
-  const renameBlock = useCallback(
-    (blockId, title) =>
-      update((record) => ({ ...record, blocks: record.blocks.map((block) => (block.id === blockId ? { ...block, title } : block)) })),
-    [update],
-  );
-
-  // Remove o bloco e tudo o que foi marcado nele.
-  const removeBlock = useCallback(
-    (blockId) =>
-      update((record) => {
-        const { [blockId]: _removed, ...answers } = record.answers;
-        return {
-          ...record,
-          blocks: record.blocks.filter((block) => block.id !== blockId),
-          events: record.events.filter((event) => event.blockId !== blockId),
-          answers,
-        };
-      }),
-    [update],
-  );
-
   return {
     status: state.status,
     record: state.record,
@@ -116,7 +95,5 @@ export function useDayRecord(child) {
     setAnswer,
     setSummary,
     setCursor,
-    renameBlock,
-    removeBlock,
   };
 }

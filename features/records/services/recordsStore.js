@@ -52,3 +52,26 @@ export async function insertBlock(id, block, afterBlockId) {
   const blocks = [...record.blocks.slice(0, at), block, ...record.blocks.slice(at)];
   await saveRecord({ ...record, blocks, cursor: block.id });
 }
+
+// Troca o nome de um momento só no dia de hoje (a rotina cadastrada não muda).
+export async function renameBlockInDay(id, blockId, title) {
+  const record = await loadRecord(id);
+  if (!record) throw new Error('Registro do dia não encontrado.');
+  await saveRecord({ ...record, blocks: record.blocks.map((block) => (block.id === blockId ? { ...block, title } : block)) });
+}
+
+// Remove o momento do dia de hoje junto com tudo o que foi marcado nele; o cursor vai para o momento anterior.
+export async function removeBlockFromDay(id, blockId) {
+  const record = await loadRecord(id);
+  if (!record) throw new Error('Registro do dia não encontrado.');
+  const position = record.blocks.findIndex((block) => block.id === blockId);
+  const blocks = record.blocks.filter((block) => block.id !== blockId);
+  const { [blockId]: _removed, ...answers } = record.answers ?? {};
+  await saveRecord({
+    ...record,
+    blocks,
+    events: record.events.filter((event) => event.blockId !== blockId),
+    answers,
+    cursor: blocks[Math.max(0, position - 1)]?.id,
+  });
+}

@@ -5,7 +5,6 @@ import { useParams, useRouter } from 'next/navigation';
 import AppAvatar from '@/components/ui/atoms/AppAvatar/AppAvatar';
 import AppButton from '@/components/ui/atoms/AppButton/AppButton';
 import BlockStepper from '@/components/ui/molecules/BlockStepper/BlockStepper';
-import BlockEditor from '@/components/ui/organisms/BlockEditor/BlockEditor';
 import BlockRecordPanel from '@/components/ui/organisms/BlockRecordPanel/BlockRecordPanel';
 import SummaryPanel from '@/components/ui/organisms/SummaryPanel/SummaryPanel';
 import { countAnswered } from '@/features/records/utils/recordView';
@@ -27,12 +26,10 @@ export default function RecordTemplate() {
   );
 }
 
-function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer, setSummary, setCursor, renameBlock, removeBlock }) {
+function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer, setSummary, setCursor }) {
   const router = useRouter();
   // Reabre no momento em que ela parou (ou no primeiro, se o registro de hoje é novo).
   const [chosenId, setChosenId] = useState(record.cursor ?? record.blocks[0]?.id ?? SUMMARY_ID);
-  // null | 'edit': painel de trocar o nome ou remover o momento aberto.
-  const [editor, setEditor] = useState(null);
 
   // Se o momento escolhido deixou de existir (foi removido), volta para o primeiro.
   const block = record.blocks.find((item) => item.id === chosenId);
@@ -44,7 +41,6 @@ function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer
   const select = (id) => {
     setChosenId(id);
     setCursor(id);
-    setEditor(null);
     // A tela rola dentro do Framework7: volta ao topo para começar o novo momento do início.
     document.querySelector('.page-content')?.scrollTo({ top: 0 });
   };
@@ -75,23 +71,10 @@ function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer
       {/* Trocar a matéria do dia ou remover o momento (só nos momentos, não no resumo). */}
       {!showingSummary ? (
         <div className={styles.actions}>
-          <AppButton variant="outline" fullWidth onClick={() => setEditor(editor === 'edit' ? null : 'edit')}>
+          <AppButton variant="outline" fullWidth onClick={() => router.push(`/registro/${child.id}/editar`)}>
             Trocar ou remover
           </AppButton>
         </div>
-      ) : null}
-
-      {editor === 'edit' ? (
-        <BlockEditor
-          key={`edit-${selectedId}`}
-          block={selected}
-          onRename={renameBlock}
-          onRemove={(id) => {
-            removeBlock(id);
-            setEditor(null);
-          }}
-          onClose={() => setEditor(null)}
-        />
       ) : null}
 
       {showingSummary ? (
