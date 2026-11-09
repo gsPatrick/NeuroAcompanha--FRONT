@@ -6,6 +6,7 @@ import AppButton from '@/components/ui/atoms/AppButton/AppButton';
 import AppCard from '@/components/ui/atoms/AppCard/AppCard';
 import AppSkeleton from '@/components/ui/atoms/AppSkeleton/AppSkeleton';
 import SectionHeader from '@/components/ui/molecules/SectionHeader/SectionHeader';
+import AppVersionSetting from '@/features/app-update/components/AppVersionSetting/AppVersionSetting';
 import { useChildren } from '@/features/children/hooks/useChildren';
 import ReportDaysSetting from '@/features/settings/components/ReportDaysSetting/ReportDaysSetting';
 import { usePreferences } from '@/features/settings/hooks/usePreferences';
@@ -36,6 +37,13 @@ export default function SettingsTemplate() {
               onChange={setReportDay}
             />
           )}
+        </AppCard>
+      </section>
+
+      <section>
+        <SectionHeader title="Sobre" subtitle="O app se atualiza sozinho quando há versão nova" />
+        <AppCard padded large>
+          <AppVersionSetting />
         </AppCard>
       </section>
 
