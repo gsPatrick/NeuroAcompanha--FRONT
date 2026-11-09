@@ -24,6 +24,18 @@ export function createRoutine({ days, welcome = true, classes = DEFAULT_CLASSES 
   return routine;
 }
 
+// Rotina de exemplo com aulas diferentes em cada dia: { [dia]: { welcome, classes } }. Dia fora da lista = não atende.
+export function createWeeklyRoutine(week) {
+  const routine = createDefaultRoutine();
+  ROUTINE_DAYS.forEach(({ value }) => {
+    const day = week[value];
+    routine[value] = day
+      ? { attends: true, welcome: day.welcome, classes: [...day.classes] }
+      : { attends: false, welcome: false, classes: [] };
+  });
+  return routine;
+}
+
 export const getRoutineDay = (routine, date = new Date()) => routine?.[date.getDay()] ?? null;
 
 export const attendsOn = (routine, date = new Date()) => Boolean(getRoutineDay(routine, date)?.attends);

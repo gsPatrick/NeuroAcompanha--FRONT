@@ -1,4 +1,4 @@
-import { createRoutine } from '@/features/routine/utils/routine';
+import { createWeeklyRoutine } from '@/features/routine/utils/routine';
 
 // DADOS FICTÍCIOS (mock) dos alunos da AT.
 // `avatar` descreve a ilustração (ver PersonIllustration): vale quando o aluno está sem foto e não identifica a criança.
@@ -19,7 +19,14 @@ export const childrenMock = [
     // Dado sensível de saúde: só aparece para quem tem vínculo com a criança (regra do backend).
     diagnoses: [['TEA', 'Nível 2']],
     avatar: { hair: 'ponytail', hairColor: 'ginger', skin: 'light', clothing: 'navy', tile: 'peach' },
-    routine: createRoutine({ days: [1, 2, 3, 4, 5], classes: ['Português', 'Matemática', 'Ciências'] }),
+    // Maria Fernanda: segunda a sexta, sempre com acolhimento; as aulas mudam a cada dia.
+    routine: createWeeklyRoutine({
+      1: { welcome: true, classes: ['Português', 'Matemática', 'Ciências'] },
+      2: { welcome: true, classes: ['Português', 'Matemática', 'História', 'Educação Física'] },
+      3: { welcome: true, classes: ['Português', 'Matemática', 'Geografia', 'Artes'] },
+      4: { welcome: true, classes: ['Português', 'Matemática', 'Inglês', 'Ciências'] },
+      5: { welcome: true, classes: ['Português', 'Matemática', 'Educação Física'] },
+    }),
     lastActivityAt: daysAgo(0),
     lastReportAt: daysAgo(12),
   },
@@ -29,7 +36,12 @@ export const childrenMock = [
     // Sem foto: vale a ilustração em `avatar`. Diagnóstico ainda não informado.
     avatar: { hair: 'short', hairColor: 'brown', skin: 'medium', clothing: 'mist', tile: 'mist' },
     diagnoses: [],
-    routine: createRoutine({ days: [1, 3, 5], classes: ['Português', 'Artes'] }),
+    // Theo Barreto: só segunda, quarta e sexta (na quarta não tem acolhimento).
+    routine: createWeeklyRoutine({
+      1: { welcome: true, classes: ['Português', 'Artes'] },
+      3: { welcome: false, classes: ['Matemática', 'Educação Física'] },
+      5: { welcome: true, classes: ['Português', 'Ciências'] },
+    }),
     lastActivityAt: daysAgo(0),
     lastReportAt: daysAgo(3),
   },
