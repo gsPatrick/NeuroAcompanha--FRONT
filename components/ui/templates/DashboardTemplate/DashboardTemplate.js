@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import AppHeader from '@/components/layout/AppHeader/AppHeader';
 import AppLayout from '@/components/layout/AppLayout/AppLayout';
 import ProfileButton from '@/components/layout/ProfileButton/ProfileButton';
@@ -10,17 +11,14 @@ import DashboardSkeleton from '@/features/dashboard/components/DashboardSkeleton
 import TodayAttendance from '@/features/dashboard/components/TodayAttendance/TodayAttendance';
 import { useDashboard } from '@/features/dashboard/hooks/useDashboard';
 import { selectTodayAppointments } from '@/features/dashboard/utils/dashboardView';
-import { useToast } from '@/hooks/useToast';
-import { COMING_SOON_MESSAGE } from '@/constants/navigation';
 import { formatLongDate, getGreeting } from '@/utils/formatDate';
 import styles from './DashboardTemplate.module.css';
 
 export default function DashboardTemplate() {
   const { status, data, reload } = useDashboard();
-  const showToast = useToast();
+  const router = useRouter();
 
-  // Telas de destino ainda não existem nesta etapa do mock.
-  const comingSoon = () => showToast(COMING_SOON_MESSAGE);
+  const startRecord = (appointment) => router.push(`/registro/${appointment.childId}`);
 
   const profileButton = data ? (
     <ProfileButton name={data.user.firstName} photo={data.user.photo} person={data.user.avatar} />
@@ -42,7 +40,7 @@ export default function DashboardTemplate() {
         />
       ) : null}
 
-      {status === 'success' ? <DashboardContent data={data} onStartRecord={comingSoon} /> : null}
+      {status === 'success' ? <DashboardContent data={data} onStartRecord={startRecord} /> : null}
     </AppLayout>
   );
 }

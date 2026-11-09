@@ -1,0 +1,128 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  min-height: 100%;
+  padding: calc(var(--space-sm) + env(safe-area-inset-top)) var(--size-gutter) calc(var(--space-2xl) + env(safe-area-inset-bottom));
+  background: var(--color-surface);
+  animation: pageEnter var(--motion-base) var(--motion-ease) both;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  width: auto;
+  margin-left: calc(-1 * var(--space-xs));
+  padding: var(--space-sm) var(--space-xs);
+  border: 0;
+  background: transparent;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.identityTexts {
+  min-width: 0;
+}
+
+.name {
+  margin: 0;
+  font-size: var(--font-size-title1);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+.date {
+  margin: var(--space-xs) 0 0;
+  font-size: var(--font-size-body);
+  color: var(--color-text-secondary);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--font-size-subhead);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.groupTitle {
+  margin: 0;
+  font-size: var(--font-size-title3);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+.note {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.noteLabel {
+  font-size: var(--font-size-subhead);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+/* Fonte >= 16px: o iOS não dá zoom ao focar o campo. */
+.textarea {
+  width: 100%;
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-normal);
+  resize: none;
+  outline: none;
+}
+
+.textarea:focus {
+  border-color: var(--color-primary);
+}
+
+.noteActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+}
+
+.empty {
+  margin: 0;
+  font-size: var(--font-size-subhead);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-tertiary);
+}
