@@ -1,0 +1,12 @@
+.setting {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.hint {
+  margin: 0;
+  text-align: center;
+  font-size: var(--font-size-subhead);
+  color: var(--color-text-secondary);
+}

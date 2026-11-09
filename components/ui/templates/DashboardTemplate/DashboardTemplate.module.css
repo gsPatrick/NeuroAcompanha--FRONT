@@ -1,0 +1,55 @@
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.greeting {
+  margin: 0;
+  font-size: var(--font-size-title1);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+  color: var(--color-primary);
+}
+
+.date {
+  font-size: var(--font-size-subhead);
+  color: var(--color-text-secondary);
+}
+
+/* Entrada em cascata, discreta. */
+.section {
+  animation: fadeUp var(--motion-slow) var(--motion-ease) both;
+}
+
+.section:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.section:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.section:nth-child(4) {
+  animation-delay: 180ms;
+}
+
+.section:nth-child(5) {
+  animation-delay: 240ms;
+}
+
+.section:nth-child(6) {
+  animation-delay: 300ms;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

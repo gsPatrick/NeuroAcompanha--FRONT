@@ -1,0 +1,117 @@
+/* Cada estado define o degradê do bloco de contagem, a cor do texto dele e a cor da situação. */
+.card {
+  --count-bg: var(--gradient-ok);
+  --count-fg: var(--on-gradient-ok);
+  --state-color: var(--color-success);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  overflow: hidden;
+  padding: var(--space-xl) var(--space-lg) var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+}
+
+.overdue {
+  --count-bg: var(--gradient-alert);
+  --count-fg: var(--on-gradient-alert);
+  --state-color: var(--color-danger);
+}
+
+.today {
+  --count-bg: var(--gradient-today);
+  --count-fg: var(--on-gradient-today);
+  --state-color: var(--color-warning);
+}
+
+/* Faixa de marca no topo, com as cores do símbolo. */
+.stripe {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 5px;
+  background: var(--gradient-infinity);
+}
+
+.main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.count {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  border-radius: var(--radius-lg);
+  background: var(--count-bg);
+  color: var(--count-fg);
+}
+
+.big {
+  font-size: 36px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.countWord .big {
+  font-size: var(--font-size-body);
+  letter-spacing: -0.01em;
+}
+
+.small {
+  margin-top: 2px;
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  opacity: 0.9;
+}
+
+.texts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-title3);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+}
+
+.status {
+  margin: 0;
+  font-size: var(--font-size-subhead);
+  font-weight: var(--font-weight-semibold);
+  color: var(--state-color);
+}
+
+.deadline {
+  margin: 0;
+  font-size: var(--font-size-footnote);
+  color: var(--color-text-secondary);
+}
+
+.pending {
+  margin: 0;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--font-size-footnote);
+  color: var(--color-text-secondary);
+}
+
+.pending strong {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}

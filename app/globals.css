@@ -1,0 +1,74 @@
+/* Reset mínimo + ponte entre o Design System (--color-*, --space-*...) e o Framework7 (--f7-*). */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* O Framework7 precisa de uma raiz com altura total para posicionar navbar/tabbar e rolar só o conteúdo. */
+.framework7-root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Ponte com o Framework7: seletor com mais peso para vencer o tema escuro automático dele. */
+:root:root {
+  --f7-font-family: var(--font-family);
+  --f7-theme-color: var(--color-primary);
+  --f7-theme-color-rgb: var(--color-primary-rgb);
+  --f7-page-bg-color: var(--color-background);
+
+  --f7-bars-bg-color: var(--color-background);
+  --f7-bars-bg-color-rgb: var(--color-background-rgb);
+  --f7-bars-text-color: var(--color-text-primary);
+  --f7-bars-border-color: var(--color-border);
+  --f7-navbar-bg-color: var(--color-background);
+  --f7-navbar-bg-color-rgb: var(--color-background-rgb);
+  --f7-navbar-text-color: var(--color-text-primary);
+  --f7-navbar-large-title-text-color: var(--color-text-primary);
+  --f7-navbar-border-color: transparent;
+  --f7-navbar-large-title-font-size: var(--font-size-large-title);
+
+  --f7-tabbar-link-active-color: var(--color-primary);
+  --f7-tabbar-link-inactive-color: var(--color-text-tertiary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,40 @@
+.lockup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.md {
+  animation: rise var(--motion-slow) var(--motion-ease) both;
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-size: var(--font-size-title1);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.025em;
+  color: var(--color-primary);
+}
+
+.sm {
+  gap: var(--space-sm);
+}
+
+.sm .name {
+  font-size: var(--font-size-subhead);
+  letter-spacing: -0.015em;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

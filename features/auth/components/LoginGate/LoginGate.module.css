@@ -1,0 +1,26 @@
+.texts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-title2);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.015em;
+}
+
+.description {
+  margin: 0;
+  font-size: var(--font-size-subhead);
+  color: var(--color-text-secondary);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}

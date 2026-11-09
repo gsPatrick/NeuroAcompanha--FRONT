@@ -1,0 +1,68 @@
+.avatar {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
+}
+
+.sm {
+  width: 32px;
+  height: 32px;
+  font-size: var(--font-size-caption);
+}
+
+.md {
+  width: 44px;
+  height: 44px;
+  font-size: var(--font-size-subhead);
+}
+
+.lg {
+  width: 56px;
+  height: 56px;
+  font-size: var(--font-size-title3);
+}
+
+.xl {
+  width: 72px;
+  height: 72px;
+  font-size: var(--font-size-title2);
+}
+
+.xxl {
+  width: 116px;
+  height: 116px;
+  font-size: var(--font-size-title1);
+}
+
+.rounded {
+  border-radius: var(--radius-md);
+}
+
+.xl.rounded,
+.xxl.rounded {
+  border-radius: var(--radius-lg);
+}
+
+/* Sombra suave: destaca a foto do fundo, sem contorno. */
+.withPhoto {
+  box-shadow: var(--shadow-md);
+}
+
+/* As fotos já são salvas em quadrado, recortadas no rosto: aqui só preenchem o avatar. */
+.photo {
+  object-fit: cover;
+}
+
+.circle {
+  border-radius: var(--radius-full);
+}
+
+.initials {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}

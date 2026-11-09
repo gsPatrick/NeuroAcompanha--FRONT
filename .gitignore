@@ -1,0 +1,18 @@
+# dependências
+node_modules/
+
+# build do Next.js
+.next/
+out/
+
+# sistema e editores
+.DS_Store
+*.log
+
+# variáveis de ambiente (segredos nunca vão para o repositório)
+.env
+.env.*
+!.env.example
+
+# Vercel
+.vercel/

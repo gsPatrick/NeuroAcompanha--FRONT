@@ -1,0 +1,214 @@
+.calendar {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+}
+
+/* ---------- Cabeçalho: mês/ano e setas ---------- */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-title3);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+}
+
+.year {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-control);
+  height: var(--size-control);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.nav:active {
+  background: var(--color-primary-light);
+}
+
+.prev {
+  transform: rotate(180deg);
+}
+
+.todayButton {
+  min-height: 36px;
+  width: auto;
+  margin-right: var(--space-xs);
+  padding: 0 var(--space-md);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: var(--font-size-subhead);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* ---------- Dias da semana ---------- */
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  border-top: 1px solid var(--color-border);
+}
+
+.weekday {
+  padding: var(--space-sm) 0;
+  text-align: center;
+  font-size: var(--font-size-footnote);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+/* ---------- Grade: células quadradas separadas por linhas finas (gap + fundo da cor da linha) ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 1px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-border);
+}
+
+.cell {
+  --mark: transparent;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-subhead);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* Risquinho discreto no pé do quadradinho (a cor muda por estado; sem estado fica invisível). */
+.cell::after {
+  content: '';
+  position: absolute;
+  bottom: 7px;
+  left: 50%;
+  width: 18px;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--mark);
+  transform: translateX(-50%);
+}
+
+.cell:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+.outside {
+  color: var(--color-text-tertiary);
+}
+
+/* Estados: o quadradinho inteiro é preenchido. Verde = atendimento realizado; vermelho = suspenso. */
+.done {
+  --mark: var(--color-success);
+
+  background: var(--color-success-light);
+  color: var(--color-success);
+  font-weight: var(--font-weight-bold);
+}
+
+.suspended {
+  --mark: var(--color-danger);
+
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Hoje (roxo cheio): vence os demais estados. Se o atendimento de hoje foi suspenso, o risquinho fica vermelho. */
+.today {
+  --mark: color-mix(in srgb, var(--color-on-today) 55%, transparent);
+
+  background: var(--color-today);
+  color: var(--color-on-today);
+  font-weight: var(--font-weight-bold);
+}
+
+.todayFlag {
+  --mark: var(--color-danger-light);
+}
+
+/* Dia selecionado: contorno por dentro, para não esconder a cor do estado. */
+.selected {
+  box-shadow: inset 0 0 0 2px var(--color-primary);
+}
+
+/* ---------- Legenda ---------- */
+.legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xl);
+  margin: 0;
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--color-border);
+  list-style: none;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-footnote);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+/* Quadradinhos, iguais aos do calendário. */
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.dotDone {
+  background: var(--color-success);
+}
+
+.dotSuspended {
+  background: var(--color-danger);
+}
+
+.dotToday {
+  background: var(--color-today);
+}

@@ -1,0 +1,125 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  width: auto;
+  min-height: var(--size-control-lg);
+  padding: 0 var(--space-xl);
+  border: 0;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    background-color var(--motion-fast) var(--motion-ease),
+    opacity var(--motion-fast) var(--motion-ease);
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.primary:active:not(:disabled) {
+  background: var(--color-primary-strong);
+}
+
+.secondary {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.outline {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: inset 0 0 0 1.5px var(--color-border);
+}
+
+/* Estado ligado (aria-pressed): vermelho, para ficar claro que está ativo. */
+.pressed {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+  box-shadow: inset 0 0 0 1.5px var(--color-danger);
+}
+
+.tertiary {
+  background: transparent;
+  color: var(--color-primary);
+  padding: 0 var(--space-md);
+}
+
+.destructive {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.icon {
+  width: var(--size-control-lg);
+  padding: 0;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.accentIcon {
+  width: var(--size-control-lg);
+  padding: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+/* Declarado depois das variantes para prevalecer no tamanho. */
+.md {
+  min-height: var(--size-control);
+  padding: 0 var(--space-lg);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-subhead);
+}
+
+.icon.md {
+  width: var(--size-control);
+  padding: 0;
+}
+
+.loading .label {
+  opacity: 0.6;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: var(--radius-full);
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

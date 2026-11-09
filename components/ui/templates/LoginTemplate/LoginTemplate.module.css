@@ -1,0 +1,65 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  background: var(--color-surface);
+}
+
+/* ---------- Ilustrações (espaço restante, ~70%) ---------- */
+.art {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  padding-top: calc(var(--space-xl) + env(safe-area-inset-top));
+  padding-bottom: var(--space-lg);
+}
+
+/* Logo fixo no topo, à esquerda, no fluxo normal (nunca por cima das ilustrações). */
+.brand {
+  flex: none;
+  padding: 0 var(--size-gutter) var(--space-lg);
+}
+
+/* As ilustrações ocupam o espaço que sobra, centralizadas. */
+.gridArea {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-height: 0;
+}
+
+/* ---------- Painel inferior (~30%, cresce no formulário) ---------- */
+.panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 30dvh;
+  padding: var(--space-xl) var(--size-gutter) calc(var(--space-xl) + env(safe-area-inset-bottom));
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  background: var(--color-primary-light);
+  transition: min-height var(--motion-slow) var(--motion-ease);
+}
+
+.panelForm {
+  min-height: 58dvh;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  animation: fadeIn var(--motion-base) var(--motion-ease) both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
