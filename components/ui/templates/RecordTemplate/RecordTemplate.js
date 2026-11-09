@@ -71,24 +71,19 @@ function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer
 
       <BlockStepper items={tabs} selectedId={selectedId} onSelect={select} />
 
-      <div className={styles.actions}>
-        {!showingSummary ? (
-          <AppButton variant="tertiary" size="md" onClick={() => setEditor(editor === 'edit' ? null : 'edit')}>
+      {/* Trocar a matéria do dia ou remover o momento (só nos momentos, não no resumo). */}
+      {!showingSummary ? (
+        <div className={styles.actions}>
+          <AppButton variant="outline" size="md" onClick={() => setEditor(editor === 'edit' ? null : 'edit')}>
             Trocar ou remover
           </AppButton>
-        ) : (
-          <span />
-        )}
-        <AppButton variant="tertiary" size="md" icon="plus" onClick={() => setEditor(editor === 'add' ? null : 'add')}>
-          Novo momento
-        </AppButton>
-      </div>
+        </div>
+      ) : null}
 
-      {editor ? (
+      {editor === 'edit' ? (
         <BlockEditor
-          key={`${editor}-${selectedId}`}
-          block={editor === 'edit' ? selected : null}
-          onAdd={(kind, title) => addBlock(kind, title)}
+          key={`edit-${selectedId}`}
+          block={selected}
           onRename={renameBlock}
           onRemove={(id) => {
             removeBlock(id);
@@ -116,6 +111,14 @@ function RecordContent({ child, record, addMark, addNote, removeEvent, setAnswer
         <AppButton fullWidth icon="arrowRight" onClick={() => select(nextTab.id)}>
           Próximo: {nextTab.label}
         </AppButton>
+      ) : null}
+
+      <AppButton variant="outline" fullWidth icon="plus" onClick={() => setEditor(editor === 'add' ? null : 'add')}>
+        Novo momento
+      </AppButton>
+
+      {editor === 'add' ? (
+        <BlockEditor key="add" block={null} onAdd={(kind, title) => addBlock(kind, title)} onClose={() => setEditor(null)} />
       ) : null}
     </>
   );

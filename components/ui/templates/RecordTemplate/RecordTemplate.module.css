@@ -26,7 +26,5 @@
 .actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-sm);
-  margin-top: calc(-1 * var(--space-xs));
+  justify-content: center;
 }
