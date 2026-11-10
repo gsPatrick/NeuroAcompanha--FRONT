@@ -11,7 +11,6 @@ export const PRANCHETA = [
     questions: [
       { key: 'arrivedHow', label: 'Como chegou?', type: 'choice', options: ['Feliz', 'Triste', 'Agitado(a)', 'Sonolento(a)'] },
       { key: 'enteredCalmly', label: 'Entrou na sala tranquilamente?' },
-      { key: 'helpFarewell', label: 'Precisou de ajuda para se despedir da família?' },
     ],
   },
   {
