@@ -20,7 +20,7 @@
 .marks {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-xs);
+  gap: 0;
 }
 
 .categories {

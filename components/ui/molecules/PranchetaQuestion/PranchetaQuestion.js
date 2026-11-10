@@ -61,10 +61,10 @@ export default function PranchetaQuestion({ question, value, onChange, readOnly 
           ['no', 'Não'],
         ].map(([value, text]) => (
           <button key={value} type="button" className={styles.choice} aria-pressed={answer === value} onClick={() => toggle(value)}>
-            <span className={styles.choiceText}>{text}</span>
             <span className={`${styles.bubble} ${answer === value ? styles.bubbleOn : ''}`} aria-hidden="true">
               {answer === value ? <Cross /> : null}
             </span>
+            <span className={styles.choiceText}>{text}</span>
           </button>
         ))}
       </div>
@@ -74,7 +74,7 @@ export default function PranchetaQuestion({ question, value, onChange, readOnly 
 
 function Cross() {
   return (
-    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
       <path d="M6 6l12 12M18 6L6 18" />
     </svg>
   );

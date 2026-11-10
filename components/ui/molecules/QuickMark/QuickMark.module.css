@@ -1,44 +1,43 @@
+/* Linha minimalista: sem caixa, só a bolinha e o nome, separados por um fio fino. */
 .mark {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-md);
   width: 100%;
-  min-height: 52px;
-  padding: var(--space-xs) var(--space-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
+  min-height: 44px;
+  padding: var(--space-xs) 0;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  background: transparent;
   color: var(--color-text-primary);
   text-align: left;
   cursor: pointer;
   touch-action: manipulation;
-  transition: background var(--motion-fast) var(--motion-ease);
 }
 
 .label {
   font-size: var(--font-size-subhead);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-regular);
   line-height: var(--line-height-snug);
+  color: var(--color-text-secondary);
 }
 
-/* A bolinha da folha de resposta: vazia, ou com um X quando marcada. */
+.labelOn {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
 .bubble {
   display: inline-grid;
   flex-shrink: 0;
   place-items: center;
-  width: 28px;
-  height: 28px;
-  border: 2px solid var(--color-gray-border);
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--color-gray-border);
   border-radius: 50%;
-  background: var(--color-surface);
   color: var(--color-gray);
 }
 
-.selected {
-  background: var(--color-gray-light);
-}
-
-.selected .bubble {
+.mark[aria-pressed='true'] .bubble {
   border-color: var(--color-gray);
 }
