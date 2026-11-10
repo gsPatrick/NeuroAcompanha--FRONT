@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import AppButton from '@/components/ui/atoms/AppButton/AppButton';
 import AppInput from '@/components/ui/atoms/AppInput/AppInput';
+import SegmentedControl from '@/components/ui/molecules/SegmentedControl/SegmentedControl';
 import { findResumeBlockId } from '@/features/records/utils/recordView';
 import { insertBlock, recordId } from '@/features/records/services/recordsStore';
 import { newBlock } from '@/features/routine/utils/routine';
@@ -35,9 +36,17 @@ function findPlace(record) {
   };
 }
 
+// Tipo do momento novo: define o que aparece no registro (aula, lanche ou brincadeira).
+const KIND_OPTIONS = [
+  { value: 'class', label: 'Aula' },
+  { value: 'play', label: 'Brincadeira' },
+  { value: 'snack', label: 'Lanche' },
+];
+
 function NewBlockForm({ child, dateKey, record }) {
   const router = useRouter();
   const [name, setName] = useState('');
+  const [kind, setKind] = useState('class');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const title = name.trim();
@@ -49,7 +58,7 @@ function NewBlockForm({ child, dateKey, record }) {
     setSaving(true);
     setError('');
     try {
-      await insertBlock(recordId(child.id, dateKey), newBlock('other', title), place.afterId);
+      await insertBlock(recordId(child.id, dateKey), newBlock(kind, title), place.afterId);
       // Volta ao registro, que reabre já no momento novo.
       router.back();
     } catch {
@@ -63,8 +72,10 @@ function NewBlockForm({ child, dateKey, record }) {
       <div className={styles.texts}>
         <p className={styles.student}>{child.name}</p>
         <h1 className={styles.title}>Novo momento</h1>
-        <p className={styles.description}>Dê um nome, por exemplo: Aula de Inglês, Recreio, Passeio.</p>
+        <p className={styles.description}>Escolha o tipo e dê um nome, por exemplo: Aula de Inglês, Pátio, Brincadeira no parque.</p>
       </div>
+
+      <SegmentedControl label="Tipo do momento" options={KIND_OPTIONS} value={kind} onChange={setKind} />
 
       <AppInput label="Nome do momento" name="blockName" autoCapitalize="sentences" autoComplete="off" autoFocus value={name} onChange={setName} />
 

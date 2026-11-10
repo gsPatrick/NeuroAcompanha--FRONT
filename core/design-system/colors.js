@@ -25,6 +25,11 @@ export const colors = {
 
   border: 'rgba(27, 42, 74, 0.10)',
 
+  // Cinza neutro das marcações do registro (bolinha com X).
+  gray: '#4A4F57',
+  grayLight: '#EEEFF1',
+  grayBorder: '#9AA0A8',
+
   success: '#2E8F63',
   successLight: '#E2F3EA',
   warning: '#B26F10',

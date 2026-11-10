@@ -98,6 +98,19 @@ export const PRANCHETA = [
     ],
   },
   {
+    key: 'snackTime',
+    title: 'Lanche',
+    questions: [
+      { key: 'snackAte', label: 'Como foi a alimentação?', type: 'choice', options: ['Comeu bem', 'Comeu pouco', 'Recusou'] },
+      { key: 'snackAlone', label: 'Comeu sozinho(a)?' },
+      { key: 'snackSeated', label: 'Ficou sentado(a) durante o lanche?' },
+      { key: 'snackNew', label: 'Aceitou alimentos novos?' },
+      { key: 'snackAsked', label: 'Pediu o que queria (água, lanche)?' },
+      { key: 'snackPeers', label: 'Interagiu com os colegas?' },
+      { key: 'snackNote', label: 'Observação sobre o lanche', type: 'text' },
+    ],
+  },
+  {
     key: 'different',
     title: 'Situações diferentes',
     questions: [
@@ -111,12 +124,13 @@ export const PRANCHETA = [
 ];
 
 // Quais categorias da prancheta aparecem em cada tipo de bloco da rotina.
+// Acolhimento: como chegou | Aula: aprendizagem | Lanche: prancheta do lanche | Brincadeiras: sem prancheta.
 export const CATEGORIES_BY_BLOCK_KIND = {
-  welcome: ['arrival', 'emotions', 'communication', 'different'],
-  class: ['activities', 'attention', 'communication', 'learning', 'emotions', 'behavior', 'social', 'mywork', 'different'],
-  snack: ['communication', 'social', 'emotions', 'behavior', 'mywork'],
-  play: ['social', 'communication', 'emotions', 'behavior', 'mywork', 'different'],
-  other: ['activities', 'communication', 'social', 'emotions', 'behavior', 'mywork', 'different'],
+  welcome: ['arrival'],
+  class: ['learning'],
+  snack: ['snackTime'],
+  play: [],
+  other: ['learning'],
 };
 
 export function getCategoriesForBlock(kind) {

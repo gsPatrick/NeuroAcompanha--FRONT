@@ -28,19 +28,6 @@ export const MARK_GROUPS = [
     ],
   },
   {
-    key: 'routine',
-    title: 'Rotina',
-    tone: 'neutral',
-    marks: [
-      { key: 'snack', label: 'Lanche / refeição' },
-      { key: 'water', label: 'Água' },
-      { key: 'bathroom', label: 'Banheiro' },
-      { key: 'medication', label: 'Medicação' },
-      { key: 'rest', label: 'Descanso' },
-      { key: 'break', label: 'Pausa' },
-    ],
-  },
-  {
     key: 'win',
     title: 'Conquistas',
     tone: 'good',
@@ -55,8 +42,41 @@ export const MARK_GROUPS = [
   },
 ];
 
+// Marcações antigas (o grupo "Rotina" saiu da tela: o lanche agora tem prancheta própria). Ficam aqui só para
+// registros já feitos continuarem legíveis.
+const LEGACY_GROUPS = [
+  {
+    key: 'routine',
+    title: 'Rotina',
+    tone: 'neutral',
+    marks: [
+      { key: 'snack', label: 'Lanche / refeição' },
+      { key: 'water', label: 'Água' },
+      { key: 'bathroom', label: 'Banheiro' },
+      { key: 'medication', label: 'Medicação' },
+      { key: 'rest', label: 'Descanso' },
+      { key: 'break', label: 'Pausa' },
+    ],
+  }
+];
+
+// Quais grupos de marcação aparecem em cada tipo de momento (nesta ordem).
+//   Acolhimento: ocorrências | Aula: como está, ocorrências e conquistas | Lanche e Brincadeiras: só como está.
+const GROUPS_BY_BLOCK_KIND = {
+  welcome: ['occurrence'],
+  class: ['mood', 'occurrence', 'win'],
+  snack: ['mood'],
+  play: ['mood'],
+  other: ['mood', 'occurrence', 'win'],
+};
+
+export function getMarkGroupsForBlock(kind) {
+  const keys = GROUPS_BY_BLOCK_KIND[kind] ?? GROUPS_BY_BLOCK_KIND.other;
+  return keys.map((key) => MARK_GROUPS.find((group) => group.key === key));
+}
+
 const MARKS_BY_KEY = new Map(
-  MARK_GROUPS.flatMap((group) => group.marks.map((mark) => [mark.key, { ...mark, group: group.key, tone: group.tone }])),
+  [...MARK_GROUPS, ...LEGACY_GROUPS].flatMap((group) => group.marks.map((mark) => [mark.key, { ...mark, group: group.key, tone: group.tone }])),
 );
 
 // Dados de exibição de uma marcação pelo `key` (ou da anotação livre, que não está na lista).

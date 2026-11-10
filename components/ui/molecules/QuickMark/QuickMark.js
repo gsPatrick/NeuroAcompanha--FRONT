@@ -1,17 +1,18 @@
-import AppIcon from '../../atoms/AppIcon/AppIcon';
 import styles from './QuickMark.module.css';
 
-// Botão grande de marcação rápida: um toque marca, outro toque desmarca (cada marcação vale uma vez só).
-// `selected`: já marcado (fica preenchido, com um ✓). tone: good | alert | neutral (cor do grupo).
-export default function QuickMark({ label, selected = false, tone = 'neutral', onMark }) {
+// Marcação rápida no estilo de folha de resposta de colégio: o nome à esquerda e uma bolinha à direita.
+// Um toque marca a bolinha com um X, outro toque desmarca (cada marcação vale uma vez só).
+export default function QuickMark({ label, selected = false, onMark }) {
   return (
-    <button type="button" className={`${styles.mark} ${styles[tone]} ${selected ? styles.selected : ''}`} aria-pressed={selected} onClick={onMark}>
+    <button type="button" className={`${styles.mark} ${selected ? styles.selected : ''}`} aria-pressed={selected} onClick={onMark}>
       <span className={styles.label}>{label}</span>
-      {selected ? (
-        <span className={styles.check} aria-hidden="true">
-          <AppIcon name="check" size={18} />
-        </span>
-      ) : null}
+      <span className={styles.bubble} aria-hidden="true">
+        {selected ? (
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        ) : null}
+      </span>
     </button>
   );
 }

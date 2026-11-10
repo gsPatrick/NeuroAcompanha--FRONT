@@ -5,7 +5,7 @@ import AppButton from '../../atoms/AppButton/AppButton';
 import QuickMark from '../../molecules/QuickMark/QuickMark';
 import RecordTimeline from '../../molecules/RecordTimeline/RecordTimeline';
 import PranchetaSection from '../PranchetaSection/PranchetaSection';
-import { MARK_GROUPS } from '@/features/records/data/quickMarks';
+import { getMarkGroupsForBlock } from '@/features/records/data/quickMarks';
 import { getCategoriesForBlock } from '@/features/records/data/prancheta';
 import { buildTimeline, formatTime, markedKeys } from '@/features/records/utils/recordView';
 import styles from './BlockRecordPanel.module.css';
@@ -17,6 +17,7 @@ export default function BlockRecordPanel({ record, block, toggleMark, addNote, r
 
   const marked = markedKeys(record.events, block.id);
   const timeline = buildTimeline(record.events, record.blocks, block.id);
+  const groups = getMarkGroupsForBlock(block.kind);
   const categories = getCategoriesForBlock(block.kind);
 
   const saveNote = () => {
@@ -28,12 +29,12 @@ export default function BlockRecordPanel({ record, block, toggleMark, addNote, r
 
   return (
     <div className={`${styles.panel} ${readOnly ? styles.readOnly : ''}`}>
-      {MARK_GROUPS.map((group) => (
+      {groups.map((group) => (
         <section key={group.key} className={styles.group}>
           <h2 className={styles.groupTitle}>{group.title}</h2>
           <div className={styles.marks}>
             {group.marks.map((mark) => (
-              <QuickMark key={mark.key} label={mark.label} tone={group.tone} selected={marked.has(mark.key)} onMark={readOnly ? undefined : () => toggleMark(block.id, mark.key)} />
+              <QuickMark key={mark.key} label={mark.label} selected={marked.has(mark.key)} onMark={readOnly ? undefined : () => toggleMark(block.id, mark.key)} />
             ))}
           </div>
         </section>
@@ -60,20 +61,22 @@ export default function BlockRecordPanel({ record, block, toggleMark, addNote, r
         </section>
       )}
 
-      <section className={styles.group}>
-        <h2 className={styles.groupTitle}>Prancheta</h2>
-        <div className={styles.categories}>
-          {categories.map((category) => (
-            <PranchetaSection
-              key={category.key}
-              category={category}
-              answers={record.answers[block.id]}
-              readOnly={readOnly}
-              onAnswer={(question, patch) => setAnswer?.(block.id, question, patch)}
-            />
-          ))}
-        </div>
-      </section>
+      {categories.length ? (
+        <section className={styles.group}>
+          <h2 className={styles.groupTitle}>Prancheta</h2>
+          <div className={styles.categories}>
+            {categories.map((category) => (
+              <PranchetaSection
+                key={category.key}
+                category={category}
+                answers={record.answers[block.id]}
+                readOnly={readOnly}
+                onAnswer={(question, patch) => setAnswer?.(block.id, question, patch)}
+              />
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {timeline.length ? (
         <section className={styles.group}>

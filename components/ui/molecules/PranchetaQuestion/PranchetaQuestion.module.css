@@ -56,7 +56,7 @@
 
 .no {
   border-color: transparent;
-  background: var(--color-primary);
+  background: var(--color-gray);
   color: var(--color-on-primary);
 }
 
@@ -106,7 +106,7 @@
 
 .picked {
   border-color: transparent;
-  background: var(--color-primary);
+  background: var(--color-gray);
   color: var(--color-on-primary);
 }
 
@@ -147,6 +147,6 @@
 }
 
 .boxOn {
-  border-color: var(--color-primary);
-  background: var(--color-primary);
+  border-color: var(--color-gray);
+  background: var(--color-gray);
 }
