@@ -5,6 +5,8 @@ const appVersion = process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? String(Date
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Gera um servidor mínimo em .next/standalone (usado pela imagem Docker).
+  output: 'standalone',
   env: {
     NEXT_PUBLIC_APP_VERSION: appVersion,
   },
