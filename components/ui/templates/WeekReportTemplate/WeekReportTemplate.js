@@ -13,6 +13,7 @@ import { useChild } from '@/features/children/hooks/useChild';
 import { useDayEntries } from '@/features/reports/hooks/useDayEntries';
 import { addDays, formatRange, formatWeekdayShort, parseDateKey, startOfWeek, toDateKey, weekDates } from '@/features/reports/utils/dates';
 import { downloadWeekReportPdf, getWeekReport, requestWeekReport, waitForWeekReport } from '@/features/reports/services/reportService';
+import { recordPath } from '@/features/records/hooks/useRecordDate';
 import { deliverFile } from '@/features/reports/utils/deliverFile';
 import { useToast } from '@/hooks/useToast';
 import { STATUS_LABELS, summarizeEntries, summarizeRecord } from '@/features/reports/utils/reportView';
@@ -130,7 +131,11 @@ function WeekContent({ child, firstMonday }) {
                   .join(' · ');
               } else if (entry.status === 'today') {
                 summary = 'Ainda sem registro hoje';
+              } else if (entry.status === 'none') {
+                summary = 'Toque para preencher';
               }
+              // Tocar abre o registro do dia (editável): para corrigir um dado ou preencher um dia que ficou em branco.
+              const editable = ['today', 'done', 'none'].includes(entry.status);
 
               return (
                 <DayReportRow
@@ -140,7 +145,7 @@ function WeekContent({ child, firstMonday }) {
                   status={STATUS_LABELS[entry.status]}
                   tone={TONES[entry.status]}
                   summary={summary}
-                  onOpen={hasRecord ? () => router.push(`/criancas/${child.id}/dia/${entry.key}`) : undefined}
+                  onOpen={editable ? () => router.push(recordPath(child.id, entry.key)) : undefined}
                 />
               );
             })}

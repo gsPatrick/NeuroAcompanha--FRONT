@@ -7,6 +7,8 @@ import AppButton from '@/components/ui/atoms/AppButton/AppButton';
 import BlockStepper from '@/components/ui/molecules/BlockStepper/BlockStepper';
 import BlockRecordPanel from '@/components/ui/organisms/BlockRecordPanel/BlockRecordPanel';
 import SummaryPanel from '@/components/ui/organisms/SummaryPanel/SummaryPanel';
+import { recordPath } from '@/features/records/hooks/useRecordDate';
+import { parseDateKey } from '@/features/reports/utils/dates';
 import { countAnswered } from '@/features/records/utils/recordView';
 import { useToast } from '@/hooks/useToast';
 import { formatLongDate } from '@/utils/formatDate';
@@ -27,7 +29,7 @@ export default function RecordTemplate() {
   );
 }
 
-function RecordContent({ child, record, toggleMark, addNote, removeEvent, setAnswer, setSummary, setCursor, finish }) {
+function RecordContent({ child, dateKey, record, toggleMark, addNote, removeEvent, setAnswer, setSummary, setCursor, finish }) {
   const router = useRouter();
   const showToast = useToast();
   const [finishing, setFinishing] = useState(false);
@@ -78,7 +80,7 @@ function RecordContent({ child, record, toggleMark, addNote, removeEvent, setAns
         <AppAvatar photo={child.photo} person={child.avatar} initials={child.name.slice(0, 1)} size="xl" />
         <div className={styles.identityTexts}>
           <h1 className={styles.name}>{child.name}</h1>
-          <p className={styles.date}>{formatLongDate()}</p>
+          <p className={styles.date}>{formatLongDate(parseDateKey(dateKey))}</p>
         </div>
       </section>
 
@@ -87,7 +89,7 @@ function RecordContent({ child, record, toggleMark, addNote, removeEvent, setAns
       {/* Trocar a matéria do dia ou remover o momento (só nos momentos, não no resumo). */}
       {!showingSummary ? (
         <div className={styles.actions}>
-          <AppButton variant="outline" fullWidth onClick={() => router.push(`/registro/${child.id}/editar`)}>
+          <AppButton variant="outline" fullWidth onClick={() => router.push(recordPath(child.id, dateKey, 'editar'))}>
             Trocar ou remover
           </AppButton>
         </div>
@@ -119,7 +121,7 @@ function RecordContent({ child, record, toggleMark, addNote, removeEvent, setAns
         </AppButton>
       ) : null}
 
-      <AppButton variant="outline" fullWidth icon="plus" onClick={() => router.push(`/registro/${child.id}/novo`)}>
+      <AppButton variant="outline" fullWidth icon="plus" onClick={() => router.push(recordPath(child.id, dateKey, 'novo'))}>
         Novo momento
       </AppButton>
     </>

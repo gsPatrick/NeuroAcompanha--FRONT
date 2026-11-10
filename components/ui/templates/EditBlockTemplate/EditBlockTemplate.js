@@ -5,7 +5,6 @@ import { useParams, useRouter } from 'next/navigation';
 import AppButton from '@/components/ui/atoms/AppButton/AppButton';
 import AppInput from '@/components/ui/atoms/AppInput/AppInput';
 import { recordId, removeBlockFromDay, renameBlockInDay } from '@/features/records/services/recordsStore';
-import { toDateKey } from '@/utils/calendar';
 import RecordScreen from '../RecordScreen/RecordScreen';
 import styles from './EditBlockTemplate.module.css';
 
@@ -16,12 +15,12 @@ export default function EditBlockTemplate() {
 
   return (
     <RecordScreen childId={childId}>
-      {({ child, record }) => <EditBlockFlow child={child} record={record} />}
+      {({ child, dateKey, record }) => <EditBlockFlow child={child} dateKey={dateKey} record={record} />}
     </RecordScreen>
   );
 }
 
-function EditBlockFlow({ child, record }) {
+function EditBlockFlow({ child, dateKey, record }) {
   const router = useRouter();
   // Momento que estava aberto (o cursor); sem cursor, o registro abriu no primeiro.
   const block = record.blocks.find((item) => item.id === record.cursor) ?? record.blocks[0];
@@ -31,7 +30,7 @@ function EditBlockFlow({ child, record }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const title = name.trim();
-  const id = recordId(child.id, toDateKey(new Date()));
+  const id = recordId(child.id, dateKey);
 
   if (!block) {
     return (

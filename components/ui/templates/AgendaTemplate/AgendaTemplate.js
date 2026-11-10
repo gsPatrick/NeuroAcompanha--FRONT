@@ -11,6 +11,7 @@ import EmptyState from '@/components/ui/molecules/EmptyState/EmptyState';
 import { useChildren } from '@/features/children/hooks/useChildren';
 import { useAgendaEntries } from '@/features/reports/hooks/useAgendaEntries';
 import { addDays, formatRange, formatWeekdayShort, startOfWeek, toDateKey, weekDates } from '@/features/reports/utils/dates';
+import { recordPath } from '@/features/records/hooks/useRecordDate';
 import { STATUS_LABELS, summarizeEntries } from '@/features/reports/utils/reportView';
 import styles from './AgendaTemplate.module.css';
 
@@ -101,7 +102,7 @@ function WeekSection({ students, monday }) {
                 name: child.name.split(' ')[0],
                 status: label,
                 tone: TONES[entry.status],
-                onOpen: entry.record ? () => router.push(`/criancas/${child.id}/dia/${key}`) : undefined,
+                onOpen: ['today', 'done', 'none'].includes(entry.status) ? () => router.push(recordPath(child.id, key)) : undefined,
               };
             });
             return <AgendaDay key={key} weekday={formatWeekdayShort(date)} day={date.getDate()} today={key === toDateKey(new Date())} lines={lines} />;

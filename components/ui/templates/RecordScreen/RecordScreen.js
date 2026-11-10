@@ -8,6 +8,7 @@ import AppSkeleton from '@/components/ui/atoms/AppSkeleton/AppSkeleton';
 import EmptyState from '@/components/ui/molecules/EmptyState/EmptyState';
 import { useChildren } from '@/features/children/hooks/useChildren';
 import { useDayRecord } from '@/features/records/hooks/useDayRecord';
+import { useRecordDate } from '@/features/records/hooks/useRecordDate';
 import { useDayEntries } from '@/features/reports/hooks/useDayEntries';
 import { parseDateKey } from '@/features/reports/utils/dates';
 import styles from './RecordScreen.module.css';
@@ -19,6 +20,8 @@ export default function RecordScreen({ childId, dateKey, children }) {
   const router = useRouter();
   const { status, children: students } = useChildren();
   const child = students.find((item) => item.id === childId);
+  // Dia do registro editável (hoje ou um dia passado, via ?data=).
+  const editDate = useRecordDate();
 
   return (
     <Page noNavbar noToolbar>
@@ -42,15 +45,15 @@ export default function RecordScreen({ childId, dateKey, children }) {
         ) : null}
 
         {status === 'success' && child ? (
-          dateKey ? <LoadedPast child={child} dateKey={dateKey}>{children}</LoadedPast> : <Loaded child={child}>{children}</Loaded>
+          dateKey ? <LoadedPast child={child} dateKey={dateKey}>{children}</LoadedPast> : <Loaded child={child} dateKey={editDate}>{children}</Loaded>
         ) : null}
       </main>
     </Page>
   );
 }
 
-function Loaded({ child, children }) {
-  const day = useDayRecord(child);
+function Loaded({ child, dateKey, children }) {
+  const day = useDayRecord(child, dateKey);
   if (day.status === 'error') {
     return <EmptyState icon="alert" title="Não foi possível carregar" description="Verifique a conexão e tente novamente." actionLabel="Tentar de novo" onAction={day.retry} />;
   }
@@ -61,7 +64,7 @@ function Loaded({ child, children }) {
       </div>
     );
   }
-  return children({ child, ...day });
+  return children({ child, dateKey, ...day });
 }
 
 function LoadedPast({ child, dateKey, children }) {

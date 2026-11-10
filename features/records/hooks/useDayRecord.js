@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toDateKey } from '@/utils/calendar';
+import { parseDateKey } from '@/features/reports/utils/dates';
 import { buildDayBlocks } from '@/features/routine/utils/routine';
 import { isPermanentError } from '@/core/api/apiClient';
 import { useToast } from '@/hooks/useToast';
@@ -9,7 +10,7 @@ import { finishDay, loadRecord, recordId, reopenDay, saveRecord } from '../servi
 
 const newEventId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 
-// Registro de HOJE de um aluno. status: loading | ready | error.
+// Registro de um dia de um aluno (hoje, ou um dia que já passou para preencher/corrigir). status: loading | ready | error.
 //  - blocks:  os momentos do dia (Acolhimento, Aulas, Lanche, Brincadeiras...), montados a partir da rotina na primeira
 //             abertura do dia e depois só dela (mudar a rotina não altera um dia já aberto). Renomear, remover e adicionar são feitos pelas telas próprias (ver recordsStore).
 //  - events:  marcações rápidas { id, blockId, key, at } (uma por marcação em cada momento) e anotações { key: 'note', text }.
@@ -18,7 +19,7 @@ const newEventId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 7)
 //  - cursor:  id do momento em que ela parou (reabre ali).
 //  - record.status: open | finished (o dia foi fechado com `finish`).
 // Salva na API a cada mudança; o `id` inclui a data, então no dia seguinte o registro começa vazio.
-export function useDayRecord(child) {
+export function useDayRecord(child, dateKey = toDateKey(new Date())) {
   const [state, setState] = useState({ status: 'loading', record: null });
   const [attempt, setAttempt] = useState(0);
   const showToast = useToast();
@@ -40,7 +41,6 @@ export function useDayRecord(child) {
   useEffect(() => {
     if (!childId) return undefined;
     let active = true;
-    const dateKey = toDateKey(new Date());
     const id = recordId(childId, dateKey);
     idRef.current = id;
     setState({ status: 'loading', record: null });
@@ -54,7 +54,7 @@ export function useDayRecord(child) {
       }
       // Dia sem momentos (novo, ou reaberto depois de suspenso): recomeça já com a rotina.
       const usable = saved?.blocks.length ? saved : null;
-      const record = usable ?? { id, childId, status: 'open', blocks: buildDayBlocks(routine), events: [], answers: {}, summary: {} };
+      const record = usable ?? { id, childId, status: 'open', blocks: buildDayBlocks(routine, parseDateKey(dateKey)), events: [], answers: {}, summary: {} };
       if (!active) return;
       setState({ status: 'ready', record });
       if (!usable) saveRecord(record).catch(warnUnsaved);
@@ -65,7 +65,7 @@ export function useDayRecord(child) {
     };
     // A rotina só serve para montar o dia pela primeira vez; mudar depois não deve refazer o registro.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [childId, attempt]);
+  }, [childId, dateKey, attempt]);
 
   const update = useCallback((change) => {
     setState((current) => {
@@ -120,10 +120,10 @@ export function useDayRecord(child) {
 
   // Fecha o dia na API. Resolve com { weekReport }: se a semana ficou completa, o relatório já começou a ser gerado.
   const finish = useCallback(async () => {
-    const result = await finishDay(childId, toDateKey(new Date()));
+    const result = await finishDay(childId, dateKey);
     setState((current) => (current.record ? { ...current, record: { ...current.record, status: 'finished' } } : current));
     return result;
-  }, [childId]);
+  }, [childId, dateKey]);
 
   return {
     status: state.status,

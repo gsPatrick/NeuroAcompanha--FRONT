@@ -6,7 +6,6 @@ import AppButton from '@/components/ui/atoms/AppButton/AppButton';
 import AppInput from '@/components/ui/atoms/AppInput/AppInput';
 import { insertBlock, recordId } from '@/features/records/services/recordsStore';
 import { newBlock } from '@/features/routine/utils/routine';
-import { toDateKey } from '@/utils/calendar';
 import RecordScreen from '../RecordScreen/RecordScreen';
 import styles from './NewBlockTemplate.module.css';
 
@@ -17,7 +16,7 @@ export default function NewBlockTemplate() {
 
   return (
     <RecordScreen childId={childId}>
-      {({ child, record }) => <NewBlockForm child={child} record={record} />}
+      {({ child, dateKey, record }) => <NewBlockForm child={child} dateKey={dateKey} record={record} />}
     </RecordScreen>
   );
 }
@@ -34,7 +33,7 @@ function findPlace(record) {
   };
 }
 
-function NewBlockForm({ child, record }) {
+function NewBlockForm({ child, dateKey, record }) {
   const router = useRouter();
   const [name, setName] = useState('');
   const [saving, setSaving] = useState(false);
@@ -48,7 +47,7 @@ function NewBlockForm({ child, record }) {
     setSaving(true);
     setError('');
     try {
-      await insertBlock(recordId(child.id, toDateKey(new Date())), newBlock('other', title), place.afterId);
+      await insertBlock(recordId(child.id, dateKey), newBlock('other', title), place.afterId);
       // Volta ao registro, que reabre já no momento novo.
       router.back();
     } catch {
