@@ -1,8 +1,8 @@
 import { SUMMARY_FIELDS } from '@/features/records/data/prancheta';
 import styles from './SummaryPanel.module.css';
 
-// Resumo do dia (fim da prancheta): cinco campos de texto, salvos enquanto ela escreve.
-export default function SummaryPanel({ summary, onChange }) {
+// Resumo do dia (fim da prancheta): cinco campos de texto, salvos enquanto ela escreve. `readOnly`: só para ler.
+export default function SummaryPanel({ summary, onChange, readOnly = false }) {
   return (
     <div className={styles.panel}>
       {SUMMARY_FIELDS.map((field) => (
@@ -15,7 +15,8 @@ export default function SummaryPanel({ summary, onChange }) {
             className={styles.textarea}
             rows={field.key === 'family' ? 4 : 2}
             value={summary[field.key] ?? ''}
-            onChange={(event) => onChange(field.key, event.target.value)}
+            readOnly={readOnly}
+            onChange={(event) => onChange?.(field.key, event.target.value)}
           />
         </div>
       ))}

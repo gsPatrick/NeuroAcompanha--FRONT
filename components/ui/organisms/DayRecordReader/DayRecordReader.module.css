@@ -1,0 +1,31 @@
+.identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.identityTexts {
+  min-width: 0;
+}
+
+.name {
+  margin: 0;
+  font-size: var(--font-size-title1);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+.date {
+  margin: var(--space-xs) 0 0;
+  font-size: var(--font-size-body);
+  color: var(--color-text-secondary);
+}
+
+.status {
+  margin: var(--space-xs) 0 0;
+  font-size: var(--font-size-subhead);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}

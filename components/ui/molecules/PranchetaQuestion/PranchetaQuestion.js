@@ -6,8 +6,8 @@ import styles from './PranchetaQuestion.module.css';
 //   choice  escolher uma opção (tocar de novo limpa)
 //   check   uma caixinha para marcar
 //   text    um campo de texto
-// `value`: { answer, obs }. `onChange` recebe só o que mudou.
-export default function PranchetaQuestion({ question, value, onChange }) {
+// `value`: { answer, obs }. `onChange` recebe só o que mudou. `readOnly`: só para ler (o relatório do dia).
+export default function PranchetaQuestion({ question, value, onChange, readOnly = false }) {
   const { label, type = 'yesno', options = [] } = question;
   const answer = value?.answer ?? null;
   const toggle = (option) => onChange({ answer: answer === option ? null : option });
@@ -20,7 +20,8 @@ export default function PranchetaQuestion({ question, value, onChange }) {
           <input
             className={styles.text}
             value={value?.obs ?? ''}
-            placeholder="Escreva aqui"
+            placeholder={readOnly ? '' : 'Escreva aqui'}
+            readOnly={readOnly}
             onChange={(event) => onChange({ obs: event.target.value })}
           />
         </label>

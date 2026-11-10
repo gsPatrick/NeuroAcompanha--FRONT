@@ -50,3 +50,8 @@
 .textarea:focus {
   border-color: var(--color-primary);
 }
+
+/* Só para ler: nada responde a toque (a rolagem continua funcionando). */
+.readOnly {
+  pointer-events: none;
+}
