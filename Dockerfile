@@ -8,8 +8,8 @@ FROM node:24-bookworm-slim AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# NEXT_PUBLIC_* é gravado no código na HORA DO BUILD: no Easypanel, passe como Build Arg.
-ARG NEXT_PUBLIC_API_URL
+# NEXT_PUBLIC_* é gravado no código na HORA DO BUILD: no Easypanel, pode passar como Build Arg para trocar o padrão abaixo (API de produção).
+ARG NEXT_PUBLIC_API_URL=https://api.neuroacompanha.com/api
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
