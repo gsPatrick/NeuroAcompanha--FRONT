@@ -48,8 +48,8 @@ export default function LandingTemplate() {
 
             <LandingFeature
               number="3"
-              title="A prancheta de papel, sem o papel"
-              text="As perguntas da prancheta de observação diária ficam dentro de cada momento, com Sim e Não, e só as que fazem sentido ali: chegada no acolhimento, atenção e aprendizagem na aula, interação na brincadeira."
+              title="As perguntas do dia, sem o papel"
+              text="As perguntas da observação diária ficam dentro de cada momento, com Sim e Não, e só as que fazem sentido ali: chegada no acolhimento, atenção e aprendizagem na aula, interação na brincadeira."
               points={['Tudo aberto, em uma rolagem só', 'Resumo do dia no fim, com as suas palavras']}
             >
               <PranchetaPreview />

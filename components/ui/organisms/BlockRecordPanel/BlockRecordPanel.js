@@ -63,7 +63,6 @@ export default function BlockRecordPanel({ record, block, toggleMark, addNote, r
 
       {categories.length ? (
         <section className={styles.group}>
-          <h2 className={styles.groupTitle}>Prancheta</h2>
           <div className={styles.categories}>
             {categories.map((category) => (
               <PranchetaSection

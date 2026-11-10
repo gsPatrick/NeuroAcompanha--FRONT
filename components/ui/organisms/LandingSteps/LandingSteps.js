@@ -3,7 +3,7 @@ import styles from './LandingSteps.module.css';
 const STEPS = [
   { title: 'Cadastre a criança', text: 'Nome, neurodivergências e a rotina: dias de atendimento, acolhimento e aulas.' },
   { title: 'Abra o dia', text: 'O roteiro já aparece montado. Troque o que mudou e acrescente o que apareceu.' },
-  { title: 'Marque durante o atendimento', text: 'Toques rápidos, a prancheta e anotações. Tudo salva na hora e reabre onde você parou.' },
+  { title: 'Marque durante o atendimento', text: 'Toques rápidos, perguntas e anotações. Tudo salva na hora e reabre onde você parou.' },
   { title: 'Feche a semana', text: 'Veja cada dia, confira a agenda e gere o relatório para compartilhar.' },
 ];
 
