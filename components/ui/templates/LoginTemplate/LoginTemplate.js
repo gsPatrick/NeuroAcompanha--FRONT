@@ -45,7 +45,6 @@ export default function LoginTemplate() {
             ) : (
               <LoginGate
                 onConfirm={login.openForm}
-                onSkip={login.skip}
                 onFaceId={login.faceIdAvailable ? login.signInWithFaceId : undefined}
                 enteringWithFaceId={login.enteringWithFaceId}
               />

@@ -11,7 +11,6 @@ import { useToast } from '@/hooks/useToast';
 import { useHistoryStep } from '@/hooks/useHistoryStep';
 import { validateLogin } from '../utils/validateLogin';
 
-const PRESENTATION_ROUTE = '/apresentacao';
 const GATE = 0;
 const FORM = 1;
 
@@ -49,10 +48,6 @@ export function useLogin() {
 
   const openForm = () => goTo(FORM);
   const backToGate = goBack;
-
-  // "Agora não": sem conta não há o que mostrar (os dados vêm da conta), então leva à apresentação do sistema.
-  // Substituir (e não empilhar): o gesto de voltar nunca devolve à tela de login.
-  const skip = () => router.replace(PRESENTATION_ROUTE);
 
   const changeField = (name) => (value) => {
     setValues((current) => ({ ...current, [name]: value }));
@@ -95,5 +90,5 @@ export function useLogin() {
     }
   };
 
-  return { faceIdAvailable, enteringWithFaceId, signInWithFaceId, step, values, errors, submitError, submitting, openForm, backToGate, skip, changeField, submit };
+  return { faceIdAvailable, enteringWithFaceId, signInWithFaceId, step, values, errors, submitError, submitting, openForm, backToGate, changeField, submit };
 }

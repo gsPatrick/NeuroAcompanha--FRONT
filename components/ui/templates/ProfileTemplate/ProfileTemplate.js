@@ -25,7 +25,7 @@ const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
 const monthYear = (iso) => capitalize(new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(new Date(`${iso}T12:00:00`)));
 
 // Perfil da AT: banner com foto, nome e tempo na plataforma; os números do mês; as crianças que ela acompanha;
-// sobre ela; e, no fim, refazer o cadastro, instalar o app, sair e a versão do app.
+// sobre ela; e, no fim, sair e a versão do app.
 export default function ProfileTemplate() {
   const router = useRouter();
   const { status, user, reload } = useUser();
@@ -109,8 +109,6 @@ export default function ProfileTemplate() {
             <h2 className={styles.title}>Mais</h2>
             <AppCard divided large>
               <MenuRow icon="user" label="Editar perfil" onClick={() => router.push('/profile/editar')} />
-              <MenuRow icon="users" label="Refazer cadastro dos alunos" onClick={() => router.push('/onboarding')} />
-              <MenuRow icon="smartphone" label="Instalar o app" onClick={() => router.push('/instalar')} />
               {faceId.supported ? (
                 <MenuRow icon="shield" label={faceId.enabled ? 'Desativar Face ID' : 'Entrar com Face ID'} onClick={faceId.toggle} />
               ) : null}

@@ -3,7 +3,7 @@ import styles from './LoginGate.module.css';
 
 // Primeira etapa do painel: confirma a intenção antes de mostrar o formulário.
 // Com `onFaceId` (aparelho com Face ID ligado), o Face ID vira o caminho principal e e-mail/senha fica logo abaixo.
-export default function LoginGate({ onConfirm, onSkip, onFaceId, enteringWithFaceId = false }) {
+export default function LoginGate({ onConfirm, onFaceId, enteringWithFaceId = false }) {
   return (
     <>
       <div className={styles.texts}>
@@ -18,9 +18,6 @@ export default function LoginGate({ onConfirm, onSkip, onFaceId, enteringWithFac
         ) : null}
         <AppButton variant={onFaceId ? 'outline' : 'primary'} fullWidth disabled={enteringWithFaceId} onClick={onConfirm}>
           {onFaceId ? 'Entrar com e-mail e senha' : 'Sim, entrar'}
-        </AppButton>
-        <AppButton variant="tertiary" fullWidth onClick={onSkip}>
-          Agora não
         </AppButton>
       </div>
     </>
