@@ -1,42 +1,39 @@
-import { buildAttendanceMock } from '@/features/attendance/services/attendance.mock';
+import { buildAttendanceMap, listAttendance } from '@/features/attendance/services/attendanceService';
 import { attendsOn } from '@/features/routine/utils/routine';
 import { getChildren } from '@/features/children/services/childrenService';
 import { getUser } from '@/features/user/services/userService';
-import { dashboardMock } from './dashboard.mock';
+import { toDateKey } from '@/utils/calendar';
 
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// Alunos cadastrados no onboarding têm `conditions`; os dados de exemplo não.
-const isRegistered = (child) => Array.isArray(child.conditions);
+// O calendário mostra os últimos meses; buscamos esse período de uma vez.
+const HISTORY_DAYS = 120;
 
 // Dados de exibição do aluno no cartão do dia.
-const toAppointment = (id, status, child) => ({
-  id,
+const toAppointment = (child) => ({
+  id: `today-${child.id}`,
   childId: child.id,
   // Dia da semana em que a AT atende este aluno (vem da rotina cadastrada).
   attendsToday: attendsOn(child.routine),
-  status,
+  status: 'next',
   child: child.name,
   avatar: child.avatar,
   photo: child.photo ?? undefined,
   diagnoses: child.diagnoses ?? [],
 });
 
-// MOCK: simula a latência da rede para exercitar o estado de carregamento.
-// Troque o corpo por chamadas à API mantendo o mesmo retorno.
+// Tudo da tela inicial: a AT, um cartão por aluno (na ordem do cadastro), os atendimentos de hoje já suspensos
+// e a presença dos últimos dias para o calendário.
 export async function getDashboard() {
-  const [children, user] = await Promise.all([getChildren(), getUser(), wait(500)]);
+  const now = new Date();
+  const today = toDateKey(now);
+  const from = toDateKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() - HISTORY_DAYS));
 
-  let appointments;
-  if (children.some(isRegistered)) {
-    // Alunos cadastrados no onboarding: um cartão para cada um, na ordem do cadastro.
-    appointments = children.map((child) => toAppointment(`today-${child.id}`, 'next', child));
-  } else {
-    const byId = new Map(children.map((child) => [child.id, child]));
-    appointments = dashboardMock.appointments
-      .filter((appointment) => byId.has(appointment.childId))
-      .map((appointment) => toAppointment(appointment.id, appointment.status, byId.get(appointment.childId)));
-  }
+  const [children, user, rows] = await Promise.all([getChildren(), getUser(), listAttendance(from, today)]);
 
-  return { user, appointments, children, attendance: buildAttendanceMock() };
+  return {
+    user,
+    children,
+    appointments: children.map(toAppointment),
+    suspendedIds: rows.filter((row) => row.date === today && row.status === 'suspended').map((row) => `today-${row.childId}`),
+    attendance: buildAttendanceMap(rows, today),
+  };
 }

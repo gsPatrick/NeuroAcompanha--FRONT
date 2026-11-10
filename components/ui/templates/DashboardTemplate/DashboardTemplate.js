@@ -11,7 +11,10 @@ import DashboardSkeleton from '@/features/dashboard/components/DashboardSkeleton
 import TodayAttendance from '@/features/dashboard/components/TodayAttendance/TodayAttendance';
 import { useDashboard } from '@/features/dashboard/hooks/useDashboard';
 import { useRecordedToday } from '@/features/records/hooks/useRecordedToday';
+import { setDaySuspended } from '@/features/records/services/recordsStore';
 import { selectTodayAppointments } from '@/features/dashboard/utils/dashboardView';
+import { useToast } from '@/hooks/useToast';
+import { toDateKey } from '@/utils/calendar';
 import { formatLongDate, getGreeting } from '@/utils/formatDate';
 import styles from './DashboardTemplate.module.css';
 
@@ -47,8 +50,9 @@ export default function DashboardTemplate() {
 }
 
 function DashboardContent({ data, onStartRecord }) {
-  // MOCK: o estado "Suspenso" vale só nesta tela. Com backend, vira o status do atendimento do dia.
-  const [suspendedIds, setSuspendedIds] = useState(() => new Set());
+  // "Suspenso hoje" é o status do atendimento do dia na API: já vem marcado se ele foi suspenso antes.
+  const [suspendedIds, setSuspendedIds] = useState(() => new Set(data.suspendedIds));
+  const showToast = useToast();
 
   const appointments = selectTodayAppointments(data.appointments);
   const recordedIds = useRecordedToday(appointments.map((item) => item.childId));
@@ -56,13 +60,26 @@ function DashboardContent({ data, onStartRecord }) {
   const attending = appointments.filter((item) => item.attendsToday !== false);
   const allSuspended = attending.length > 0 && attending.every((item) => suspendedIds.has(item.id));
 
-  const toggleSuspended = (appointment) =>
-    setSuspendedIds((current) => {
-      const next = new Set(current);
-      if (next.has(appointment.id)) next.delete(appointment.id);
-      else next.add(appointment.id);
-      return next;
-    });
+  // Muda na hora e confirma na API; se não der, volta ao que era e avisa.
+  const toggleSuspended = async (appointment) => {
+    const suspended = !suspendedIds.has(appointment.id);
+    const apply = (value) =>
+      setSuspendedIds((current) => {
+        const next = new Set(current);
+        if (value) next.add(appointment.id);
+        else next.delete(appointment.id);
+        return next;
+      });
+
+    apply(suspended);
+    try {
+      const { weekReport } = await setDaySuspended(appointment.childId, toDateKey(new Date()), suspended);
+      if (weekReport) showToast('Semana completa: o relatório está sendo gerado.');
+    } catch {
+      apply(!suspended);
+      showToast('Não foi possível salvar. Tente de novo.');
+    }
+  };
 
   return (
     <>

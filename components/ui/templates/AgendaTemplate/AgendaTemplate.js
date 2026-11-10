@@ -16,7 +16,7 @@ import styles from './AgendaTemplate.module.css';
 
 const FIRST_WEEKS = 4;
 const MORE_WEEKS = 4;
-const TONES = { done: 'good', suspended: 'alert', today: 'today', off: 'muted', future: 'muted' };
+const TONES = { done: 'good', suspended: 'alert', today: 'today', off: 'muted', future: 'muted', none: 'muted' };
 
 const plural = (count, one, many) => `${count} ${count === 1 ? one : many}`;
 
@@ -87,13 +87,15 @@ function WeekSection({ students, monday }) {
 
       {status === 'loading' ? <AppSkeleton shape="title" /> : null}
 
+      {status === 'error' ? <EmptyState icon="alert" title="Não foi possível carregar" description="Verifique a conexão e tente novamente." /> : null}
+
       {status === 'ready' ? (
         <div className={styles.days}>
           {dates.map((date, index) => {
             const key = toDateKey(date);
             const lines = rows.map(({ child, entries }) => {
               const entry = entries[index];
-              const label = entry.status === 'today' && entry.record ? 'Em andamento' : STATUS_LABELS[entry.status];
+              const label = entry.status === 'today' && entry.record ? (entry.record.status === 'finished' ? 'Atendido' : 'Em andamento') : STATUS_LABELS[entry.status];
               return {
                 id: child.id,
                 name: child.name.split(' ')[0],

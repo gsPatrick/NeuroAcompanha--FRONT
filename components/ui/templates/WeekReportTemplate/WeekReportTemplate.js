@@ -12,14 +12,14 @@ import StatTile from '@/components/ui/molecules/StatTile/StatTile';
 import { useChild } from '@/features/children/hooks/useChild';
 import { useDayEntries } from '@/features/reports/hooks/useDayEntries';
 import { addDays, formatRange, formatWeekdayShort, parseDateKey, startOfWeek, toDateKey, weekDates } from '@/features/reports/utils/dates';
-import { buildWeekReportText } from '@/features/reports/utils/reportText';
-import { useUser } from '@/features/user/hooks/useUser';
+import { downloadWeekReportPdf, getWeekReport, requestWeekReport, waitForWeekReport } from '@/features/reports/services/reportService';
+import { deliverFile } from '@/features/reports/utils/deliverFile';
 import { useToast } from '@/hooks/useToast';
 import { STATUS_LABELS, summarizeEntries, summarizeRecord } from '@/features/reports/utils/reportView';
 import styles from './WeekReportTemplate.module.css';
 
 const plural = (count, one, many) => `${count} ${count === 1 ? one : many}`;
-const TONES = { done: 'good', suspended: 'alert', today: 'today', off: 'muted', future: 'muted' };
+const TONES = { done: 'good', suspended: 'alert', today: 'today', off: 'muted', future: 'muted', none: 'muted' };
 
 // Relatório de uma semana de uma criança: os totais e, para cada dia, o que foi preenchido.
 // Tocar num dia com registro abre o dia. As setas passam para a semana anterior e a próxima.
@@ -52,23 +52,33 @@ function WeekContent({ child, firstMonday }) {
   const { status, entries } = useDayEntries(child, dates);
   const totals = summarizeEntries(entries);
   const showToast = useToast();
-  const { user } = useUser();
+  const [generating, setGenerating] = useState(false);
   const isCurrentWeek = toDateKey(monday) === toDateKey(startOfWeek(new Date()));
 
-  // Monta o texto da semana e abre o compartilhar do celular (WhatsApp, Arquivos...); sem ele, copia para colar onde quiser.
+  // Entrega o PDF do relatório da semana. Se ainda não existe (ou algum dia mudou depois de gerado), manda a API gerar e
+  // espera ficar pronto; no celular abre o compartilhar, no computador baixa.
   const generate = async () => {
-    const text = buildWeekReportText({ child, entries, monday, last: dates[dates.length - 1], author: user?.firstName });
-    const title = `Relatório semanal — ${child.name}`;
+    const weekStart = toDateKey(monday);
+    setGenerating(true);
     try {
-      if (typeof navigator.share === 'function') {
-        await navigator.share({ title, text });
-        return;
+      let report = await getWeekReport(child.id, weekStart);
+      const lastChange = entries.reduce((latest, entry) => (entry.updatedAt && entry.updatedAt > latest ? entry.updatedAt : latest), '');
+      const outdated = report?.status === 'ready' && report.generatedAt && lastChange > report.generatedAt;
+
+      if (!report || report.status === 'failed' || outdated) {
+        showToast('Gerando o relatório. Pode levar alguns instantes.');
+        report = await requestWeekReport(child.id, weekStart);
       }
-      await navigator.clipboard.writeText(text);
-      showToast('Relatório copiado. Cole onde quiser.');
+      report = await waitForWeekReport(child.id, weekStart, report);
+      if (report?.status !== 'ready') throw new Error(report?.errorMessage ? 'Não foi possível gerar o relatório.' : 'O relatório não ficou pronto.');
+
+      const pdf = await downloadWeekReportPdf(child.id, weekStart);
+      await deliverFile(pdf, `Relatorio-${child.name.split(' ')[0]}-${weekStart}.pdf`, `Relatório semanal — ${child.name}`);
     } catch (error) {
       // Fechar a folha de compartilhar não é erro.
-      if (error?.name !== 'AbortError') showToast('Não foi possível gerar o relatório.');
+      if (error?.name !== 'AbortError') showToast(error?.message || 'Não foi possível gerar o relatório.');
+    } finally {
+      setGenerating(false);
     }
   };
 
@@ -88,11 +98,13 @@ function WeekContent({ child, firstMonday }) {
         </button>
       </div>
 
-      <AppButton icon="chart" fullWidth disabled={status !== 'ready'} onClick={generate}>
+      <AppButton icon="chart" fullWidth loading={generating} disabled={status !== 'ready'} onClick={generate}>
         Gerar relatório
       </AppButton>
 
       {status === 'loading' ? <AppSkeleton shape="title" /> : null}
+
+      {status === 'error' ? <EmptyState icon="alert" title="Não foi possível carregar" description="Verifique a conexão e tente novamente." /> : null}
 
       {status === 'ready' ? (
         <>

@@ -14,7 +14,8 @@ export function useRecordedToday(childIds) {
     const today = toDateKey(new Date());
     Promise.all(
       childIds.map(async (id) => {
-        const record = await loadRecord(recordId(id, today));
+        // Sem conseguir ler (rede), o cartão só não mostra "Continuar registro".
+        const record = await loadRecord(recordId(id, today)).catch(() => null);
         const has = record && (record.events?.length || Object.keys(record.answers ?? {}).length || Object.values(record.summary ?? {}).some((text) => text?.trim()));
         return has ? id : null;
       }),

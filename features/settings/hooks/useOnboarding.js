@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useHistoryStep } from '@/hooks/useHistoryStep';
-import { saveStudents } from '@/features/students/services/studentsStore';
+import { loadStudents, saveStudents } from '@/features/students/services/studentsService';
 import { createDefaultRoutine, DEFAULT_CLASSES } from '@/features/routine/utils/routine';
 import { pickDefaultAvatar } from '@/features/students/utils/defaultAvatar';
 import { usePreferences } from './usePreferences';
@@ -53,6 +53,26 @@ export function useOnboarding() {
   const stepIndex = Math.min(rawStepIndex, steps.length - 1);
   const step = steps[stepIndex];
   const student = step.student === undefined ? null : students[step.student];
+
+  // "Refazer cadastro": parte dos alunos que já existem (com o mesmo id, para os registros e relatórios continuarem deles).
+  // Na primeira vez a lista vem vazia e vale o rascunho em branco.
+  useEffect(() => {
+    let active = true;
+    loadStudents()
+      .then((existing) => {
+        if (!active || !existing.length) return;
+        setStudents(existing.map((item, index) => ({ ...item, order: index, avatar: item.avatar ?? pickDefaultAvatar(index) })));
+        preferencesApi.setDailyChildren(existing.length);
+      })
+      .catch(() => {
+        // Sem conseguir ler (rede): segue com o rascunho em branco.
+      });
+    return () => {
+      active = false;
+    };
+    // Só na abertura da tela.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Ao mudar de etapa, o aviso de erro do nome some.
   useEffect(() => {
@@ -149,7 +169,7 @@ export function useOnboarding() {
       preferencesApi.completeOnboarding();
       router.replace('/');
     } catch {
-      setSaveError('Não foi possível salvar os dados neste aparelho. Tente de novo.');
+      setSaveError('Não foi possível salvar o cadastro. Verifique a conexão e tente de novo.');
       setSaving(false);
     }
   };

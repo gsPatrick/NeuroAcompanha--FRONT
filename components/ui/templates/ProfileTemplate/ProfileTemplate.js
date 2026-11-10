@@ -10,12 +10,13 @@ import MenuRow from '@/components/ui/molecules/MenuRow/MenuRow';
 import StatTile from '@/components/ui/molecules/StatTile/StatTile';
 import ProfileBanner from '@/components/ui/organisms/ProfileBanner/ProfileBanner';
 import AppVersionSetting from '@/features/app-update/components/AppVersionSetting/AppVersionSetting';
+import { useFaceId } from '@/features/auth/hooks/useFaceId';
 import { endSession } from '@/features/auth/services/sessionService';
+import { useMonthAttendance } from '@/features/attendance/hooks/useMonthAttendance';
 import { useChildren } from '@/features/children/hooks/useChildren';
 import { describeAttendanceDays } from '@/features/routine/utils/routine';
 import { useUser } from '@/features/user/hooks/useUser';
 import { formatTenure } from '@/features/user/utils/formatTenure';
-import { countMonthAttendance } from '@/features/user/utils/monthStats';
 import styles from './ProfileTemplate.module.css';
 
 const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
@@ -27,7 +28,8 @@ export default function ProfileTemplate() {
   const router = useRouter();
   const { status, user } = useUser();
   const { children } = useChildren();
-  const month = countMonthAttendance(children);
+  const month = useMonthAttendance();
+  const faceId = useFaceId();
 
   const logout = () => {
     endSession();
@@ -97,6 +99,9 @@ export default function ProfileTemplate() {
             <AppCard divided large>
               <MenuRow icon="users" label="Refazer cadastro dos alunos" onClick={() => router.push('/onboarding')} />
               <MenuRow icon="smartphone" label="Instalar o app" onClick={() => router.push('/instalar')} />
+              {faceId.supported ? (
+                <MenuRow icon="shield" label={faceId.enabled ? 'Desativar Face ID' : 'Entrar com Face ID'} onClick={faceId.toggle} />
+              ) : null}
               <MenuRow icon="logout" label="Sair da conta" destructive onClick={logout} />
             </AppCard>
           </section>

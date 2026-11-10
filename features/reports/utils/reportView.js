@@ -38,4 +38,5 @@ export const STATUS_LABELS = {
   today: 'Hoje',
   off: 'Não atende',
   future: 'Ainda não chegou',
+  none: 'Sem registro',
 };

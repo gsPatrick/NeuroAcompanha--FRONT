@@ -8,6 +8,7 @@ import BlockStepper from '@/components/ui/molecules/BlockStepper/BlockStepper';
 import BlockRecordPanel from '@/components/ui/organisms/BlockRecordPanel/BlockRecordPanel';
 import SummaryPanel from '@/components/ui/organisms/SummaryPanel/SummaryPanel';
 import { countAnswered } from '@/features/records/utils/recordView';
+import { useToast } from '@/hooks/useToast';
 import { formatLongDate } from '@/utils/formatDate';
 import RecordScreen from '../RecordScreen/RecordScreen';
 import styles from './RecordTemplate.module.css';
@@ -26,8 +27,10 @@ export default function RecordTemplate() {
   );
 }
 
-function RecordContent({ child, record, toggleMark, addNote, removeEvent, setAnswer, setSummary, setCursor }) {
+function RecordContent({ child, record, toggleMark, addNote, removeEvent, setAnswer, setSummary, setCursor, finish }) {
   const router = useRouter();
+  const showToast = useToast();
+  const [finishing, setFinishing] = useState(false);
   // Reabre no momento em que ela parou (ou no primeiro, se o registro de hoje é novo).
   const [chosenId, setChosenId] = useState(record.cursor ?? record.blocks[0]?.id ?? SUMMARY_ID);
 
@@ -55,6 +58,19 @@ function RecordContent({ child, record, toggleMark, addNote, removeEvent, setAns
   ];
 
   const nextTab = tabs[tabs.findIndex((tab) => tab.id === selectedId) + 1];
+
+  // Fecha o dia. Se era o último dia de atendimento da semana, a API já começa a gerar o relatório.
+  const finishDay = async () => {
+    setFinishing(true);
+    try {
+      const { weekReport } = await finish();
+      showToast(weekReport ? 'Dia finalizado. Semana completa: o relatório está sendo gerado.' : 'Dia finalizado.');
+      router.back();
+    } catch (error) {
+      showToast(error?.message || 'Não foi possível finalizar o dia.');
+      setFinishing(false);
+    }
+  };
 
   return (
     <>
@@ -94,6 +110,12 @@ function RecordContent({ child, record, toggleMark, addNote, removeEvent, setAns
       {nextTab ? (
         <AppButton fullWidth icon="arrowRight" onClick={() => select(nextTab.id)}>
           Próximo: {nextTab.label}
+        </AppButton>
+      ) : null}
+
+      {showingSummary ? (
+        <AppButton fullWidth icon="check" loading={finishing} onClick={finishDay}>
+          {record.status === 'finished' ? 'Finalizar de novo' : 'Finalizar o dia'}
         </AppButton>
       ) : null}
 

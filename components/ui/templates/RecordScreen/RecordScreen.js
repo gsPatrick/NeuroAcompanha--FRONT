@@ -51,6 +51,9 @@ export default function RecordScreen({ childId, dateKey, children }) {
 
 function Loaded({ child, children }) {
   const day = useDayRecord(child);
+  if (day.status === 'error') {
+    return <EmptyState icon="alert" title="Não foi possível carregar" description="Verifique a conexão e tente novamente." actionLabel="Tentar de novo" onAction={day.retry} />;
+  }
   if (day.status !== 'ready') {
     return (
       <div className={styles.loading}>
@@ -64,6 +67,9 @@ function Loaded({ child, children }) {
 function LoadedPast({ child, dateKey, children }) {
   const date = useMemo(() => parseDateKey(dateKey), [dateKey]);
   const { status, entries } = useDayEntries(child, [date]);
+  if (status === 'error') {
+    return <EmptyState icon="alert" title="Não foi possível carregar" description="Verifique a conexão e volte para tentar de novo." />;
+  }
   if (status !== 'ready') {
     return (
       <div className={styles.loading}>

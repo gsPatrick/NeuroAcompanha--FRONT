@@ -43,7 +43,12 @@ export default function LoginTemplate() {
                 onForgotPassword={() => showToast(COMING_SOON_MESSAGE)}
               />
             ) : (
-              <LoginGate onConfirm={login.openForm} onSkip={login.skip} />
+              <LoginGate
+                onConfirm={login.openForm}
+                onSkip={login.skip}
+                onFaceId={login.faceIdAvailable ? login.signInWithFaceId : undefined}
+                enteringWithFaceId={login.enteringWithFaceId}
+              />
             )}
           </div>
         </section>

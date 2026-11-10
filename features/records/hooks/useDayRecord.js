@@ -3,54 +3,78 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toDateKey } from '@/utils/calendar';
 import { buildDayBlocks } from '@/features/routine/utils/routine';
-import { loadRecord, recordId, saveRecord } from '../services/recordsStore';
+import { isPermanentError } from '@/core/api/apiClient';
+import { useToast } from '@/hooks/useToast';
+import { finishDay, loadRecord, recordId, reopenDay, saveRecord } from '../services/recordsStore';
 
 const newEventId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 
-// Registro de HOJE de um aluno. status: loading | ready.
+// Registro de HOJE de um aluno. status: loading | ready | error.
 //  - blocks:  os momentos do dia (Acolhimento, Aulas, Lanche, Brincadeiras...), montados a partir da rotina na primeira
 //             abertura do dia e depois só dela (mudar a rotina não altera um dia já aberto). Renomear, remover e adicionar são feitos pelas telas próprias (ver recordsStore).
 //  - events:  marcações rápidas { id, blockId, key, at } (uma por marcação em cada momento) e anotações { key: 'note', text }.
 //  - answers: prancheta { [blockId]: { [pergunta]: { answer: 'yes' | 'no' | null, obs } } }.
 //  - summary: Resumo do dia { easy, hard, worked, progress, family }.
 //  - cursor:  id do momento em que ela parou (reabre ali).
-// Salva a cada mudança; o `id` inclui a data, então no dia seguinte o registro começa vazio.
+//  - record.status: open | finished (o dia foi fechado com `finish`).
+// Salva na API a cada mudança; o `id` inclui a data, então no dia seguinte o registro começa vazio.
 export function useDayRecord(child) {
   const [state, setState] = useState({ status: 'loading', record: null });
+  const [attempt, setAttempt] = useState(0);
+  const showToast = useToast();
+  const lastWarningAt = useRef(0);
   const idRef = useRef(null);
   const childId = child?.id;
   const routine = child?.routine;
 
+  // Avisa que não conseguiu salvar (no máximo a cada 15 s, para não repetir a cada toque).
+  const warnUnsaved = useCallback(
+    (error) => {
+      if (Date.now() - lastWarningAt.current < 15000) return;
+      lastWarningAt.current = Date.now();
+      showToast(isPermanentError(error) ? 'Não foi possível salvar o registro.' : 'Sem conexão. O registro será salvo quando a internet voltar.');
+    },
+    [showToast],
+  );
+
   useEffect(() => {
     if (!childId) return undefined;
     let active = true;
-    const id = recordId(childId, toDateKey(new Date()));
+    const dateKey = toDateKey(new Date());
+    const id = recordId(childId, dateKey);
     idRef.current = id;
-    loadRecord(id).then((saved) => {
+    setState({ status: 'loading', record: null });
+
+    (async () => {
+      let saved = await loadRecord(id);
+      // Dia suspenso não recebe registro: quem abre o registro está atendendo, então o dia volta a valer.
+      if (saved?.status === 'suspended') {
+        await reopenDay(childId, dateKey);
+        saved = await loadRecord(id);
+      }
+      // Dia sem momentos (novo, ou reaberto depois de suspenso): recomeça já com a rotina.
+      const usable = saved?.blocks.length ? saved : null;
+      const record = usable ?? { id, childId, status: 'open', blocks: buildDayBlocks(routine), events: [], answers: {}, summary: {} };
       if (!active) return;
-      // Registro de uma versão anterior do app (sem blocos): recomeça o dia já com a rotina.
-      const usable = saved?.blocks ? saved : null;
-      const record = usable ?? { id, childId, blocks: buildDayBlocks(routine), events: [], answers: {}, summary: {} };
       setState({ status: 'ready', record });
-      if (!usable) saveRecord(record).catch(() => {});
-    });
+      if (!usable) saveRecord(record).catch(warnUnsaved);
+    })().catch(() => active && setState({ status: 'error', record: null }));
+
     return () => {
       active = false;
     };
     // A rotina só serve para montar o dia pela primeira vez; mudar depois não deve refazer o registro.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [childId]);
+  }, [childId, attempt]);
 
   const update = useCallback((change) => {
     setState((current) => {
       if (!current.record) return current;
       const record = change(current.record);
-      saveRecord(record).catch(() => {
-        // Sem persistência: o registro vale só enquanto o app está aberto.
-      });
+      saveRecord(record).catch(warnUnsaved);
       return { ...current, record };
     });
-  }, []);
+  }, [warnUnsaved]);
 
   // Cada marcação vale uma vez por momento: tocar marca (com o horário) e tocar de novo desmarca.
   const toggleMark = useCallback(
@@ -94,9 +118,18 @@ export function useDayRecord(child) {
     [update],
   );
 
+  // Fecha o dia na API. Resolve com { weekReport }: se a semana ficou completa, o relatório já começou a ser gerado.
+  const finish = useCallback(async () => {
+    const result = await finishDay(childId, toDateKey(new Date()));
+    setState((current) => (current.record ? { ...current, record: { ...current.record, status: 'finished' } } : current));
+    return result;
+  }, [childId]);
+
   return {
     status: state.status,
     record: state.record,
+    retry: () => setAttempt((current) => current + 1),
+    finish,
     toggleMark,
     addNote,
     removeEvent,
