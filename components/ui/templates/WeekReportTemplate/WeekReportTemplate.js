@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import AppLayout from '@/components/layout/AppLayout/AppLayout';
 import AppButton from '@/components/ui/atoms/AppButton/AppButton';
@@ -56,25 +56,51 @@ function WeekContent({ child, firstMonday }) {
   const [generating, setGenerating] = useState(false);
   const isCurrentWeek = toDateKey(monday) === toDateKey(startOfWeek(new Date()));
 
-  // Entrega o PDF do relatório da semana. Se ainda não existe (ou algum dia mudou depois de gerado), manda a API gerar e
-  // espera ficar pronto; no celular abre o compartilhar, no computador baixa.
+  // Relatório que acabou de ser gerado e já está baixado, esperando um toque (ver `generate`). Trocar de semana descarta.
+  const [ready, setReady] = useState(null);
+  const weekKey = toDateKey(monday);
+  useEffect(() => setReady(null), [weekKey]);
+
+  // Entrega o arquivo: no celular abre o compartilhar, no computador baixa.
+  const deliver = async (file) => {
+    await deliverFile(file.blob, file.fileName, `Relatório semanal — ${child.name}`);
+    setReady(null);
+  };
+
+  // Relatório da semana em PDF.
+  //  - Já existe: só entrega o que foi gerado (não gera de novo). Se algum dia mudou depois, finalizar o dia de novo
+  //    regenera o relatório sozinho.
+  //  - Ainda não existe (ou a tentativa anterior falhou): manda a API gerar e espera. Como isso demora, o celular já não
+  //    deixa abrir o compartilhar sem um toque novo: o botão vira "Baixar relatório" e o arquivo sai nesse toque.
   const generate = async () => {
-    const weekStart = toDateKey(monday);
+    if (ready) {
+      try {
+        await deliver(ready);
+      } catch (error) {
+        if (error?.name !== 'AbortError') showToast('Não foi possível abrir o relatório. Tente de novo.');
+      }
+      return;
+    }
+
     setGenerating(true);
     try {
-      let report = await getWeekReport(child.id, weekStart);
-      const lastChange = entries.reduce((latest, entry) => (entry.updatedAt && entry.updatedAt > latest ? entry.updatedAt : latest), '');
-      const outdated = report?.status === 'ready' && report.generatedAt && lastChange > report.generatedAt;
+      let report = await getWeekReport(child.id, weekKey);
+      const needsWaiting = !report || report.status === 'failed' || report.status === 'generating';
 
-      if (!report || report.status === 'failed' || outdated) {
+      if (!report || report.status === 'failed') {
         showToast('Gerando o relatório. Pode levar alguns instantes.');
-        report = await requestWeekReport(child.id, weekStart);
+        report = await requestWeekReport(child.id, weekKey);
       }
-      report = await waitForWeekReport(child.id, weekStart, report);
+      report = await waitForWeekReport(child.id, weekKey, report);
       if (report?.status !== 'ready') throw new Error(report?.errorMessage ? 'Não foi possível gerar o relatório.' : 'O relatório não ficou pronto.');
 
-      const pdf = await downloadWeekReportPdf(child.id, weekStart);
-      await deliverFile(pdf, `Relatorio-${child.name.split(' ')[0]}-${weekStart}.pdf`, `Relatório semanal — ${child.name}`);
+      const file = { blob: await downloadWeekReportPdf(child.id, weekKey), fileName: `Relatorio-${child.name.split(' ')[0]}-${weekKey}.pdf` };
+      if (needsWaiting) {
+        setReady(file);
+        showToast('Relatório pronto! Toque em "Baixar relatório".');
+      } else {
+        await deliver(file);
+      }
     } catch (error) {
       // Fechar a folha de compartilhar não é erro.
       if (error?.name !== 'AbortError') showToast(error?.message || 'Não foi possível gerar o relatório.');
@@ -99,8 +125,8 @@ function WeekContent({ child, firstMonday }) {
         </button>
       </div>
 
-      <AppButton icon="chart" fullWidth loading={generating} disabled={status !== 'ready'} onClick={generate}>
-        Gerar relatório
+      <AppButton icon={ready ? 'file' : 'chart'} fullWidth loading={generating} disabled={status !== 'ready'} onClick={generate}>
+        {ready ? 'Baixar relatório' : 'Gerar relatório'}
       </AppButton>
 
       {status === 'loading' ? <AppSkeleton shape="title" /> : null}
