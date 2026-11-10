@@ -34,3 +34,14 @@ export function describeBlockProgress(record, blockId) {
 export function formatTime(timestamp) {
   return new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' }).format(new Date(timestamp));
 }
+
+// Momento em que o registro reabre: onde ela parou (cursor) ou, num dia que já tem conteúdo mas nunca guardou onde parou,
+// o último momento preenchido. Dia em branco começa no primeiro.
+export function findResumeBlockId(record) {
+  // 'summary' = parou no Resumo do dia.
+  if (record.cursor === 'summary' || (record.cursor && record.blocks.some((block) => block.id === record.cursor))) return record.cursor;
+  const filled = record.blocks.filter(
+    (block) => record.events.some((event) => event.blockId === block.id) || countAnswered(record.answers, block.id) > 0,
+  );
+  return (filled.at(-1) ?? record.blocks[0])?.id;
+}

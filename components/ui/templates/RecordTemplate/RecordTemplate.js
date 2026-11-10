@@ -9,7 +9,7 @@ import BlockRecordPanel from '@/components/ui/organisms/BlockRecordPanel/BlockRe
 import SummaryPanel from '@/components/ui/organisms/SummaryPanel/SummaryPanel';
 import { recordPath } from '@/features/records/hooks/useRecordDate';
 import { parseDateKey } from '@/features/reports/utils/dates';
-import { countAnswered } from '@/features/records/utils/recordView';
+import { countAnswered, findResumeBlockId } from '@/features/records/utils/recordView';
 import { useToast } from '@/hooks/useToast';
 import { formatLongDate } from '@/utils/formatDate';
 import RecordScreen from '../RecordScreen/RecordScreen';
@@ -33,8 +33,8 @@ function RecordContent({ child, dateKey, record, toggleMark, addNote, removeEven
   const router = useRouter();
   const showToast = useToast();
   const [finishing, setFinishing] = useState(false);
-  // Reabre no momento em que ela parou (ou no primeiro, se o registro de hoje é novo).
-  const [chosenId, setChosenId] = useState(record.cursor ?? record.blocks[0]?.id ?? SUMMARY_ID);
+  // Reabre no momento em que ela parou (ou no primeiro, se o registro é novo).
+  const [chosenId, setChosenId] = useState(findResumeBlockId(record) ?? SUMMARY_ID);
 
   // Se o momento escolhido deixou de existir (foi removido), volta para o primeiro.
   const block = record.blocks.find((item) => item.id === chosenId);

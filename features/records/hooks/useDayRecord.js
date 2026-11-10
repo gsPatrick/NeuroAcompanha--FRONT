@@ -84,14 +84,15 @@ export function useDayRecord(child, dateKey = toDateKey(new Date())) {
         const events = marked
           ? record.events.filter((event) => !(event.blockId === blockId && event.key === key))
           : [...record.events, { id: newEventId(), blockId, key, at: Date.now() }];
-        return { ...record, events };
+        // O momento em que ela mexeu por último é onde o registro reabre.
+        return { ...record, events, cursor: blockId };
       }),
     [update],
   );
 
   const addNote = useCallback(
     (blockId, text) =>
-      update((record) => ({ ...record, events: [...record.events, { id: newEventId(), blockId, key: 'note', at: Date.now(), text }] })),
+      update((record) => ({ ...record, events: [...record.events, { id: newEventId(), blockId, key: 'note', at: Date.now(), text }], cursor: blockId })),
     [update],
   );
 
@@ -105,7 +106,7 @@ export function useDayRecord(child, dateKey = toDateKey(new Date())) {
       update((record) => {
         const block = record.answers[blockId] ?? {};
         const current = block[question] ?? { answer: null, obs: '' };
-        return { ...record, answers: { ...record.answers, [blockId]: { ...block, [question]: { ...current, ...patch } } } };
+        return { ...record, answers: { ...record.answers, [blockId]: { ...block, [question]: { ...current, ...patch } } }, cursor: blockId };
       }),
     [update],
   );

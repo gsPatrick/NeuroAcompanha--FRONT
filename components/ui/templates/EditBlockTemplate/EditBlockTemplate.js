@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import AppButton from '@/components/ui/atoms/AppButton/AppButton';
 import AppInput from '@/components/ui/atoms/AppInput/AppInput';
+import { findResumeBlockId } from '@/features/records/utils/recordView';
 import { recordId, removeBlockFromDay, renameBlockInDay } from '@/features/records/services/recordsStore';
 import RecordScreen from '../RecordScreen/RecordScreen';
 import styles from './EditBlockTemplate.module.css';
@@ -23,7 +24,7 @@ export default function EditBlockTemplate() {
 function EditBlockFlow({ child, dateKey, record }) {
   const router = useRouter();
   // Momento que estava aberto (o cursor); sem cursor, o registro abriu no primeiro.
-  const block = record.blocks.find((item) => item.id === record.cursor) ?? record.blocks[0];
+  const block = record.blocks.find((item) => item.id === findResumeBlockId(record)) ?? record.blocks[0];
   const [mode, setMode] = useState('choose'); // choose | rename | remove
   // Já vem com o nome atual: dá para mexer só numa parte (corrigir ou acrescentar), sem digitar tudo de novo.
   const [name, setName] = useState(block?.title ?? '');

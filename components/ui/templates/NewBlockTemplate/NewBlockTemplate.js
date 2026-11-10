@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import AppButton from '@/components/ui/atoms/AppButton/AppButton';
 import AppInput from '@/components/ui/atoms/AppInput/AppInput';
+import { findResumeBlockId } from '@/features/records/utils/recordView';
 import { insertBlock, recordId } from '@/features/records/services/recordsStore';
 import { newBlock } from '@/features/routine/utils/routine';
 import RecordScreen from '../RecordScreen/RecordScreen';
@@ -24,7 +25,8 @@ export default function NewBlockTemplate() {
 // Onde o momento novo entra: depois do que estava aberto (o cursor do registro), ou no fim se ela estava no Resumo.
 function findPlace(record) {
   // Sem cursor, o registro abriu no primeiro momento; no Resumo (ou com momento que não existe mais), vai para o fim.
-  const index = record.cursor ? record.blocks.findIndex((block) => block.id === record.cursor) : 0;
+  const resumeId = findResumeBlockId(record);
+  const index = resumeId ? record.blocks.findIndex((block) => block.id === resumeId) : 0;
   const afterIndex = index === -1 ? record.blocks.length - 1 : index;
   return {
     afterId: record.blocks[afterIndex]?.id,
