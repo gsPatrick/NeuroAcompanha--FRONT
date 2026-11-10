@@ -27,7 +27,7 @@ export async function getDashboard() {
   const today = toDateKey(now);
   const from = toDateKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() - HISTORY_DAYS));
 
-  const [children, user, rows] = await Promise.all([getChildren(), getUser(), listAttendance(from, today)]);
+  const [children, user, rows] = await Promise.all([getChildren(), getUser(), listAttendance(from, today, 'attendance:dashboard')]);
 
   return {
     user,

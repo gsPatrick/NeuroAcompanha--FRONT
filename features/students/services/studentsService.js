@@ -1,4 +1,5 @@
 import { apiRequest } from '@/core/api/apiClient';
+import { cachedRequest } from '@/core/offline/cache';
 import { createDefaultRoutine } from '@/features/routine/utils/routine';
 import { formatConditionList } from '../utils/formatConditions';
 
@@ -20,9 +21,9 @@ export const toStudent = (child) => ({
   startedAt: child.startedAt ?? undefined,
 });
 
-// Alunos da AT, na ordem do cadastro.
+// Alunos da AT, na ordem do cadastro. Sem internet, vale a última lista guardada no aparelho.
 export async function loadStudents() {
-  const children = await apiRequest('/children');
+  const children = await cachedRequest('children', () => apiRequest('/children'));
   return children.map(toStudent);
 }
 

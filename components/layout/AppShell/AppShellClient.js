@@ -6,6 +6,7 @@ import Framework7React, { App, View } from 'framework7-react';
 import Splash from '@/components/layout/Splash/Splash';
 import UpdateBanner from '@/components/layout/UpdateBanner/UpdateBanner';
 import { framework7Params } from '@/core/framework7/framework7.config';
+import { APP_VERSION } from '@/constants/appVersion';
 import { useAuthGate } from '@/features/auth/hooks/useAuthGate';
 import { useAppUpdate } from '@/features/app-update/hooks/useAppUpdate';
 import { useInstallGate } from '@/features/install/hooks/useInstallGate';
@@ -17,6 +18,14 @@ const SPLASH_MIN_MS = 1100;
 const SPLASH_FADE_MS = 300;
 
 export default function AppShellClient({ children }) {
+  // Service worker: faz o app abrir sem internet (só em produção; em desenvolvimento atrapalharia o recarregamento).
+  // A versão vai na URL: cada publicação nova instala o worker novo.
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+      navigator.serviceWorker.register(`/sw.js?v=${encodeURIComponent(APP_VERSION)}`, { scope: '/' }).catch(() => {});
+    }
+  }, []);
+
   // Vibração curta em todo toque em algo interativo (um único ouvinte para o app inteiro).
   useEffect(() => installHaptics(), []);
 

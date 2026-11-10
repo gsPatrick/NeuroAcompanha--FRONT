@@ -15,9 +15,15 @@ export class ApiError extends Error {
   }
 }
 
+// Sem internet ou servidor fora do ar: o que ficou pendente deve esperar e tentar de novo depois.
+export const isOfflineError = (error) => error instanceof ApiError && (error.status === 0 || error.status >= 500 || error.status === 408 || error.status === 429);
+
 // Erro que não adianta repetir (pedido inválido, sem permissão, não encontrado...). Rede e servidor fora do ar, sim.
 export const isPermanentError = (error) =>
   error instanceof ApiError && error.status >= 400 && error.status < 500 && ![408, 429].includes(error.status);
+
+// Sem resposta em tanto tempo = trata como sem conexão (o que está pendente fica na fila e sai depois).
+const TIMEOUT_MS = 20000;
 
 const NETWORK_MESSAGE = 'Sem conexão com o servidor. Verifique a internet e tente de novo.';
 
@@ -30,8 +36,11 @@ function buildUrl(path, query) {
 async function send(path, { method = 'GET', body, query } = {}) {
   const token = getToken();
   let response;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
     response = await fetch(buildUrl(path, query), {
+      signal: controller.signal,
       method,
       headers: { ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}), ...(token ? { Authorization: `Bearer ${token}` } : {}) },
       body: body !== undefined ? JSON.stringify(body) : undefined,
@@ -39,6 +48,8 @@ async function send(path, { method = 'GET', body, query } = {}) {
     });
   } catch {
     throw new ApiError(0, 'NETWORK', NETWORK_MESSAGE);
+  } finally {
+    clearTimeout(timer);
   }
 
   if (response.ok) return response;

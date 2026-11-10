@@ -4,8 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { toDateKey } from '@/utils/calendar';
 import { parseDateKey } from '@/features/reports/utils/dates';
 import { buildDayBlocks } from '@/features/routine/utils/routine';
-import { isPermanentError } from '@/core/api/apiClient';
-import { useToast } from '@/hooks/useToast';
+import { isOfflineError } from '@/core/api/apiClient';
 import { finishDay, loadRecord, recordId, reopenDay, saveRecord } from '../services/recordsStore';
 
 const newEventId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -18,25 +17,13 @@ const newEventId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 7)
 //  - summary: Resumo do dia { easy, hard, worked, progress, family }.
 //  - cursor:  id do momento em que ela parou (reabre ali).
 //  - record.status: open | finished (o dia foi fechado com `finish`).
-// Salva na API a cada mudança; o `id` inclui a data, então no dia seguinte o registro começa vazio.
+// Salva no aparelho a cada mudança (e a fila leva para a API, mesmo sem internet); o `id` inclui a data, então no dia seguinte o registro começa vazio.
 export function useDayRecord(child, dateKey = toDateKey(new Date())) {
   const [state, setState] = useState({ status: 'loading', record: null });
   const [attempt, setAttempt] = useState(0);
-  const showToast = useToast();
-  const lastWarningAt = useRef(0);
   const idRef = useRef(null);
   const childId = child?.id;
   const routine = child?.routine;
-
-  // Avisa que não conseguiu salvar (no máximo a cada 15 s, para não repetir a cada toque).
-  const warnUnsaved = useCallback(
-    (error) => {
-      if (Date.now() - lastWarningAt.current < 15000) return;
-      lastWarningAt.current = Date.now();
-      showToast(isPermanentError(error) ? 'Não foi possível salvar o registro.' : 'Sem conexão. O registro será salvo quando a internet voltar.');
-    },
-    [showToast],
-  );
 
   useEffect(() => {
     if (!childId) return undefined;
@@ -46,7 +33,15 @@ export function useDayRecord(child, dateKey = toDateKey(new Date())) {
     setState({ status: 'loading', record: null });
 
     (async () => {
-      let saved = await loadRecord(id);
+      // Sem internet e sem cópia deste dia no aparelho: abre o dia em branco (a fila junta com o que a API tiver, depois).
+      let openedOffline = false;
+      let saved = null;
+      try {
+        saved = await loadRecord(id);
+      } catch (error) {
+        if (!isOfflineError(error)) throw error;
+        openedOffline = true;
+      }
       // Dia suspenso não recebe registro: quem abre o registro está atendendo, então o dia volta a valer.
       if (saved?.status === 'suspended') {
         await reopenDay(childId, dateKey);
@@ -54,10 +49,10 @@ export function useDayRecord(child, dateKey = toDateKey(new Date())) {
       }
       // Dia sem momentos (novo, ou reaberto depois de suspenso): recomeça já com a rotina.
       const usable = saved?.blocks.length ? saved : null;
-      const record = usable ?? { id, childId, status: 'open', blocks: buildDayBlocks(routine, parseDateKey(dateKey)), events: [], answers: {}, summary: {} };
+      const record = usable ?? { id, childId, date: dateKey, status: 'open', blocks: buildDayBlocks(routine, parseDateKey(dateKey)), events: [], answers: {}, summary: {} };
       if (!active) return;
       setState({ status: 'ready', record });
-      if (!usable) saveRecord(record).catch(warnUnsaved);
+      if (!usable) saveRecord(record, { fresh: openedOffline }).catch(() => {});
     })().catch(() => active && setState({ status: 'error', record: null }));
 
     return () => {
@@ -71,10 +66,12 @@ export function useDayRecord(child, dateKey = toDateKey(new Date())) {
     setState((current) => {
       if (!current.record) return current;
       const record = change(current.record);
-      saveRecord(record).catch(warnUnsaved);
+      saveRecord(record).catch(() => {
+        // Sem armazenamento no aparelho: o registro vale enquanto o app estiver aberto.
+      });
       return { ...current, record };
     });
-  }, [warnUnsaved]);
+  }, []);
 
   // Cada marcação vale uma vez por momento: tocar marca (com o horário) e tocar de novo desmarca.
   const toggleMark = useCallback(

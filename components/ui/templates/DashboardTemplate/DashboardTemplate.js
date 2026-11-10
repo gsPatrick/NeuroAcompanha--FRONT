@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AppHeader from '@/components/layout/AppHeader/AppHeader';
 import AppLayout from '@/components/layout/AppLayout/AppLayout';
@@ -13,6 +13,7 @@ import { useDashboard } from '@/features/dashboard/hooks/useDashboard';
 import { useRecordedToday } from '@/features/records/hooks/useRecordedToday';
 import { setDaySuspended } from '@/features/records/services/recordsStore';
 import { selectTodayAppointments } from '@/features/dashboard/utils/dashboardView';
+import { warmOffline } from '@/features/offline/warmOffline';
 import { useToast } from '@/hooks/useToast';
 import { toDateKey } from '@/utils/calendar';
 import { formatLongDate, getGreeting } from '@/utils/formatDate';
@@ -23,6 +24,11 @@ export default function DashboardTemplate() {
   const router = useRouter();
 
   const startRecord = (appointment) => router.push(`/registro/${appointment.childId}`);
+
+  // Com os alunos carregados, deixa as telas do dia a dia guardadas no aparelho (para abrirem sem internet).
+  useEffect(() => {
+    if (data?.children?.length) warmOffline(data.children, router);
+  }, [data, router]);
 
   const profileButton = data ? (
     <ProfileButton name={data.user.firstName} photo={data.user.photo} person={data.user.avatar} />

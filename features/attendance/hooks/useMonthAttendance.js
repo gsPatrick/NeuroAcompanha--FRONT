@@ -13,7 +13,7 @@ export function useMonthAttendance() {
     const now = new Date();
     const first = toDateKey(new Date(now.getFullYear(), now.getMonth(), 1));
     const today = toDateKey(now);
-    listAttendance(first, today)
+    listAttendance(first, today, 'attendance:month')
       .then((rows) => active && setTotals(countAttendance(rows, today)))
       .catch(() => {});
     return () => {

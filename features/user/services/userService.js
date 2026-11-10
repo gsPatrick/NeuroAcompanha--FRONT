@@ -1,4 +1,5 @@
 import { apiRequest } from '@/core/api/apiClient';
+import { cachedRequest } from '@/core/offline/cache';
 
 // Ilustração usada enquanto a AT não tem foto cadastrada.
 const DEFAULT_AVATAR = { hair: 'long', hairColor: 'brown', skin: 'tan', clothing: 'peach', tile: 'peach' };
@@ -15,7 +16,7 @@ const toUser = (user) => ({
 });
 
 export async function getUser() {
-  return toUser(await apiRequest('/auth/me'));
+  return toUser(await cachedRequest('me', () => apiRequest('/auth/me')));
 }
 
 // Muda o que a AT pode editar no próprio perfil: { fullName?, role?, photo? } (photo null remove).

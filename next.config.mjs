@@ -7,6 +7,10 @@ const nextConfig = {
   reactStrictMode: true,
   // Gera um servidor mínimo em .next/standalone (usado pela imagem Docker).
   output: 'standalone',
+  // O service worker nunca pode ficar em cache: senão uma versão nova do app não chegaria ao aparelho.
+  async headers() {
+    return [{ source: '/sw.js', headers: [{ key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' }, { key: 'Service-Worker-Allowed', value: '/' }] }];
+  },
   env: {
     NEXT_PUBLIC_APP_VERSION: appVersion,
   },

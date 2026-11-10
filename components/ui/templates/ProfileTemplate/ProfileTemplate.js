@@ -11,7 +11,7 @@ import StatTile from '@/components/ui/molecules/StatTile/StatTile';
 import ProfileBanner from '@/components/ui/organisms/ProfileBanner/ProfileBanner';
 import AppVersionSetting from '@/features/app-update/components/AppVersionSetting/AppVersionSetting';
 import { useFaceId } from '@/features/auth/hooks/useFaceId';
-import { endSession } from '@/features/auth/services/sessionService';
+import { signOut } from '@/features/auth/services/authService';
 import { useMonthAttendance } from '@/features/attendance/hooks/useMonthAttendance';
 import { useChildren } from '@/features/children/hooks/useChildren';
 import PhotoUploadButton from '@/features/students/components/PhotoUploadButton/PhotoUploadButton';
@@ -33,8 +33,8 @@ export default function ProfileTemplate() {
   const month = useMonthAttendance();
   const faceId = useFaceId();
 
-  const logout = () => {
-    endSession();
+  const logout = async () => {
+    await signOut();
     router.replace('/login');
   };
 
