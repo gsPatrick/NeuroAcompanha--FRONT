@@ -40,6 +40,22 @@ export default function BlockRecordPanel({ record, block, toggleMark, addNote, r
         </section>
       ))}
 
+      {categories.length ? (
+        <section className={styles.group}>
+          <div className={styles.categories}>
+            {categories.map((category) => (
+              <PranchetaSection
+                key={category.key}
+                category={category}
+                answers={record.answers[block.id]}
+                readOnly={readOnly}
+                onAnswer={(question, patch) => setAnswer?.(block.id, question, patch)}
+              />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       {readOnly ? null : (
         <section className={styles.group}>
           <h2 className={styles.groupTitle}>Anotação</h2>
@@ -60,22 +76,6 @@ export default function BlockRecordPanel({ record, block, toggleMark, addNote, r
           </div>
         </section>
       )}
-
-      {categories.length ? (
-        <section className={styles.group}>
-          <div className={styles.categories}>
-            {categories.map((category) => (
-              <PranchetaSection
-                key={category.key}
-                category={category}
-                answers={record.answers[block.id]}
-                readOnly={readOnly}
-                onAnswer={(question, patch) => setAnswer?.(block.id, question, patch)}
-              />
-            ))}
-          </div>
-        </section>
-      ) : null}
 
       {timeline.length ? (
         <section className={styles.group}>
