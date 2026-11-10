@@ -54,3 +54,27 @@ export async function saveStudents(students) {
   });
   return children.map(toStudent);
 }
+
+// Corpo de um aluno para a API (cadastro e edição).
+const toPayload = (student) => ({
+  name: student.name.trim(),
+  photo: student.photo ?? null,
+  avatar: student.avatar,
+  conditions: student.conditions,
+  routine: cleanRoutine(student.routine),
+});
+
+// Aluno novo (entra no fim da lista). Resolve com o aluno salvo.
+export async function createStudent(student) {
+  return toStudent(await apiRequest('/children', { method: 'POST', body: toPayload(student) }));
+}
+
+// Edita o cadastro de um aluno (nome, foto, neurodivergências e rotina). Os registros e relatórios dele continuam.
+export async function updateStudent(student) {
+  return toStudent(await apiRequest(`/children/${student.id}`, { method: 'PATCH', body: toPayload(student) }));
+}
+
+// Só a foto (null remove).
+export async function updateStudentPhoto(id, photo) {
+  return toStudent(await apiRequest(`/children/${id}`, { method: 'PATCH', body: { photo } }));
+}

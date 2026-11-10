@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import AppLayout from '@/components/layout/AppLayout/AppLayout';
 import MainHeader from '@/components/layout/MainHeader/MainHeader';
+import AppButton from '@/components/ui/atoms/AppButton/AppButton';
 import AppSkeleton from '@/components/ui/atoms/AppSkeleton/AppSkeleton';
 import ChildBannerCard from '@/components/ui/molecules/ChildBannerCard/ChildBannerCard';
 import EmptyState from '@/components/ui/molecules/EmptyState/EmptyState';
@@ -32,7 +33,13 @@ export default function ChildrenTemplate() {
       ) : null}
 
       {status === 'success' && !children.length ? (
-        <EmptyState icon="users" title="Nenhuma criança ainda" description="Cadastre os alunos pelo seu perfil." />
+        <EmptyState
+          icon="users"
+          title="Nenhuma criança ainda"
+          description="Cadastre o primeiro aluno para começar."
+          actionLabel="Nova criança"
+          onAction={() => router.push('/criancas/novo')}
+        />
       ) : null}
 
       {status === 'success' && children.length ? (
@@ -54,6 +61,10 @@ export default function ChildrenTemplate() {
                 />
               );
             })}
+
+            <AppButton variant="outline" icon="plus" fullWidth onClick={() => router.push('/criancas/novo')}>
+              Nova criança
+            </AppButton>
           </div>
         </div>
       ) : null}

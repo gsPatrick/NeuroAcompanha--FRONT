@@ -14,8 +14,10 @@ import { useFaceId } from '@/features/auth/hooks/useFaceId';
 import { endSession } from '@/features/auth/services/sessionService';
 import { useMonthAttendance } from '@/features/attendance/hooks/useMonthAttendance';
 import { useChildren } from '@/features/children/hooks/useChildren';
+import PhotoUploadButton from '@/features/students/components/PhotoUploadButton/PhotoUploadButton';
 import { describeAttendanceDays } from '@/features/routine/utils/routine';
 import { useUser } from '@/features/user/hooks/useUser';
+import { updateUser } from '@/features/user/services/userService';
 import { formatTenure } from '@/features/user/utils/formatTenure';
 import styles from './ProfileTemplate.module.css';
 
@@ -26,7 +28,7 @@ const monthYear = (iso) => capitalize(new Intl.DateTimeFormat('pt-BR', { month: 
 // sobre ela; e, no fim, refazer o cadastro, instalar o app, sair e a versão do app.
 export default function ProfileTemplate() {
   const router = useRouter();
-  const { status, user } = useUser();
+  const { status, user, reload } = useUser();
   const { children } = useChildren();
   const month = useMonthAttendance();
   const faceId = useFaceId();
@@ -54,6 +56,15 @@ export default function ProfileTemplate() {
             name={user.firstName}
             subtitle={user.role}
             caption={user.joinedAt ? `Na plataforma há ${formatTenure(user.joinedAt)}` : undefined}
+            photoAction={
+              <PhotoUploadButton
+                label="Trocar a minha foto"
+                onPick={async (photo) => {
+                  await updateUser({ photo });
+                  reload();
+                }}
+              />
+            }
             onBack={() => router.back()}
           />
 
@@ -97,6 +108,7 @@ export default function ProfileTemplate() {
           <section className={styles.section}>
             <h2 className={styles.title}>Mais</h2>
             <AppCard divided large>
+              <MenuRow icon="user" label="Editar perfil" onClick={() => router.push('/profile/editar')} />
               <MenuRow icon="users" label="Refazer cadastro dos alunos" onClick={() => router.push('/onboarding')} />
               <MenuRow icon="smartphone" label="Instalar o app" onClick={() => router.push('/instalar')} />
               {faceId.supported ? (

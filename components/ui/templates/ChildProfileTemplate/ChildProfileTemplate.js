@@ -9,6 +9,8 @@ import EmptyState from '@/components/ui/molecules/EmptyState/EmptyState';
 import ProfileBanner from '@/components/ui/organisms/ProfileBanner/ProfileBanner';
 import ReportHistory from '@/components/ui/organisms/ReportHistory/ReportHistory';
 import { useChild } from '@/features/children/hooks/useChild';
+import PhotoUploadButton from '@/features/students/components/PhotoUploadButton/PhotoUploadButton';
+import { updateStudentPhoto } from '@/features/students/services/studentsService';
 import { buildHistory, formatMonthName, formatWeekDays, toDateKey } from '@/features/reports/utils/dates';
 import { attendsOn, describeAttendanceDays } from '@/features/routine/utils/routine';
 import styles from './ChildProfileTemplate.module.css';
@@ -18,7 +20,7 @@ import styles from './ChildProfileTemplate.module.css';
 export default function ChildProfileTemplate() {
   const router = useRouter();
   const { childId } = useParams();
-  const { status, child } = useChild(childId);
+  const { status, child, reload } = useChild(childId);
 
   return (
     <AppLayout tone="muted">
@@ -33,12 +35,12 @@ export default function ChildProfileTemplate() {
         <EmptyState icon="alert" title="Criança não encontrada" description="Volte e escolha uma criança na lista." />
       ) : null}
 
-      {status === 'success' ? <Profile child={child} onOpen={(path) => router.push(path)} onBack={() => router.back()} /> : null}
+      {status === 'success' ? <Profile child={child} onOpen={(path) => router.push(path)} onBack={() => router.back()} onPhotoChanged={reload} /> : null}
     </AppLayout>
   );
 }
 
-function Profile({ child, onOpen, onBack }) {
+function Profile({ child, onOpen, onBack, onPhotoChanged }) {
   // O histórico começa quando a AT passou a acompanhar a criança (sem essa data, no começo do ano).
   const history = useMemo(() => {
     const now = new Date();
@@ -56,6 +58,15 @@ function Profile({ child, onOpen, onBack }) {
         tags={child.diagnoses ?? []}
         caption={describeAttendanceDays(child.routine)}
         puzzle
+        photoAction={
+          <PhotoUploadButton
+            label="Trocar a foto da criança"
+            onPick={async (photo) => {
+              await updateStudentPhoto(child.id, photo);
+              onPhotoChanged();
+            }}
+          />
+        }
         onBack={onBack}
       />
 
@@ -64,6 +75,10 @@ function Profile({ child, onOpen, onBack }) {
           Registro de hoje
         </AppButton>
       ) : null}
+
+      <AppButton variant="outline" icon="user" fullWidth onClick={() => onOpen(`/criancas/${child.id}/editar`)}>
+        Editar cadastro
+      </AppButton>
 
       <ReportHistory
         history={history}

@@ -5,8 +5,8 @@ import styles from './ProfileBanner.module.css';
 
 // Banner do topo dos perfis, no mesmo estilo do cartão do aluno na tela inicial: degradê azul-claro com curvas ao fundo,
 // a foto (ou ilustração) um pouco maior e o nome ao lado. `puzzle`: peça de quebra-cabeça no canto (crianças).
-// `tags`: [['TEA', 'Nível 2']]; `caption`: linha pequena sob o nome e as etiquetas. O banner vai de ponta a ponta (esquerda, direita e topo) e só tem cantos arredondados embaixo; o "Voltar" fica dentro dele.
-export default function ProfileBanner({ photo, person, initials, name, subtitle, tags = [], caption, puzzle = false, onBack }) {
+// `photoAction`: botão opcional no canto da foto (ex.: trocar a foto); `tags`: [['TEA', 'Nível 2']]; `caption`: linha pequena sob o nome e as etiquetas. O banner vai de ponta a ponta (esquerda, direita e topo) e só tem cantos arredondados embaixo; o "Voltar" fica dentro dele.
+export default function ProfileBanner({ photo, person, initials, name, subtitle, tags = [], caption, puzzle = false, photoAction, onBack }) {
   return (
     <header className={styles.banner}>
       <svg className={styles.swirl} viewBox="0 0 220 180" fill="none" aria-hidden="true" focusable="false">
@@ -26,7 +26,10 @@ export default function ProfileBanner({ photo, person, initials, name, subtitle,
       </button>
 
       <div className={styles.identity}>
-        <AppAvatar photo={photo} person={person} initials={initials} size="hero" />
+        <span className={styles.photo}>
+          <AppAvatar photo={photo} person={person} initials={initials} size="hero" />
+          {photoAction}
+        </span>
         <div className={styles.texts}>
           {subtitle ? <p className={styles.subtitle}>{subtitle}</p> : null}
           <h1 className={styles.name}>{name}</h1>

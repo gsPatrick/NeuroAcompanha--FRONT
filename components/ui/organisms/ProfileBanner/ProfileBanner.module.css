@@ -109,3 +109,10 @@
   font-weight: var(--font-weight-semibold);
   color: var(--color-primary);
 }
+
+/* Envolve a foto para o botão de câmera poder ficar no canto dela. */
+.photo {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}

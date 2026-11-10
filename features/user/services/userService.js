@@ -4,15 +4,21 @@ import { apiRequest } from '@/core/api/apiClient';
 const DEFAULT_AVATAR = { hair: 'long', hairColor: 'brown', skin: 'tan', clothing: 'peach', tile: 'peach' };
 
 // A pessoa logada (a AT), no formato que as telas usam.
+const toUser = (user) => ({
+  id: user.id,
+  firstName: user.firstName,
+  fullName: user.fullName,
+  role: user.role,
+  photo: user.photo ?? undefined,
+  avatar: user.avatar ?? DEFAULT_AVATAR,
+  joinedAt: user.joinedAt,
+});
+
 export async function getUser() {
-  const user = await apiRequest('/auth/me');
-  return {
-    id: user.id,
-    firstName: user.firstName,
-    fullName: user.fullName,
-    role: user.role,
-    photo: user.photo ?? undefined,
-    avatar: user.avatar ?? DEFAULT_AVATAR,
-    joinedAt: user.joinedAt,
-  };
+  return toUser(await apiRequest('/auth/me'));
+}
+
+// Muda o que a AT pode editar no próprio perfil: { fullName?, role?, photo? } (photo null remove).
+export async function updateUser(changes) {
+  return toUser(await apiRequest('/auth/me', { method: 'PATCH', body: changes }));
 }

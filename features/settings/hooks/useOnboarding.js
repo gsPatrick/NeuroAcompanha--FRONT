@@ -4,22 +4,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useHistoryStep } from '@/hooks/useHistoryStep';
 import { loadStudents, saveStudents } from '@/features/students/services/studentsService';
-import { createDefaultRoutine, DEFAULT_CLASSES } from '@/features/routine/utils/routine';
 import { pickDefaultAvatar } from '@/features/students/utils/defaultAvatar';
+import { copyRoutineDay, createStudentDraft, setConditionLevel, setRoutineDay, toggleCondition } from '@/features/students/utils/studentDraft';
 import { usePreferences } from './usePreferences';
 
 const MIN_NAME_LENGTH = 2;
 
-// crypto.randomUUID só existe em conexão segura (HTTPS/localhost): sem ela, usa um id aleatório simples.
-const newId = () => globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-
-function createStudent(index) {
-  return { id: newId(), order: index, name: '', photo: null, avatar: pickDefaultAvatar(index), conditions: [], routine: createDefaultRoutine() };
-}
-
 // Mantém os rascunhos já preenchidos e acrescenta/remove os que faltam para chegar em `count`.
 function resize(students, count) {
-  return Array.from({ length: count }, (_, index) => students[index] ?? createStudent(index));
+  return Array.from({ length: count }, (_, index) => students[index] ?? createStudentDraft(index));
 }
 
 // Etapas: quantidade -> (nome, foto, neurodivergências, rotina) de cada aluno -> resumo.
@@ -94,55 +87,13 @@ export function useOnboarding() {
 
   const setPhoto = (index, photo) => updateStudent(index, { photo });
 
-  const toggleCondition = (index, conditionId) =>
-    setStudents((current) =>
-      current.map((item, position) => {
-        if (position !== index) return item;
-        const exists = item.conditions.some((condition) => condition.id === conditionId);
-        const conditions = exists
-          ? item.conditions.filter((condition) => condition.id !== conditionId)
-          : [...item.conditions, { id: conditionId, levels: {} }];
-        return { ...item, conditions };
-      }),
-    );
+  const updateOne = (index, change) =>
+    setStudents((current) => current.map((item, position) => (position === index ? change(item) : item)));
 
-  const setLevel = (index, conditionId, groupId, optionId) =>
-    setStudents((current) =>
-      current.map((item, position) => {
-        if (position !== index) return item;
-        const conditions = item.conditions.map((condition) =>
-          condition.id === conditionId ? { ...condition, levels: { ...condition.levels, [groupId]: optionId } } : condition,
-        );
-        return { ...item, conditions };
-      }),
-    );
-
-  const setRoutineDay = (index, dayValue, patch) =>
-    setStudents((current) =>
-      current.map((item, position) => {
-        if (position !== index) return item;
-        const day = { ...item.routine[dayValue], ...patch };
-        // Voltar a atender num dia sem aulas traz as aulas padrão de volta, para não começar vazio.
-        if (patch.attends && day.classes.length === 0) day.classes = [...DEFAULT_CLASSES];
-        return { ...item, routine: { ...item.routine, [dayValue]: day } };
-      }),
-    );
-
-  // Repete o acolhimento e as aulas de um dia nos outros dias em que o aluno é atendido.
-  const copyRoutineDay = (index, dayValue) =>
-    setStudents((current) =>
-      current.map((item, position) => {
-        if (position !== index) return item;
-        const source = item.routine[dayValue];
-        const routine = Object.fromEntries(
-          Object.entries(item.routine).map(([key, day]) => [
-            key,
-            day.attends ? { ...day, welcome: source.welcome, classes: [...source.classes] } : day,
-          ]),
-        );
-        return { ...item, routine };
-      }),
-    );
+  const handleToggleCondition = (index, conditionId) => updateOne(index, (item) => toggleCondition(item, conditionId));
+  const handleSetLevel = (index, conditionId, groupId, optionId) => updateOne(index, (item) => setConditionLevel(item, conditionId, groupId, optionId));
+  const handleSetRoutineDay = (index, dayValue, patch) => updateOne(index, (item) => setRoutineDay(item, dayValue, patch));
+  const handleCopyRoutineDay = (index, dayValue) => updateOne(index, (item) => copyRoutineDay(item, dayValue));
 
   const next = () => {
     if (step.type === 'name' && student.name.trim().length < MIN_NAME_LENGTH) {
@@ -188,10 +139,10 @@ export function useOnboarding() {
     changeCount,
     setName,
     setPhoto,
-    toggleCondition,
-    setLevel,
-    setRoutineDay,
-    copyRoutineDay,
+    toggleCondition: handleToggleCondition,
+    setLevel: handleSetLevel,
+    setRoutineDay: handleSetRoutineDay,
+    copyRoutineDay: handleCopyRoutineDay,
     next,
     back,
     skip,
